@@ -139,6 +139,7 @@ var NVRAM_dnsPEnabled                                                = '<% getCf
 var NVRAM_dns_adblock                                                = '<% getCfgGeneral(1, "dns_adblock",                         "0"); %>';
 var NVRAM_dns_adblock_skip                                           = '<% getCfgGeneral(1, "dns_adblock_skip",                    ""); %>';
 var NVRAM_dns_userblock                                              = '<% getCfgGeneral(1, "dns_userblock",                       ""); %>';
+var NVRAM_dns_sec                                                    = '<% getCfgGeneral(1, "dns_sec",                             "0"); %>';
 var NVRAM_port1_swmode                                               = '<% getCfgGeneral(1, "port1_swmode",                        "auto"); %>';
 var NVRAM_port2_swmode                                               = '<% getCfgGeneral(1, "port2_swmode",                        "auto"); %>';
 var NVRAM_port3_swmode                                               = '<% getCfgGeneral(1, "port3_swmode",                        "auto"); %>';

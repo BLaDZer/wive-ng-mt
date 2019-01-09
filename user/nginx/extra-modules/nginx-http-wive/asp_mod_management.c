@@ -238,8 +238,8 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 6, "dnsPEnabled", "DDNSProvider", "DDNS", "DDNSAccount", "DDNSPassword", 
-						"dnsToLocalRedir");
+		nvram_fromdef(RT2860_NVRAM, 7, "dnsPEnabled", "DDNSProvider", "DDNS", "DDNSAccount", "DDNSPassword",
+						"dnsToLocalRedir", "dns_sec");
 		return;
 	}
 
@@ -266,6 +266,10 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 
 		char_t *dns_userblock = websGetVar(wp, T("dns_userblock"), T(""));
 		ngx_nvram_bufset(wp, "dns_userblock", dns_userblock);
+
+		// Enable DNSSEC
+		char_t *dns_sec = websGetVar(wp, T("dns_sec"), T("0"));
+		ngx_nvram_bufset(wp, "dns_sec", dns_sec);
 
 		/* force remove adlist if disable block */
 		if (CHK_IF_DIGIT(dns_adblock, 0))
@@ -561,8 +565,23 @@ static void getDeviceConfig(webs_t* wp, char_t *path, char_t *query)
     nvram_iter(RT2860_NVRAM, (void*) wp, getDeviceConfigCallback);
 
     websDone(wp, 200);
-
 }
+
+static void getAdblockStatus(webs_t* wp, char_t *path, char_t *query)
+{
+	if (access( "/tmp/adblock_runing", F_OK ) != -1) {
+		if (access( "/etc/dnsmasq.d/ads.conf", F_OK ) != -1) {
+			outWrite("2");
+		} else {
+			outWrite("1");
+		}
+	} else {
+		outWrite("0");
+	}
+
+	websDone(wp, 200);
+}
+
 
 void asp_mod_management_init()
 {
@@ -575,6 +594,7 @@ void asp_mod_management_init()
 	aspDefineFunc(("getPortStatus"), getPortStatus, EVERYONE);
 
 	websFormDefine(T("getDeviceConfig"), getDeviceConfig, ADMIN);
+	websFormDefine(T("getAdblockStatus"), getAdblockStatus, EVERYONE);
 
 #ifdef CONFIG_DATE
 	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost, EVERYONE);

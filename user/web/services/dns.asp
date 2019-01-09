@@ -33,8 +33,26 @@
 				form.dnsToLocalRedir.value = NVRAM_dnsToLocalRedir;
 
 				form.dns_adblock.selectedIndex = NVRAM_dns_adblock;
-				form.dns_adblock_skip_text.value = NVRAM_dns_adblock_skip.split("|").join(" ");
-				form.dns_userblock.value = NVRAM_dns_userblock;
+
+				var dns_userblock = NVRAM_dns_userblock.split(" ");
+				if (dns_userblock.length == 1 && dns_userblock[0] == "") {
+					dns_userblock.length = 0;
+				}
+
+				for (var i=0;i<dns_userblock.length;i++) {
+					addAdblockEntry(dns_userblock[i], 0);
+				}
+
+				var adblock_skip_domains = NVRAM_dns_adblock_skip.split("|");
+				if (adblock_skip_domains.length == 1 && adblock_skip_domains[0] == "") {
+					adblock_skip_domains.length = 0;
+				}
+
+				for (var i=0;i<adblock_skip_domains.length;i++) {
+					addAdblockEntry(adblock_skip_domains[i], 1);
+				}
+
+				form.dns_sec.selectedIndex = NVRAM_dns_sec;
 
 				switch (NVRAM_DDNSProvider) {
 					case 'none':			document.getElementById('DDNSProvider').options.selectedIndex = 0;	break;
@@ -50,8 +68,14 @@
 
 				DDNSupdateState();
 				showWarning();
-				displayServiceStatus([[ NVRAM_DDNSProvider, 'inadyn', 'inadyn' ]]);
+				displayServiceStatus([[ NVRAM_DDNSProvider, 'inadyn', 'inadyn', null, 'wikipedia.org/wiki/Dynamic_DNS' ]]);
 				displayServiceStatus([[ NVRAM_dnsPEnabled, 'dnsproxy', 'dnsmasq', null, 'thekelleys.org.uk/dnsmasq/doc.html' ]]);
+
+				displayAdblockStatus(form);
+
+				setInterval(function() {
+					displayAdblockStatus(form);
+				}, 5000);
 
 				updateVisibility(form);
 				initHosts();
@@ -97,7 +121,25 @@
 					}
 				}
 
-				form.dns_adblock_skip.value = document.getElementById("dns_adblock_skip_text").value.split(" ").join("|");
+				var elems = document.getElementsByClassName("adblock_entry");
+				var skip_str = "";
+				var block_str = "";
+				for (var i=0;i<elems.length;i++) {
+					var arr = adblockEntryToArray(elems[i]);
+					var name = arr[0];
+					var action = arr[1];
+
+					if (action == "1") {
+						if (skip_str != "") skip_str += "|";
+						skip_str += name;
+					} else {
+						if (block_str != "") block_str += " ";
+						block_str += name;
+					}
+				}
+
+				form.dns_adblock_skip.value = skip_str;
+				form.dns_userblock.value = block_str;
 
 				var elems = document.getElementsByClassName("hosts_entry_user_defined");
 				var hosts_str = "";
@@ -126,13 +168,96 @@
 
 			function updateVisibility(form) {
 				displayElement('dnsproxy',	BUILD_DNSMASQ);
-				displayElement(['div_hosts', 'div_hosts_add', 'div_dnsblock', 'dnsToLocalRedirRow'],	form.dnsPEnabled.value != '0');
-				displayElement(['dnsfilter_skip_tr', 'dnsfilter_userblock_tr'], form.dns_adblock.value != '0');
+				displayElement(['div_hosts', 'div_hosts_add', 'div_dnsblock', 'dnsToLocalRedirRow', 'div_misc'], form.dnsPEnabled.value != '0');
+				displayElement(['div_dnsblock_except', 'div_dnsblock_except_add'], form.dnsPEnabled.value != '0' && form.dns_adblock.value != '0');
 			}
 
 			function deleteDnsEntry(elem) {
 				var entries_container = document.getElementById("localDnsEntries");
 				entries_container.removeChild(elem);
+			}
+
+			function deleteAdblockEntry(elem) {
+				var entries_container = document.getElementById("dnsFilterExceptions");
+				entries_container.removeChild(elem);
+			}
+
+			function addAdblockEntry(name, action) {
+				var entries_container = document.getElementById("dnsFilterExceptions");
+				var elems = document.getElementsByClassName("adblock_entry");
+				if (name == "") return false;
+
+				for (var i=0;i<elems.length;i++) {
+
+					var adblock_name = adblockEntryToArray(elems[i])[0];
+					if (adblock_name == name) {
+						return false;
+					}
+				}
+
+				entries_container.appendChild(generateAdblockEntry(name, action));
+				return true;
+			}
+
+			function addAdblockEntryClick() {
+				var name_elem = document.getElementById("dnsblock_except_add_domain");
+				var action_elem = document.getElementById("dnsblock_except_add_action");
+
+				if (!/^[A-Za-z0-9.-]+$/.test(name_elem.value)) {
+					alert(_('services dns wrong domain'));
+					name_elem.focus();
+					return false;
+				}
+
+				if (!addAdblockEntry(name_elem.value, action_elem.value)) {
+					alert(_('services dns domain in use'));
+					name_elem.focus();
+					return false;
+				}
+
+				return true;
+			}
+
+			function adblockEntryToArray(entry) {
+				var name = "";
+				var action = 0;
+				if (entry.className.indexOf(" adblock_entry_allow") != -1) {
+					action = 1;
+				}
+
+				for (var i=0;i<entry.childNodes.length;i++) {
+					var cnode = entry.childNodes[i];
+					if (cnode.className == "adblock_name") name = cnode.innerHTML;
+				}
+				return [name,action];
+			}
+
+			function generateAdblockEntry(name, action) {
+				var tr = document.createElement("tr");
+				if (action == "1") {
+					tr.className = "adblock_entry adblock_entry_allow";
+				} else {
+					tr.className = "adblock_entry adblock_entry_block";
+				}
+
+				var td = document.createElement("td");
+				td.className = "adblock_name";
+				td.innerHTML = name;
+				tr.appendChild(td);
+
+				var td = document.createElement("td");
+				td.className = "adblock_action";
+				td.innerHTML = action=="1"?_("services dns filter except allow"):_("services dns filter except block");
+				td.style.textAlign = "center";
+				tr.appendChild(td);
+
+				var td = document.createElement("td");
+				td.style.textAlign = "center";
+				td.style.cursor = "pointer";
+				td.innerHTML = "<a onClick='deleteAdblockEntry(this.parentElement.parentElement);' style='color: #ff0000;' title='" + _("services dns hosts remove") + "' ><img src='/graphics/cross.png' alt='[x]'></a>";
+				tr.appendChild(td);
+
+				return tr;
 			}
 
 			function addDnsEntry() {
@@ -150,7 +275,7 @@
 				}
 
 				if (!/^[A-Za-z0-9.-]+$/.test(name_elem.value)) {
-					alert(_('services dns hosts wrong domain'));
+					alert(_('services dns wrong domain'));
 					name_elem.focus();
 					return false;
 				}
@@ -160,7 +285,7 @@
 
 					var hosts_name = hostsEntryToArray(elems[i])[1];
 					if (hosts_name == name_elem.value) {
-						alert(_('services dns hosts domain in use'));
+						alert(_('services dns domain in use'));
 						name_elem.focus();
 						return false;
 					}
@@ -228,6 +353,24 @@
 				}
 			}
 
+			function displayAdblockStatus(form) {
+				if (form.dns_adblock.value == '0') {
+					displayServiceStatusView([ '0', 'dnsfilter', null, null, 'wikipedia.org/wiki/Ad_blocking' ], false);
+				} else {
+					ajaxPerformRequest("/goform/getAdblockStatus", function(content) {
+						displayServiceStatusView([ content!=0?'1':'0', 'dnsfilter', null, null, 'wikipedia.org/wiki/Ad_blocking' ], content == '2');
+					});
+				}
+			}
+
+			function changeDNSSEC(form) {
+				if (form.dns_sec.selectedIndex > 0 && !confirm(_("services dns misc dnssec confirm"))) {
+					form.dns_sec.selectedIndex = 0;
+					return false;
+				}
+			}
+
+
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues()">
@@ -244,9 +387,9 @@
 
 					<table id="div_dnsproxy" class="form">
 						<col style="width: 40%"/>
-						<col style="width: 40%"/>
+						<col style="width: 38%"/>
 						<col style="width: 10%"/>
-						<col style="width: 10%"/>
+						<col style="width: 12%"/>
 						<thead>
 							<td class="title" colspan="4" data-tr="services dns setup">DNS Settings</td>
 						</thead>
@@ -259,7 +402,7 @@
 										<option value="1" data-tr="button enable">Enable</option>
 									</select>
 								</td>
-								<td style="text-align: center">&nbsp;</td>
+								<td style="text-align: center;" >&nbsp;</td>
 								<td style="text-align: center;">&nbsp;</td>
 							</tr>
 
@@ -278,9 +421,11 @@
 
 					<table id="div_dnsblock" class="form">
 						<col style="width: 40%"/>
-						<col style="width: 60%"/>
+						<col style="width: 38%"/>
+						<col style="width: 10%"/>
+						<col style="width: 12%"/>
 						<thead>
-							<td class="title" colspan="2" data-tr="services dns filter">DNS Content Filter</td>
+							<td class="title" colspan="4" data-tr="services dns filter">DNS Content Filter</td>
 						</thead>
 						<tbody>
 							<tr id="dnsfilter">
@@ -291,24 +436,60 @@
 										<option value="1" data-tr="button enable">Enable</option>
 									</select>
 								</td>
-							</tr>
-
-							<tr id="dnsfilter_skip_tr">
-								<td class="head" data-tr="services dns filter skip">Do Not Block Domains</td>
-								<td>
-									<input type="text" id="dns_adblock_skip_text"></input>
-									<input type="hidden" id="dns_adblock_skip" name="dns_adblock_skip"></input>
-								</td>
-							</tr>
-
-							<tr id="dnsfilter_userblock_tr">
-								<td class="head" data-tr="services dns filter userblock">Force Block Domains</td>
-								<td>
-									<input type="text" id="dns_userblock" name="dns_userblock"></input>
-								</td>
+								<td style="text-align: center;">&nbsp;</td>
+								<td style="text-align: center;">&nbsp;</td>
 							</tr>
 						</tbody>
 					</table>
+
+					<input type="hidden" id="dns_adblock_skip" name="dns_adblock_skip"></input>
+					<input type="hidden" id="dns_userblock" name="dns_userblock"></input>
+
+					<table id="div_dnsblock_except" class="form">
+						<col style="width: 75%" />
+						<col style="width: 10%" />
+						<col style="width: 10%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="services dns filter except title" colspan="4">DNS Content Filter Exceptions</td>
+							</tr>
+							<tr>
+								<th data-tr="inet domain">Domain Name</th>
+								<th data-tr="services dns filter except action" colspan="3">Action</th>
+							</tr>
+						</thead>
+						<tbody id="dnsFilterExceptions">
+						</tbody>
+					</table>
+
+					<table id="div_dnsblock_except_add" class="form">
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="services dns filter except add title" colspan="2">Add DNS Content Filter Exception</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="head" data-tr="inet domain">Domain Name</td>
+								<td><input type="text" class="mid" id="dnsblock_except_add_domain"></input></td>
+							</tr>
+							<tr>
+								<td class="head" data-tr="services dns filter except action">Action</td>
+								<td>
+									<select class="mid" id="dnsblock_except_add_action">
+										<option value="0" selected data-tr="services dns filter except block">Block</option>
+										<option value="1" data-tr="services dns filter except allow">Allow</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><input type="button" data-tr="services dns filter except add" value="Add"  onClick='addAdblockEntryClick();'></input></td>
+							</tr>
+						</tbody>
+					</table>
+
 
 					<input type="hidden" id="dns_local_hosts" name="dns_local_hosts"></input>
 					<table class="form" id="div_hosts">
@@ -333,7 +514,7 @@
 						<col style="width: 60%" />
 						<thead>
 							<tr>
-								<td class="title" data-tr="services dns hosts add title"  colspan="3">Add Local DNS Entry</td>
+								<td class="title" data-tr="services dns hosts add title"  colspan="2">Add Local DNS Entry</td>
 							</tr>
 						</thead>
 						<tbody>
@@ -353,11 +534,12 @@
 
 					<table id="div_ddns" class="form">
 						<col style="width: 40%"/>
-						<col style="width: 50%"/>
+						<col style="width: 38%"/>
 						<col style="width: 10%"/>
+						<col style="width: 12%"/>
 						<tbody>
 							<tr>
-								<td class="title" colspan="3" data-tr="services ddns setup">DDNS Settings</td>
+								<td class="title" colspan="4" data-tr="services ddns setup">DDNS Settings</td>
 							</tr>
 
 							<tr id="inadyn">
@@ -372,22 +554,48 @@
 									</select>
 								</td>
 								<td style="text-align: center;">&nbsp;</td>
+								<td style="text-align: center;">&nbsp;</td>
 							</tr>
 							<tr id="div_login">
 								<td class="head" data-tr="services l2tp login">Login</td>
-								<td colspan="2"><input class="mid" name="Account" id="Account" type="text"></td>
+								<td colspan="3"><input class="mid" name="Account" id="Account" type="text"></td>
 							</tr>
 							<tr id="div_password">
 								<td class="head" id="manDdnsPasswd">Password</td>
-								<td colspan="2"><input class="mid" name="Password" id="Password" type="password"></td>
+								<td colspan="3"><input class="mid" name="Password" id="Password" type="password"></td>
 							</tr>
 							<tr id="div_dynname">
 								<td class="head" data-tr="services ddns">Dynamic Name</td>
-								<td colspan="2"><input class="mid" name="DDNS" id="DDNS" type="text"></td>
+								<td colspan="3"><input class="mid" name="DDNS" id="DDNS" type="text"></td>
 							</tr>
 						</tbody>
 					</table>
-					<table id="div_ddns_submit" class="buttons">
+
+					<table class="form" id="div_misc">
+						<col style="width: 40%" />
+						<col style="width: 50%" />
+						<col style="width: 10%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="services dns misc title"  colspan="3">Miscellaneous</td>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr>
+								<td class="head" data-tr="services dns misc dnssec">Enable DNSSEC</td>
+								<td>
+									<select name="dns_sec" class="mid" onChange="changeDNSSEC(this.form);">
+										<option value="0" data-tr="button disable">Disable</option>
+										<option value="1" data-tr="button enable">Enable</option>
+									</select>
+								</td>
+								<td><a data-tr="services status about" href="https://en.wikipedia.org/wiki/DNSSEC" target="_blank">Learn more...</a></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<table class="buttons">
 						<tr>
 							<td>
 								<input type="hidden" name="submit-url" value="/services/dns.asp" >
@@ -396,6 +604,7 @@
 							</td>
 						</tr>
 					</table>
+
 					</form>
 					<div class="whitespace"></div>
 				</td>

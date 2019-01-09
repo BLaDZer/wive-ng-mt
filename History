@@ -4503,8 +4503,9 @@
 6) busybox: update to 1.30.0 version.<br>
 7) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
 8) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-9) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-10) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-11) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+9) webui: rework adbblock, dnssec, add alternative dns.<br>
+10) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+11) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+12) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

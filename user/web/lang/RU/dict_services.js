@@ -43,17 +43,29 @@ var services_dictionary = {
 	'services dns setup'			: 'Настройки DNS Proxy',
 	'services dns redirect'			: 'Перенаправлять DNS на локальный сервер',
 
+	'services dns wrong domain'		: 'Введено некорректное доменное имя!',
+	'services dns domain in use'		: 'Введённое доменное имя уже присутствует в списке!',
+
 	'services dns filter'			: 'Блокировка рекламы',
 	'services dns filter enable'		: 'Включить фильтрацию DNS',
 	'services dns filter skip'		: 'Не блокировать домены',
 	'services dns filter userblock'		: 'Всегда блокировать домены',
 
+	'services dns filter except title'	: 'Исключения блокировки рекламы',
+	'services dns filter except add title'	: 'Добавить исключение блокировки рекламы',
+	'services dns filter except action'	: 'Действие',
+	'services dns filter except allow'	: 'Разрешить',
+	'services dns filter except block'	: 'Блокировать',
+	'services dns filter except add'	: 'Добавить исключение',
+
 	'services dns hosts title'		: 'Локальные записи DNS',
 	'services dns hosts add title'		: 'Добавить локальную запись DNS',
 	'services dns hosts add button'		: 'Добавить новую запись',
 	'services dns hosts remove'		: 'Удалить запись',
-	'services dns hosts wrong domain'	: 'Введено некорректное доменное имя!',
-	'services dns hosts domain in use'	: 'Введённое доменное имя уже присутствует в списке!',
+
+	'services dns misc title'		: 'Прочие настройки',
+	'services dns misc dnssec'		: 'Включить DNSSEC',
+	'services dns misc dnssec confirm'	: 'Вы действительно желаете включить DNSSEC? Включение данной опции при отсутствии поддержки со стороны DNS-сервера приведёт к неработоспособности служб DNS',
 
 	'services ddns setup'			: 'Настройки DDNS',
 	'services ddns provider'		: 'Провайдер Dynamic DNS',

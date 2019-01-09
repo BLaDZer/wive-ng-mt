@@ -42,17 +42,29 @@ var services_dictionary = {
 	'services dns setup'			: 'DNS Proxy setup',
 	'services dns redirect'			: 'Redirect all DNS to local server',
 
+	'services dns wrong domain'		: 'Incorrect domain name!',
+	'services dns domain in use'		: 'The domain name you have entered already exists!',
+
 	'services dns filter'			: 'Ad Blocking',
 	'services dns filter enable'		: 'Enable DNS Filtering',
 	'services dns filter skip'		: 'Do Not Block Domains',
 	'services dns filter userblock'		: 'Force Block Domains',
 
+	'services dns filter except title'	: 'DNS Content Filter Exceptions',
+	'services dns filter except add title'	: 'Add DNS Content Filter Exception',
+	'services dns filter except action'	: 'Action',
+	'services dns filter except allow'	: 'Allow',
+	'services dns filter except block'	: 'Block',
+	'services dns filter except add'	: 'Add New Exception',
+
 	'services dns hosts title'		: 'Local DNS Entries',
 	'services dns hosts add title'		: 'Add Local DNS Entry',
 	'services dns hosts add button'		: 'Add New Entry',
 	'services dns hosts remove'		: 'Remove Entry',
-	'services dns hosts wrong domain'	: 'Incorrect domain name!',
-	'services dns hosts domain in use'	: 'The domain name you have entered already exists!',
+
+	'services dns misc title'		: 'Miscellaneous',
+	'services dns misc dnssec'		: 'Enable DNSSEC',
+	'services dns misc dnssec confirm'	: 'Are you sure you want to enable DNSSEC? Enabling this feature without a support on the DNS server side will lead to inoperability of DNS services',
 
 	'services ddns setup'			: 'Dynamic DNS setup',
 	'services ddns provider'		: 'Dynamic DNS Provider',

@@ -654,6 +654,39 @@ function getRunningServices(done) {
 
 }
 
+function displayServiceStatusView(service, is_running) {
+	var row = document.getElementById(service[1]);
+	var tds = [];
+	for (var j = 0; j < row.childNodes.length; j++)
+		if (row.childNodes[j].nodeName == 'TD')
+			tds.push(row.childNodes[j]);
+	if (row != null) {
+		// Fill-up status
+		if (+service[0] == 0 || service[0] == 'none') {
+			if (service[4] != null)
+				tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+			else
+				tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+		}
+		else {
+			if (service[4] != null)
+				tds[3].innerHTML = is_running ?
+					'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+					'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+			else
+				tds[2].innerHTML = is_running ?
+					'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+					'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+		}
+		if (service[4] != null) {
+			tds[2].innerHTML = '<a href="http://' + service[4] + '" target="_blank">' + _("services status about") + '</a>';
+			if (tds[4] != null)
+				tds[4].innerHTML = ((service[0] > '0') && is_running && (service[3] != null)) ?
+					'<a href="http://' + LAN_IP +':' + service[3] + '">' + _("services status configure") + '</a>' : '&nbsp;';
+		}
+	}
+}
+
 function displayServiceStatus(services) {
 	var LAN_IP = '<% getLanIp(); %>';
 
@@ -662,37 +695,7 @@ function displayServiceStatus(services) {
 		for (var i = 0; i < services.length; i++) {
 			var service = services[i];
 			var is_running = daemons.indexOf(service[2]) != -1;
-			var row = document.getElementById(service[1]);
-			var tds = [];
-			for (var j = 0; j < row.childNodes.length; j++)
-				if (row.childNodes[j].nodeName == 'TD')
-					tds.push(row.childNodes[j]);
-			if (row != null) {
-				// Fill-up status
-				if (+service[0] == 0 || service[0] == 'none') {
-					if (service[4] != null)
-						tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-					else
-						tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-				}
-				else {
-					if (service[4] != null)
-						tds[3].innerHTML = is_running ?
-							'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-							'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-					else
-						tds[2].innerHTML = is_running ?
-							'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-							'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-				}
-
-				if (service[4] != null) {
-					tds[2].innerHTML = '<a href="http://' + service[4] + '" target="_blank">' + _("services status about") + '</a>';
-					if (tds[4] != null)
-						tds[4].innerHTML = ((service[0] > '0') && is_running && (service[3] != null)) ?
-							'<a href="http://' + LAN_IP +':' + service[3] + '">' + _("services status configure") + '</a>' : '&nbsp;';
-				}
-			}
+			displayServiceStatusView(service, is_running);
 		}
 		displayServiceStatus_interval = setTimeout(function () { displayServiceStatus(services); }, 5000);
 	});
