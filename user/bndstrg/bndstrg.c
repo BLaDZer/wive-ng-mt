@@ -1252,7 +1252,7 @@ void bndstrg_update_disassoc_info(struct bndstrg *bndstrg, struct bndstrg_iface 
 			sprintf(entry->statistics[band_idx].FirstClientDelTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
 		entry->statistics[band_idx].MacDelCount++;
 #endif						
-		DBGPRINT(DEBUG_OFF,RED("%s()::Entry DEL for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d\n"), 
+		DBGPRINT(DEBUG_TRACE,RED("%s()::Entry DEL for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d\n"), 
 			__FUNCTION__, PRINT_MAC(cli_event->Addr),cli_event->Channel);
 	}
 
@@ -1335,7 +1335,7 @@ u8 bndstrg_disassoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *
 		BND_STRG_PRINTQAMSG(table, entry,("[%s] state:%s band:%s connected band:%s Channel:%d bConnStatus:%d bActiveStatus:%d \n"),
 			inf->ucIfName, entry_state[entry->state], bndstrg_get_entry_band(entry->band), bndstrg_get_entry_band(entry->connected_band), entry->Channel, entry->bConnStatus, entry->bActiveStatus);
 #endif /* BND_STRG_QA */
-
+#if 0  /* this check incorrect, client allready disconnected and pentry not exist */
 	/* check CLI_UPDATE is from correct band */
 	if(IS_2G_BAND(cli_event->Band))
 	{
@@ -1362,7 +1362,7 @@ u8 bndstrg_disassoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *
 			}
 		}
 	}
-
+#endif
 	/* cleanup statistic for prevent band jam */
 	memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
 
@@ -1704,15 +1704,18 @@ int bndstrg_cli_event_req(
 				if((cli_assoc->Nss != entry->Nss) ||
 					((cli_assoc->bVHTCapable == TRUE) && !(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_VHT)) ||
 					((cli_assoc->bAllowStaConnectInHt == TRUE) && (entry->Control_Flags & cmp_flag))){
-					DBGPRINT(DEBUG_OFF,"Assoc and Probe info missmatch for [%02x:%02x:%02x:%02x:%02x:%02x] "
+					DBGPRINT(DEBUG_TRACE,"Assoc and Probe info missmatch for [%02x:%02x:%02x:%02x:%02x:%02x] "
 						"ProbeInfo-> nss:%d HTCap:%s VHTCap:%s \t AssocInfo-> nss:%d HTCap:%s VHTCap:%s\n",
 						PRINT_MAC(pSrcAddr), entry->Nss, (entry->Control_Flags & cmp_flag)? "FALSE":"TRUE", (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_VHT)? "TRUE":"FALSE",
 						cli_assoc->Nss, (cli_assoc->bAllowStaConnectInHt == TRUE)? "TRUE":"FALSE", (cli_assoc->bVHTCapable == TRUE)? "TRUE":"FALSE");
-					entry->Nss = cli_assoc->Nss;
+					/* avoid replace stream num to 0 */
+					if(cli_assoc->Nss)
+					    entry->Nss = cli_assoc->Nss;
 					if(cli_assoc->bVHTCapable == TRUE)
-						entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_VHT;
+					    entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_VHT;
 					if(cli_assoc->bAllowStaConnectInHt == TRUE)
-						entry->Control_Flags &= ~(fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G);
+					    entry->Control_Flags &= ~(fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G);
+
 					entry->AssocProbeInfoMissMatch = TRUE;
 					if(!((entry->match_steered_rule_id[CMP_5GL_2G] == fBND_STRG_PRIORITY_BAND_PERSIST ) ||
 						 (entry->match_steered_rule_id[CMP_5GH_2G] == fBND_STRG_PRIORITY_BAND_PERSIST) || 
