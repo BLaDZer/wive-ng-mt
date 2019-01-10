@@ -4507,6 +4507,7 @@
 10) webui: rework adbblock, dnssec, add alternative dns.<br>
 11) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
 12) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-13) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+13) kernel: net: packet: validate address length.<br>
+14) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
