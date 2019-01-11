@@ -4433,6 +4433,9 @@
 134) kernel: ralink_wifi: fix initial rate/phy mode for long range/initial conect clients.<br>
 135) kernel: ralink_wifi: mt7610: do not eLNA gain depended by temp (avoid RX deviation, only TX path temp compensate need).<br>
 136) kernel: ralink_wifi: mt7610: avoid 0 rssi sample in some cases.<br>
+<br>
+<br>
+<b>7.7.x</b><br>
 1) libopenssl: up to 1.0.2q version.<br>
 2) libwive: add support 160MHz channel in get rates.<br>
 3) libwive: add support 160/80+80/5MHz channels in get bw.<br>
