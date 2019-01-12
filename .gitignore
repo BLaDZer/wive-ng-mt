@@ -368,7 +368,7 @@ fulldump
 /user/netcwmp/tests/src/Makefile
 /user/netcwmp/tests/src/Makefile.in
 /user/strace/Makefile
-/user/strace/Mkaefile.in
+/user/strace/Makefile.in
 /user/strace/configure
 /user/freeradius/Makefile
 /user/freeradius/Make.inc
