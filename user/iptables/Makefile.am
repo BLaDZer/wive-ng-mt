@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 ACLOCAL_AMFLAGS  = -I m4

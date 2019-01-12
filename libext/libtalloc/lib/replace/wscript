@@ -116,8 +116,8 @@ def configure(conf):
     conf.CHECK_HEADERS('sys/atomic.h')
     conf.CHECK_HEADERS('libgen.h')
 
-    if conf.CHECK_CFLAGS('-Wno-format-truncation'):
-        conf.define('HAVE_WNO_FORMAT_TRUNCATION', '1')
+    #if conf.CHECK_CFLAGS('-Wno-format-truncation'):
+    #    conf.define('HAVE_WNO_FORMAT_TRUNCATION', '1')
 
     if conf.CHECK_CFLAGS('-Wno-unused-function'):
         conf.define('HAVE_WNO_UNUSED_FUNCTION', '1')
@@ -805,8 +805,8 @@ def build(bld):
                       deps='crypt dl nsl socket rt attr' + extra_libs)
 
     replace_test_cflags="-Wno-format-zero-length"
-    if bld.CONFIG_SET('HAVE_WNO_FORMAT_TRUNCATION'):
-        replace_test_cflags += " -Wno-format-truncation"
+    #if bld.CONFIG_SET('HAVE_WNO_FORMAT_TRUNCATION'):
+    #    replace_test_cflags += " -Wno-format-truncation"
     bld.SAMBA_SUBSYSTEM('replace-test',
                         source='''test/testsuite.c test/strptime.c
                         test/os2_delete.c test/getifaddrs.c''',

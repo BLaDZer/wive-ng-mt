@@ -54,8 +54,8 @@ FULL_CFLAGS = $(CCOPT) $(DEFS) $(INCLS) $(CFLAGS)
 LDFLAGS = @LDFLAGS@ -L$(ROOTDIR)/lib/shared/lib
 
 # Decrease size
-CFLAGS      += -ffunction-sections -fdata-sections
-FULL_CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS      += -ffunction-sections -fdata-sections -fvisibility=hidden
+FULL_CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS     += -Wl,--gc-sections
 
 # Standard LIBS

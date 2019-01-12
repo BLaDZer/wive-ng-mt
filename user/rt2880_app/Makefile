@@ -9,7 +9,7 @@
 SUBDIRS_APP = $(shell LC_ALL=C; ls)
 
 #allways agressive optimize for size
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 ifdef CONFIG_RALINK_MT7620

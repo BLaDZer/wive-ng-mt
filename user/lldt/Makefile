@@ -3,6 +3,7 @@
 CFLAGS += -pipe -fpack-struct
 CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
+CFLAGS += -fvisibility=hidden
 #CFLAGS += -ffunction-sections -fdata-sections
 #LDFLAGS += -Wl,--gc-sections
 

@@ -37,7 +37,7 @@ DEBUG_ON := -g
 endif
 
 ALL_CFLAGS = -W -Wall --pedantic $(CFLAGS) $(INCLUDES)
-ALL_CFLAGS += -ffunction-sections -fdata-sections
+ALL_CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 SYSTEM=$(shell uname 2>/dev/null)

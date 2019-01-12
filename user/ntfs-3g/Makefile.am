@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = gnu
 ACLOCAL_AMFLAGS = -I m4
 
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 EXTRA_DIST = AUTHORS CREDITS COPYING NEWS autogen.sh

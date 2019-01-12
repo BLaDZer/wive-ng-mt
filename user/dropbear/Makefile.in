@@ -32,7 +32,7 @@ CFLAGS+=-DLOCALOPTIONS_H_EXISTS
 OPTION_HEADERS += localoptions.h
 endif
 
-CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 COMMONOBJS=dbutil.o buffer.o dbhelpers.o \

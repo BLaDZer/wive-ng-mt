@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in.
 
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 SUBDIRS = lib qpb fpm m4 @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ \

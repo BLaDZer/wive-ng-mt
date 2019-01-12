@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-CFLAGS  += -ffunction-sections -fdata-sections
+CFLAGS  += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 # Files to be included in distribution

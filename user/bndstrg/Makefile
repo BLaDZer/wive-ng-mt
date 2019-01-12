@@ -6,7 +6,7 @@ ifndef CONFIG_MT7615_AP
 LEGACYMODE := -DLEGACYMODE
 endif
 
-CFLAGS += -I./ -Wall -g -lrt -ffunction-sections -fdata-sections -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA $(LEGACYMODE)
+CFLAGS += -I./ -Wall -g -lrt -ffunction-sections -fdata-sections -fvisibility=hidden -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA $(LEGACYMODE)
 LDFLAGS += -lpthread -lnvram -Wl,--gc-sections
 
 ifdef LEGACYMODE

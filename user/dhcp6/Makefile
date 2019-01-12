@@ -3,7 +3,7 @@
 ####################################################
 
 CFLAGS	+= -pipe -fpack-struct
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 all:

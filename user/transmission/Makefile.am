@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 if BUILD_CLI

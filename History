@@ -4498,21 +4498,22 @@
 <br>
 <br>
 <b>7.8.x</b><br>
-1) build_system: replace sstrip to ELFkickers 3.1 version.<br>
-2) build_system: xz update to 5.2.4 version.<br>
-3) build_system: mksquash_xz update to 4.3 version.<br>
-4) build_system: add libnettle v3.4.<br>
-5) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
-6) busybox: update to 1.30.0 version.<br>
-7) bandsteering: avoid false positive connect allow to 2.4GHz in some cases.<br>
-8) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-9) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-10) webui: rework adbblock, dnssec, add alternative dns.<br>
-11) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-12) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-13) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-14) kernel: net: packet: validate address length.<br>
-15) kernel: net: packet: validate address length if non-zero.<br>
-16) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+1) build_system: review, fix build in new distros and decrease result binary size.<br>
+2) build_system: replace sstrip to ELFkickers 3.1 version.<br>
+3) build_system: xz update to 5.2.4 version.<br>
+4) build_system: mksquash_xz update to 4.3 version.<br>
+5) build_system: add libnettle v3.4.<br>
+6) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
+7) busybox: update to 1.30.0 version.<br>
+8) bandsteering: avoid false positive connect allow to 2.4GHz in some cases.<br>
+9) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+10) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+11) webui: rework adbblock, dnssec, add alternative dns.<br>
+12) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+13) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+14) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+15) kernel: net: packet: validate address length.<br>
+16) kernel: net: packet: validate address length if non-zero.<br>
+17) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

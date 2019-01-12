@@ -6,7 +6,7 @@
 #
 
 #allways agressive optimize for size
-CFLAGS	+= -lnvram -ffunction-sections -fdata-sections
+CFLAGS	+= -lnvram -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 all:

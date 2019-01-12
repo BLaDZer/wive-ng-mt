@@ -2,7 +2,7 @@ INADYN_BASE = .
 SRCDIR = $(INADYN_BASE)/src
 OUTDIR=bin
 
-CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 #simple arch config. No smart detection.

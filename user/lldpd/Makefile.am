@@ -7,7 +7,7 @@ include doxygen.am
 ACLOCAL_AMFLAGS = -I m4
 
 CFLAGS	+= -Os -pipe -fpack-struct -Wall -Wno-unused -fno-caller-saves -fno-reorder-blocks -fno-aggressive-loop-optimizations
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 LIBEVENT_CFLAGS = "-I$(ROOTDIR)/lib/shared/include"
 LIBEVENT_LIBS = "-L$(ROOTDIR)/lib/shared/lib -levent"

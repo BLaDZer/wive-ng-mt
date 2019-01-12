@@ -1,6 +1,6 @@
 STRIP = $(CROSS)strip
 
-CFLAGS += -Wall -ffunction-sections -fdata-sections
+CFLAGS += -Wall -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 ifneq ("$(LIBWRAP)", "")

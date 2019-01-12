@@ -625,6 +625,9 @@ KBUILD_CFLAGS += $(call cc-option, -fno-aggressive-loop-optimizations)
 KBUILD_CFLAGS += $(call cc-option, -fno-tree-partial-pre)
 KBUILD_CFLAGS += $(call cc-option, -fno-tree-slsr)
 
+# default hide not direct exported functions (decrease size and small speedup)
+KBUILD_CFLAGS += $(call cc-option, -fvisibility=hidden)
+
 # fix gcc-4.9.x miscompilation of load_balance() in scheduler
 KBUILD_CFLAGS += $(call cc-option, -fno-var-tracking-assignments)
 

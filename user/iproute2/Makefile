@@ -37,6 +37,7 @@ CFLAGS += -Wstrict-prototypes
 CFLAGS += -I../../iproute2/include -I../../iproute2/include 
 CFLAGS += -D_GNU_SOURCE $(DEFINES)
 #CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -fvisibility=hidden
 YACCFLAGS = -d -t -v
 
 #SUBDIRS=lib tc ip

@@ -1,4 +1,4 @@
-CFLAGS+=-Os -fPIC -fomit-frame-pointer -Isrc -Wall
+CFLAGS+=-Os -fPIC -fomit-frame-pointer -Isrc -Wall -fvisibility=hidden
 #-ffunction-sections -fdata-sections
 LDFLAGS+=-pthread
 #-Wl,--gc-sections

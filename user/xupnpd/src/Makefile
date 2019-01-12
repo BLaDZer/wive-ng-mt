@@ -5,9 +5,9 @@ CFLAGS	+= -I$(LIBCDIRSHARED)/include/openssl -L$(LIBCDIRSHARED)/lib
 SRC     = main.cpp soap.cpp mem.cpp mcast.cpp luaxlib.cpp luaxcore.cpp luajson.cpp luajson_parser.cpp
 LUAMYCFLAGS = -DLUA_USE_LINUX
 
-CFLAGS  += -ffunction-sections -fdata-sections
-CPPFLAGS += -ffunction-sections -fdata-sections
-LUAMYCFLAGS += -ffunction-sections -fdata-sections
+CFLAGS  += -ffunction-sections -fdata-sections -fvisibility=hidden
+CPPFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
+LUAMYCFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 SDK_8_09 = /u01/home/shocker_old/staff/openwrt_8_09/staging_dir

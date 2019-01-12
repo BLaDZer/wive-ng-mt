@@ -17,7 +17,7 @@ export SHELL
 
 CONFOPTS="--build=$HTARGET --crossbuild=$HTARGET"
 
-CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/libnvram,-ffunction-sections,-fdata-sections,-Os"
+CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/libnvram,-ffunction-sections,-fdata-sections,-fvisibility=hidden,-Os"
 CONFOPTS="$CONFOPTS --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
 
 if [ -n "$CONFIG_RT2880_FLASH_16M$CONFIG_RT2880_FLASH_32M" ]; then

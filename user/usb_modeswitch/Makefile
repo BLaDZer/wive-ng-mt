@@ -1,7 +1,7 @@
 PROG        = usb_modeswitch
 VERS        = 2.5.2
 LIBUSB      = $(ROOTDIR)/lib/libusb
-CFLAGS      += -Wall -I$(LIBUSB) -ffunction-sections -fdata-sections
+CFLAGS      += -Wall -I$(LIBUSB) -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	    += -Wl,--gc-sections
 LIBS        = -l usb-1.0
 OBJS        = usb_modeswitch.c

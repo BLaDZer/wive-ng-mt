@@ -19,6 +19,8 @@
 
 #ifdef HAVE_DNSSEC
 
+#include <nettle/nettle-meta.h>
+
 #define SERIAL_UNDEF  -100
 #define SERIAL_EQ        0
 #define SERIAL_LT       -1

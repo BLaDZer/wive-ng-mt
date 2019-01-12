@@ -34,12 +34,13 @@ else
 COPTS := -O2
 endif
 
-COPTS += -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
+COPTS += -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden
 COPTS += -DHAVE_BROKEN_RTC -DNO_IPSET -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT -DNO_DUMPFILE
 
 ifdef CONFIG_USER_DNSMASQSEC
 COPTS += -DHAVE_DNSSEC -DNO_GMP
 nettle_libs=-lnettle -lhogweed
+nettle_cflags=-I$(LIBCDIRSHARED)/include -I$(LIBCDIRSHARED)/include/nettle
 endif
 
 ifndef CONFIG_IPV6

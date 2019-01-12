@@ -1,5 +1,5 @@
 #allways agressive optimize for size
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 LIBS = md5.o rmd160.o

@@ -20,7 +20,7 @@ AUTOMAKE_OPTIONS = 1.2 foreign subdir-objects
 
 ###  Compiler flags and such ###
 
-CFLAGS	+= -ffunction-sections -fdata-sections
+CFLAGS	+= -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS	+= -Wl,--gc-sections
 
 DEFS = \

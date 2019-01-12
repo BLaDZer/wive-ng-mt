@@ -152,8 +152,10 @@ extern int capget(cap_user_header_t header, cap_user_data_t data);
 #include <priv.h>
 #endif
 
+#if 0
 #ifdef HAVE_DNSSEC
 #  include <nettle/nettle-meta.h>
+#endif
 #endif
 
 /* daemon is function in the C library.... */

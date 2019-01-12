@@ -1,4 +1,4 @@
-AM_CFLAGS = -Wall -ffunction-sections -fdata-sections
+AM_CFLAGS = -Wall -ffunction-sections -fdata-sections -fvisibility=hidden
 AM_LDLAGS = -Wl,--gc-sections
 LDADD = -lm
 

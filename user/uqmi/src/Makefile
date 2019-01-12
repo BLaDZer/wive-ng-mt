@@ -1,5 +1,5 @@
 CFLAGS  += -I. -Werror -Wmissing-declarations
-CFLAGS  += -ffunction-sections -fdata-sections -std=gnu11
+CFLAGS  += -ffunction-sections -fdata-sections -fvisibility=hidden -std=gnu11
 #CFLAGS += -DDEBUG_PACKET -DDEBUG -g3
 LDFLAGS += -Llibubox -lubox
 LDFLAGS += -Wl,--gc-sections

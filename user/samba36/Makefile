@@ -5,7 +5,7 @@
 SRC_NAME 	:= source3
 THISDIR  	:= $(shell pwd)
 
-CFLAGS    	+= -ffunction-sections -fdata-sections -I$(THISDIR)/source3/include
+CFLAGS    	+= -ffunction-sections -fdata-sections -fvisibility=hidden -I$(THISDIR)/source3/include
 
 CXXFLAGS  	+= $(CFLAGS)
 LDFLAGS   	+= -Wl,--gc-sections

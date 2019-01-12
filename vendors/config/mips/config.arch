@@ -240,17 +240,15 @@ CFLAGS += -fno-tree-slsr -fno-tree-partial-pre
 # more safe codegeneration
 CFLAGS += -fno-delete-null-pointer-checks
 
-# set cxx flags as cflags
-CXXFLAGS := $(CFLAGS)
-
 # set cpp flags as cflags
 CPPFLAGS := $(CFLAGS)
 
+# set cxx flags as cflags + disable inlined function visability
+CXXFLAGS += $(CFLAGS) -fvisibility-inlines-hidden
+
 # export for uclibc
-ifdef UCLINUX_BUILD_LIB
 UCLIB_CFLAG := $(CFLAGS)
 STRIP_FLAGS := -x -R .note -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo -g --strip-unneeded
-endif
 
 LIBRPATH := $(LIBCDIRSHARED)/lib
 

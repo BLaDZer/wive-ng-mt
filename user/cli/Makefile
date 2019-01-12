@@ -1,7 +1,7 @@
 .EXPORT_ALL_VARIABLES:
 
 CFLAGS  += -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter -Wno-sign-compare -Werror -Wfatal-errors
-CFLAGS  += -ffunction-sections -fdata-sections
+CFLAGS  += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 LDLIBS  += -lwive -lnvram -lcrypt
 

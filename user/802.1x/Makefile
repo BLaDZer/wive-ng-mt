@@ -24,7 +24,7 @@ endif
 # If you want to debug daemon, add following line
 CFLAGS += -DDBG -DSYSLOG
 
-CFLAGS += -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
+CFLAGS += -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
 OBJS =	rtdot1x.o eloop.o eapol_sm.o radius.o md5.o  \
