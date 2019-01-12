@@ -4508,10 +4508,11 @@
 8) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
 9) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
 10) webui: rework adbblock, dnssec, add alternative dns.<br>
-11) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-12) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-13) kernel: net: packet: validate address length.<br>
-14) kernel: net: packet: validate address length if non-zero.<br>
-15) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+11) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+12) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+13) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+14) kernel: net: packet: validate address length.<br>
+15) kernel: net: packet: validate address length if non-zero.<br>
+16) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
