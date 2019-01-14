@@ -1293,7 +1293,7 @@ u8 bndstrg_assoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *inf
 	}
 #endif /*WPS_SUPPORT*/
 
-	if(IS_2G_BAND(cli_event->Band))
+	if(IS_2G_BAND(cli_event->Band) && (cli_event->Channel < 36))
 	{
 		if (entry->band != cli_event->Band) {
 			DBGPRINT(DEBUG_TRACE,("\n[%s][%d]Error 2G Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
@@ -1357,7 +1357,7 @@ u8 bndstrg_disassoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *
 #endif /* BND_STRG_QA */
 #if 0  /* this check incorrect, client allready disconnected and pentry not exist */
 	/* check CLI_UPDATE is from correct band */
-	if(IS_2G_BAND(cli_event->Band))
+	if(IS_2G_BAND(cli_event->Band) && (cli_event->Channel < 36))
 	{
 		if (entry->connected_band != cli_event->Band) {
 			DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 2G Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
