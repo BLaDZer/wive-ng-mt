@@ -1296,30 +1296,50 @@ u8 bndstrg_assoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *inf
 	if(IS_2G_BAND(cli_event->Band))
 	{
 		if (entry->band != cli_event->Band) {
-			DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 2G Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+			DBGPRINT(DEBUG_TRACE,("\n[%s][%d]Error 2G Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
 				__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
 			return FALSE;
 		}
 	}
 	else if(IS_5G_BAND(cli_event->Band))
 	{
-		if (IS_5G_H_BAND(inf->Band))
-		{
-			if (entry->band != BAND_5G_H) {
-				DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 5G_H Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+		/* fast switch to 5G for error/uncknown clients if really assoc */
+		if (cli_event->Channel > 14) {
+			if (IS_5G_H_BAND(inf->Band))
+			{
+			    if (entry->band != BAND_5G_H) {
+				entry->band = BAND_5G_H;
+				entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+				DBGPRINT(DEBUG_TRACE,("\n[%s][%d]Update band for 5G_H Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
 					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
-				return FALSE;
+			    }
+			} else {
+			    if (entry->band != BAND_5G_L) {
+				entry->band = BAND_5G_L;
+				entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+				DBGPRINT(DEBUG_TRACE,("\n[%s][%d]Update band for 5G_L Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+			    }
 			}
 		} else {
-			if (entry->band != BAND_5G_L) {
-				DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 5G_L Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+			if (IS_5G_H_BAND(inf->Band))
+			{
+			    if (entry->band != BAND_5G_H) {
+				DBGPRINT(DEBUG_TRACE,("\n[%s][%d]Error 5G_H Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
 					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
 				return FALSE;
+			    }
+			} else {
+			    if (entry->band != BAND_5G_L) {
+				DBGPRINT(DEBUG_TRACE,("\n[%s][%d]Error 5G_L Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+				return FALSE;
+			    }
 			}
 		}
 	}
-	
-    DBGPRINT(DEBUG_TRACE,BLUE("\n[%s][%d]Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d(%d,%d,%d) (%d,%d,%d,%d)\n"),
+
+	DBGPRINT(DEBUG_TRACE,BLUE("\n[%s][%d]Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d(%d,%d,%d) (%d,%d,%d,%d)\n"),
 		__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel,entry->bConnStatus,cli_event->FrameType,entry->bActiveStatus,
 	    table->active_client_5G,table->active_client_L5G,table->active_client_H5G,cli_event->Band);
 	return TRUE;
@@ -1735,7 +1755,7 @@ int bndstrg_cli_event_req(
 			if (entry->AssocProbeInfoMissMatch){
 				if (bndstrg_disassoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
 					return BND_STRG_INVALID_ARG;
-	    		bndstrg_update_disassoc_info(bndstrg, inf, entry, msg);
+	    			bndstrg_update_disassoc_info(bndstrg, inf, entry, msg);
 				get_current_system_tick(&entry->tp);
 			}
 		}
