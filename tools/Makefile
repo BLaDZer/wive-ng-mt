@@ -33,6 +33,7 @@ install:
 clean:
 	rm -rf ./bin
 	rm -rf ./headers
+	rm -rf ./ELFkickers/bin
 	make -C ELFkickers clean
 	make -C mkimage clean
 	make -C mksquash_xz clean
