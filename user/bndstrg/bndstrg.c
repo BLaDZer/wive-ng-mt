@@ -1179,7 +1179,7 @@ void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *in
 		bndstrg_update_white_black_list(bndstrg, NULL, entry->Addr, bndstrg_blacklist, 0);
 	}
 
-	DBGPRINT(DEBUG_OFF,GRN("%s()[%d]:Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d \n"),
+	DBGPRINT(DEBUG_TRACE,GRN("%s()[%d]:Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d \n"),
 			__FUNCTION__, __LINE__,PRINT_MAC(cli_event->Addr),entry->Channel);
 
 #ifdef BND_STRG_QA
@@ -5379,16 +5379,18 @@ void bndstrg_stop(struct bndstrg *bndstrg, u8 reason_code)
 	DBGPRINT(DEBUG_OFF,RED("<%s>\n"),bndstrg_stop_str[reason_code]);
 	for(i = 0; i < bndstrg->ctrl_iface.Size; i++)
 	{
-    	inf = &bndstrg->ctrl_iface.inf[i];
-    	if(inf->bValid && inf->bInfReady)
-       	bndstrg_onoff(bndstrg, (char*)inf->ucIfName, 0, 0);
+    		inf = &bndstrg->ctrl_iface.inf[i];
+    		if(inf->bValid && inf->bInfReady)
+       		bndstrg_onoff(bndstrg, (char*)inf->ucIfName, 0, 0);
 	}
+#if 0
 	_bndstrg_event_table_info(bndstrg);
 	for (i = 0; i < bndstrg->table.max_steering_size; i++)
 	{
 		if(bndstrg->table.Entry[i].bValid)
 			_bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
 	}
+#endif
 	bndstrg->table.fStopBndstrg = TRUE;
 	return;
 }
