@@ -328,7 +328,7 @@ int bndstrg_update_entry_statistics_control_flags(
 		if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) {
                            entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
                            BND_STRG_PRINTQAMSG(table, entry,
-                           YLW("recived annonce by 5GHz. client (%02x:%02x:%02x:%02x:%02x:%02x) force drop 2.4GHz only flag.\n"), PRINT_MAC(entry->Addr));
+                         ("recived annonce by 5GHz. client (%02x:%02x:%02x:%02x:%02x:%02x) force drop 2.4GHz only flag.\n"), PRINT_MAC(entry->Addr));
 		}
 
 		/* if 5G rssi is good, client support 5G and connect to 5G allowed - remove 2.4G table record for this. */
@@ -348,7 +348,7 @@ int bndstrg_update_entry_statistics_control_flags(
 			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
 
 			BND_STRG_PRINTQAMSG(table, entry,
-			YLW("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
+			("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
 
 			// update access table for remove low band record
 			//bndstrg_client_band_update(bndstrg,entry,band);
@@ -514,7 +514,7 @@ void bndstrg_ctrl_interface_update(
                 
 				DBGPRINT(DEBUG_OFF,"Rx INF STATUS RSP for inf(%s): %d\n",
                         (char*)inf_status_rsp->ucIfName, inf_status_rsp->bInfReady);
-				DBGPRINT(DEBUG_TRACE,"Band:%s Channel:%d VHTCap:%s Nss:%d TableSize:%d",
+				DBGPRINT(DEBUG_TRACE,"Band:%s Channel:%d VHTCap:%s Nss:%d TableSize:%u",
 						bndstrg_get_entry_band(inf->Band), inf->Channel, 
 						inf->bVHTCapable ? "Yes":"No", inf->nss, inf->driver_table_size);
                 return;
@@ -1415,7 +1415,7 @@ int bndstrg_insert_entry(
 	if (table->Size >= table->max_steering_size) {
 		entry_del = bndstrg_get_old_entry(bndstrg, NULL);
 		if(entry_del){			
-			inf_target = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+			inf_target = bndstrg_get_interface(ctrl_iface, NULL, entry_del->band, TRUE);
 			if(inf_target) bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
 			bndstrg_delete_entry(table,entry_del->Addr,entry_del->TableIndex);
 		} else {
@@ -1518,13 +1518,15 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 	}
 	else {
 		entry = &table->Entry[Index];
-		/* decrease noise debug, skip null records */
-		if (table->Size > 0 || entry->Addr[0] != entry->Addr[5] || entry->Addr[2] != entry->Addr[4]) {
-		    BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+		if (entry) {
+		    /* decrease noise debug, skip null records */
+		    if (table->Size > 0 || entry->Addr[0] != entry->Addr[5] || entry->Addr[2] != entry->Addr[4]) {
+			BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
 			__FUNCTION__, Index, PRINT_MAC(entry->Addr), table->Size);
-		}
-		if (entry && entry->bValid) {
+		    }
+		    if (entry->bValid) {
 			HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
+		    }
 		}
 	}
 
@@ -2349,7 +2351,7 @@ static int _bndstrg_event_show_entries(struct bndstrg *bndstrg,struct bndstrg_ms
 
 static int _bndstrg_event_table_info(struct bndstrg *bndstrg)
 {
-	struct bndstrg_cli_table *table = &bndstrg->table;
+    struct bndstrg_cli_table *table = &bndstrg->table;
     struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
     struct bndstrg_iface *inf = NULL;
     struct bndstrg_ref_iface *ref_inf = NULL;
@@ -2552,7 +2554,7 @@ static int _bndstrg_event_table_info(struct bndstrg *bndstrg)
             }
         }
     }
-	return 0;
+    return 0;
 }
 
 static int _bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band, u8 channel, char *ifname)
@@ -2761,7 +2763,7 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 	break;
 	case BND_SET_STEERING_NUM:
 	{
-		int i;
+		int k;
 		token = strtok(NULL, ";");
 		token_value = strtol(token, NULL, 10);
 		if (token_value > BND_STRG_MAX_TABLE_SIZE)
@@ -2769,8 +2771,8 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 		DBGPRINT(DEBUG_ERROR,GRN("%s()::steering num=%d\n"), 
 				 __FUNCTION__, token_value);
 		/*remove all daemon entry and disable dirver band steering*/
-		for (i=0;i<table->max_steering_size;i++) {
-			bndstrg_delete_entry(table, NULL, i);
+		for (k=0;k<table->max_steering_size;k++) {
+			bndstrg_delete_entry(table, NULL, k);
 		}
 		table->active_client_2G=0;
 		table->active_client_5G=0;
@@ -2856,7 +2858,7 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 
 	case BND_SET_ADD_WHITE_LIST:
 	{
-		int i = 0, j = 0;
+		int k = 0, e = 0;
 		char	*value;
 		u8		macAddr[MAC_ADDR_LEN];
 		s8 		emptyindex = -1;
@@ -2868,22 +2870,22 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 		token = strtok(NULL, ";");
 		if (strlen(token) != 17) /*Mac address acceptable format 01:02:03:04:05:06 length 17 */
 			break;
-		for (i = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
+		for (k = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
 			if ((strlen(value) != 2) || (!isxdigit(*value)) || (!isxdigit(*(value+1))))
 				break;  /*Invalid */
-			AtoH(value, (char *)&macAddr[i++], 1);
+			AtoH(value, (char *)&macAddr[k++], 1);
 		}
-		if (i != MAC_ADDR_LEN)
+		if (k != MAC_ADDR_LEN)
 		{
 			break;
 		}
-		for (j = 0; j < BND_STRG_MAX_DISABLE_LIST; j++)
+		for (e = 0; e < BND_STRG_MAX_DISABLE_LIST; e++)
 		{
-			if (memcmp(table->WhiteEntryList[j], macAddr, MAC_ADDR_LEN) == 0)
+			if (memcmp(table->WhiteEntryList[e], macAddr, MAC_ADDR_LEN) == 0)
 				return;
 
-			if ((emptyindex == -1) && (memcmp(table->WhiteEntryList[j], macAddrzero, MAC_ADDR_LEN) == 0))
-				emptyindex = j;
+			if ((emptyindex == -1) && (memcmp(table->WhiteEntryList[e], macAddrzero, MAC_ADDR_LEN) == 0))
+				emptyindex = e;
 		}
 
 		if(emptyindex != -1){
@@ -2908,7 +2910,7 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 	break;
 	case BND_SET_REMOVE_WHITE_LIST:
 	{
-		int i = 0, j = 0;
+		int k = 0, e = 0;
 		char	*value;
 		u8		macAddr[MAC_ADDR_LEN];
 		u8		macAddrzero[MAC_ADDR_LEN] = { 0 };
@@ -2916,20 +2918,20 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 		token = strtok(NULL, ";");
 		if (strlen(token) != 17) /*Mac address acceptable format 01:02:03:04:05:06 length 17 */
 			break;
-		for (i = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
+		for (k = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
 			if ((strlen(value) != 2) || (!isxdigit(*value)) || (!isxdigit(*(value+1))))
 				break;  /*Invalid */
-			AtoH(value, (char *)&macAddr[i++], 1);
+			AtoH(value, (char *)&macAddr[k++], 1);
 		}
-		if (i != MAC_ADDR_LEN)
+		if (k != MAC_ADDR_LEN)
 		{
 			break;
 		}
-		for (j = 0; j < BND_STRG_MAX_DISABLE_LIST; j++)
+		for (e = 0; e < BND_STRG_MAX_DISABLE_LIST; j++)
 		{
-			if (memcmp(table->WhiteEntryList[j], macAddr, MAC_ADDR_LEN) == 0)
+			if (memcmp(table->WhiteEntryList[e], macAddr, MAC_ADDR_LEN) == 0)
 			{
-				memcpy(table->WhiteEntryList[j], macAddrzero, MAC_ADDR_LEN);
+				memcpy(table->WhiteEntryList[e], macAddrzero, MAC_ADDR_LEN);
 				table->WhiteEntryListSize--;
 				DBGPRINT(DEBUG_TRACE, "Remove [%02x:%02x:%02x:%02x:%02x:%02x] from WhiteList \n",PRINT_MAC(macAddr));
 				bndstrg_update_white_black_list(bndstrg, NULL, macAddr, bndstrg_whitelist, 0);
@@ -2941,7 +2943,7 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 #ifdef BTM_DEBUG_SUPPORT /* For BTM manual steering debug only */
 	case BND_SEND_BTM:
 		{
-			int i = 0;
+			int k = 0;
 			u16 HashIdx=0;
 			char	*value;
 			u8		macAddr[MAC_ADDR_LEN];
@@ -2951,12 +2953,12 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 			token = strtok(NULL, ";");
 			if (strlen(token) != 17) /*Mac address acceptable format 01:02:03:04:05:06 length 17 */
 				break;
-			for (i = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
+			for (k = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
 				if ((strlen(value) != 2) || (!isxdigit(*value)) || (!isxdigit(*(value+1))))
 					break;  /*Invalid */
-				AtoH(value, (char *)&macAddr[i++], 1);
+				AtoH(value, (char *)&macAddr[k++], 1);
 			}
-			if (i != MAC_ADDR_LEN)
+			if (k != MAC_ADDR_LEN)
 			{
 				break;
 			}
@@ -3413,6 +3415,9 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 	struct bndstrg_iface *inf = NULL;
 
+	if (!entry)
+	    return FALSE;
+
 	elapsed_time = bndstrg_get_entry_elapsed_time(entry);
 
 	/* Update elapsed time */
@@ -3470,7 +3475,7 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 #endif
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
-	} if (entry->bConnStatus && elapsed_time >= table->CheckTime && IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) &&
+	} if (entry->bConnStatus && (elapsed_time >= table->CheckTime) && IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) &&
 		!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G) && !(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G)) {
 
 		/* dissallow connect to 2.4GHz and clear 2G only flag */
@@ -3557,8 +3562,8 @@ u8 bndstrg_mtk_rule_iterate(
 	int	compare_mode)
 {
 	struct bndstrg_entry_stat *statistics_1st_band = NULL, *statistics_2nd_band = NULL;
-    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
-    struct bndstrg_iface *inf_1st_band = NULL, *inf_2nd_band = NULL;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf_1st_band = NULL, *inf_2nd_band = NULL;
 	u8 i, band = BAND_INVALID, done = FALSE; 
 	u8 pre_band[2];
 	u32 allow_to_connect_band_flag[2]={0,0};
@@ -3568,13 +3573,15 @@ u8 bndstrg_mtk_rule_iterate(
 	u32 chanload_heavy_cnt[2]={0,0};
 	s32 min_rssi[2]={0,0};
 	u32 nss_thres[2]={0,0};
+	u32 total_assoc_cnt;
 
-	u32 total_assoc_cnt = (table->active_client_2G+table->active_client_5G);
 	if (!table)
 	{
 		DBGPRINT(DEBUG_ERROR,"%s(): Error! table is NULL!\n", __FUNCTION__);
 		return BAND_INVALID;
 	}
+
+	total_assoc_cnt = (table->active_client_2G+table->active_client_5G);
 	if (!entry)
 	{
 		DBGPRINT(DEBUG_ERROR,RED("%s(): Error! entry is NULL!\n"), __FUNCTION__);
@@ -3583,10 +3590,8 @@ u8 bndstrg_mtk_rule_iterate(
 
 	if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
 	{
-		if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
+		if (!IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 		{//H5G vs L5G can run compare rule
-		//	DBGPRINT(DEBUG_ERROR,RED("%s(): Error! this sta doesn't support dual band!\n"), __FUNCTION__);
-		} else {
 		    DBGPRINT(DEBUG_ERROR,RED("%s(): Error! this sta doesn't support dual band!\n"), __FUNCTION__);
 		    return BAND_INVALID;
 		}
@@ -3644,7 +3649,7 @@ u8 bndstrg_mtk_rule_iterate(
 			break;
 		case CMP_5GL_2G:
 			inf_1st_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_L, TRUE);
-            inf_2nd_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
+        		inf_2nd_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
 			statistics_1st_band = &entry->statistics[IDX_5GL];
 			statistics_2nd_band = &entry->statistics[IDX_2G];
 			pre_band[0]=BAND_5G_L;
@@ -4101,6 +4106,9 @@ u8 bndstrg_client_band_update(
 	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 	struct bndstrg_iface *inf_source = NULL, *inf_target = NULL;
 	struct bndstrg_cli_table *table = &bndstrg->table;
+
+	if (!entry)
+	    return TRUE;
 
 	/* Check for is re-steering triggered for entry */
 	if(entry->Control_Flags & fBND_STRG_CLIENT_RE_STEERING){
@@ -4896,7 +4904,6 @@ void BndStrg_Update_Default_Param(struct bndstrg_cli_table *table)
 	char buf[FILE_BUFFER_SIZE] = {0};
 	char keyvalue[64] = { 0 };
 	int i = 0, value = 0;
-	int PriorityList[fBND_STRG_PRIORITY_MAX] = { 0 }, PriorityListSize = 0;
 	char *macptr = NULL;
 	//DBGPRINT(DEBUG_TRACE,"\n");
 	
@@ -4935,20 +4942,22 @@ void BndStrg_Update_Default_Param(struct bndstrg_cli_table *table)
 			table->BtmMode = strtol(keyvalue, NULL, 10);
 		}
 		if (BndStrgGetKeyParameter("CndPriority", keyvalue, buf)) {
-			//memset(table->PriorityList, 0, sizeof(table->PriorityList));
-			//table->PriorityListSize = 0;
+			int TmpPriorityList[fBND_STRG_PRIORITY_MAX] = { 0 };
+			u8 TmpPriorityListSize = 0;
+
 			for (i = 0, macptr = strtok(keyvalue, ";"); macptr; macptr = strtok(NULL, ";"), i++) {
 				value = strtol(macptr, NULL, 10);
 				if(value < fBND_STRG_PRIORITY_MAX){
-					PriorityList[i] = value;
-					PriorityListSize ++;
+					TmpPriorityList[i] = value;
+					TmpPriorityListSize ++;
 				}
 			}
 			if(PriorityListSize > 0){
-				os_memcpy(table->PriorityList, PriorityList, sizeof(PriorityList));
-				table->PriorityListSize = PriorityListSize;
+				os_memcpy(table->PriorityList, TmpPriorityList, sizeof(TmpPriorityList));
+				table->PriorityListSize = TmpPriorityListSize;
 			}
 		}
+#ifdef VENDOR_FEATURE7_SUPPORT
 		if (BndStrgGetKeyParameter("NVRAMReset", keyvalue, buf)) {
 			value = strtol(keyvalue, NULL, 10);
 			if(value == 0 || value == 1)
@@ -4956,7 +4965,6 @@ void BndStrg_Update_Default_Param(struct bndstrg_cli_table *table)
 			else
 				table->nvram_reset = FALSE;
 		}
-#ifdef VENDOR_FEATURE7_SUPPORT
 		if (BndStrgGetKeyParameter("RSSIDisconnect", keyvalue, buf)) {
 			value = strtol(keyvalue, NULL, 10);
 			if(value < 0)

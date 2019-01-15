@@ -64,7 +64,7 @@ extern int DebugLevel;
 }
 
 #else /* BND_STRG_DBG */
-#define BND_STRG_DBGPRINT(Level, fmt, args...)
+#define BND_STRG_DBGPRINT(Level, fmt, args...) { }
 #endif /* !BND_STRG_DBG */
 
 #ifdef BND_STRG_QA
@@ -77,7 +77,7 @@ extern int DebugLevel;
 	} \
 }
 #else  /* BND_STRG_QA */
-#define BND_STRG_PRINTQAMSG(_Level, _Fmt)
+#define BND_STRG_PRINTQAMSG(_Level, _Fmt, args...) { }
 #endif /* BND_STRG_QA */
 void hex_dump(char *str, unsigned char *pSrcBufVA, unsigned int SrcBufLen);
 #endif /* __DEBUG_H__ */

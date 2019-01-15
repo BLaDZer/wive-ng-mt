@@ -29,7 +29,7 @@ void hex_dump(char *str, unsigned char *pSrcBufVA, unsigned int SrcBufLen)
 		return;
 
 	pt = pSrcBufVA;
-	printf("%s: %p, len = %d\n",str,  pSrcBufVA, SrcBufLen);
+	printf("%s: %p, len = %u\n",str,  pSrcBufVA, SrcBufLen);
 
 	for (x=0; x<SrcBufLen; x++) {
 		if (x % 16 == 0)

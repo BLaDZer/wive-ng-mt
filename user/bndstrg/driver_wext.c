@@ -40,7 +40,7 @@ static void driver_wext_event_wireless(struct driver_wext_data *drv,
                  void *ctx, char *data, int len)
 {               
     struct iw_event iwe_buf, *iwe = &iwe_buf;
-    char *pos, *end, *custom, *buf /*,*assoc_info_buf, *info_pos */;
+    char *pos, *end, *buf /*,*assoc_info_buf, *info_pos */;
 
     /* info_pos = NULL; */
 	/* assoc_info_buf = NULL; */
@@ -48,6 +48,7 @@ static void driver_wext_event_wireless(struct driver_wext_data *drv,
     end = data + len;   
     
     while (pos + IW_EV_LCP_LEN <= end) {
+	char *custom;
         /* 
  		 * Event data may be unaligned, so make a local, aligned copy
          * before processing. 
@@ -127,7 +128,7 @@ static int driver_wext_set_oid(struct driver_wext_data *drv_data, const char *if
 	}
 
     if (ioctl(drv_data->ioctl_sock, RT_PRIV_IOCTL, &iwr) < 0) {
-        DBGPRINT(DEBUG_ERROR, " oid=0x%x len (%zd) failed\n", oid, len);
+        //DBGPRINT(DEBUG_ERROR, " oid=0x%x len (%zd) failed\n", oid, len);
         os_free(buf);
         return -1;
     }

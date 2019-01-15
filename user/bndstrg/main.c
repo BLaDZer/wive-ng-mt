@@ -48,10 +48,11 @@ int process_inf(char *IfName)
 {
     struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg.ctrl_iface;
     struct bndstrg_iface *inf = NULL, *new_inf = NULL;
-    u8 i, bFound = FALSE;
 
     if((ctrl_iface->Size <= MAX_INF_NUM) && (strlen(IfName) > 0))
     {
+	u8 i, bFound = FALSE;
+
         for(i=0; i<MAX_INF_NUM; i++)
         {
             inf = &ctrl_iface->inf[i];

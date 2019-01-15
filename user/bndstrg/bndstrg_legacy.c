@@ -293,7 +293,7 @@ int bndstrg_check_conn_req(
 				statistics_2G->AuthReqCount=0;
 
 				BND_STRG_PRINTQAMSG(table, entry,
-				YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				("client (%02x:%02x:%02x:%02x:%02x:%02x)"
 				    " RSSI good, force allow 5G connect and dissallow 2.4G.\n"), PRINT_MAC(entry->Addr));
 			}
 		}
