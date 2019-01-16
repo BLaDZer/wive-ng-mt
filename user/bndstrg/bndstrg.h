@@ -43,37 +43,37 @@
 #define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
 
 #define BAND_5G		                1
-#define BAND_2G	                    2
+#define BAND_2G	                    	2
 #define BAND_2G5G                   (BAND_2G | BAND_5G)
 #define BAND_5G_L	                4
 #define BAND_5G_H	                8
-#define BAND_INVALID                0x00
+#define BAND_INVALID                	0x00
 
 #define APMT2_PEER_PROBE_REQ		0
-#define APMT2_PEER_DISASSOC_REQ     1
-#define APMT2_PEER_ASSOC_REQ        2
-#define APMT2_PEER_AUTH_REQ			3
+#define APMT2_PEER_DISASSOC_REQ     	1
+#define APMT2_PEER_ASSOC_REQ        	2
+#define APMT2_PEER_AUTH_REQ		3
 
 #define BND_STRG_AGE_TIME		86400 //24 hrs 60*60*24 dual band records cleanup
 #define BND_STRG_SINGLE_BAND_TIMEOUT	86400 //24 hrs 60*60*24 single band reports cleanup
-#define BND_STRG_DORMANT_TIME		600   // in sec
+#define BND_STRG_DORMANT_TIME		1200   // in sec
 
 #define BND_STRG_HOLD_TIME		5     		// in sec, orig 50
 #define BND_STRG_CHECK_TIME		7		// in sec, orig 30
 #define BND_STRG_RSSI_DIFF		30
-#define BND_STRG_RSSI_LOW		-85
-#define BND_STRG_DOWNSTEER_RSSI		-80		// orig -70
-#define BND_STRG_UPSTEER_RSSI		-55		// orig -50
+#define BND_STRG_RSSI_LOW		-90
+#define BND_STRG_DOWNSTEER_RSSI		-85		// orig -70
+#define BND_STRG_UPSTEER_RSSI		-65		// orig -50
 #define BND_STRG_N_DIFF			3
 #define BND_STRG_NSS_THR_5GH		3
 #define BND_STRG_NSS_THR_5GL		2
 #define BND_STRG_NSS_THR_2G		1
-#define BND_STRG_MIN_RSSI_2G		-70
-#define BND_STRG_MIN_RSSI_5GH		-65
-#define BND_STRG_MIN_RSSI_5GL		-65
-#define BND_STRG_CHANLOAD_THR_2G	90
-#define BND_STRG_CHANLOAD_THR_5GH	90
-#define BND_STRG_CHANLOAD_THR_5GL	90
+#define BND_STRG_MIN_RSSI_2G		-68             // connect allow for interface if RSSI > x
+#define BND_STRG_MIN_RSSI_5GH		-82		// connect allow for interface if RSSI > x
+#define BND_STRG_MIN_RSSI_5GL		-82             // connect allow for interface if RSSI > x
+#define BND_STRG_CHANLOAD_THR_2G	99
+#define BND_STRG_CHANLOAD_THR_5GH	99
+#define BND_STRG_CHANLOAD_THR_5GL	99
 #define BND_STRG_ASSOC_THR		0
 #define MAX_NVRAM_TABLE_SIZE		128
 #ifdef VENDOR_FEATURE7_SUPPORT
@@ -81,14 +81,14 @@
 #else
 #define NVRAM_TABLE_SIZE 		128
 #endif
-#define MAX_INF_NUM             3
-#define MAX_REF_INF_NUM         3
-#define CHANLOAD_HEAVY_CNT         10
+#define MAX_INF_NUM             	3
+#define MAX_REF_INF_NUM         	3
+#define CHANLOAD_HEAVY_CNT         	10
 #define MAX_STEERING_COUNT		10
-#define DWELL_TIME				300			// time in sec 
-#define MAX_STEER_TIME_WINDOW	2*60*60 	// time in sec  
-#define BND_STRG_DATA_SAMPLE	10 			// no of sample used to calculate avarage utilization 
-#define BND_STRG_DYNAMIC_STEERING_PERIOD 3 	//period of dynamic steering
+#define DWELL_TIME			300		// time in sec
+#define MAX_STEER_TIME_WINDOW		2*60*60 	// time in sec
+#define BND_STRG_DATA_SAMPLE		10 		// no of sample used to calculate avarage utilization 
+#define BND_STRG_DYNAMIC_STEERING_PERIOD 3 		// period of dynamic steering
 #define BND_STRG_CHANLOAD_MAX_CNT_2G	10
 #define BND_STRG_CHANLOAD_MAX_CNT_5G_L	10
 #define BND_STRG_CHANLOAD_MAX_CNT_5G_H	10
@@ -97,12 +97,12 @@
 #define LOW_CHANNEL_UTIL 		30
 #define MCS_BAD_COUNT 			10
 #define RSSI_CHECK_COUNT 		10
-#define IDLE_RXTX_BYTE_COUNT	30
-#define ENTRY_BACKUP_TIME 		30	
-#define BND_STRG_PRIORITY_MAX	32
+#define IDLE_RXTX_BYTE_COUNT		30
+#define ENTRY_BACKUP_TIME 		30
+#define BND_STRG_PRIORITY_MAX		32
 #define FILE_BUFFER_SIZE		1024
 #ifndef H_CHANNEL_BIGGER_THAN
-#define H_CHANNEL_BIGGER_THAN   			100 //144
+#define H_CHANNEL_BIGGER_THAN   	132 //144
 #endif /* H_CHANNEL_BIGGER_THAN */
 #define BND_STRG_MAX_DISABLE_LIST 16
 extern u8 H5G_channel_thres;
