@@ -41,6 +41,7 @@
 
 #define BND_STRG_MAX_TABLE_SIZE		512
 #define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
+#define BND_STRG_MIN_REPLACE_TIME	60
 
 #define BAND_5G		                1
 #define BAND_2G	                    	2

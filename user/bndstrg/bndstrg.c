@@ -1414,9 +1414,10 @@ int bndstrg_insert_entry(
 
 	if (table->Size >= table->max_steering_size) {
 		entry_del = bndstrg_get_old_entry(bndstrg, NULL);
-		if(entry_del){			
+		if(entry_del){
 			inf_target = bndstrg_get_interface(ctrl_iface, NULL, entry_del->band, TRUE);
-			if(inf_target) bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
+			if(inf_target)
+				bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
 			bndstrg_delete_entry(table,entry_del->Addr,entry_del->TableIndex);
 		} else {
 		    DBGPRINT(DEBUG_WARN, "%s(): Table is full!\n", __FUNCTION__);
@@ -5349,28 +5350,9 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 	struct bndstrg_cli_entry * entry = NULL, *temp_entry = NULL;
 	u32 AuthReqCount = 0;
 
-	for(i=0; i<table->max_steering_size; i++){
-		temp_entry = & table->Entry[i];
-		if (temp_entry->bValid == TRUE)
-		{
-			count ++;
-			elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
-			if(temp_entry->bConnStatus ||
-				temp_entry->Operation_steered ||
-				(inf && inf->Band != temp_entry->band) ||
-				(!IS_BND_STRG_DUAL_BAND_CLIENT(temp_entry->Control_Flags) &&
-				elapsed_time < (table->CheckTime + 20)))
-				continue;
-			if(elapsed_time > max_elapsed_time){
-				max_elapsed_time = elapsed_time;
-				entry = temp_entry;
-			}
-		}
-		if(count >= table->Size)
-			break;
-	}
+	/* try find old not try auth band client for record replace */
+	max_elapsed_time = 0;
 	if(!entry){
-		max_elapsed_time = 0;
 		for(i=0; i<table->max_steering_size; i++){
 			temp_entry = & table->Entry[i];
 			if (temp_entry->bValid == TRUE)
@@ -5388,15 +5370,59 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 				}
 			}
 			if(count >= table->Size)
-				break;				
+				break;
 		}
 	}
+
+	/* try find old one band client for record replace */
+	max_elapsed_time = BND_STRG_MIN_REPLACE_TIME;
+	for(i=0; i<table->max_steering_size; i++){
+		temp_entry = & table->Entry[i];
+		if (temp_entry->bValid == TRUE)
+		{
+			count ++;
+			elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
+			if(temp_entry->bConnStatus ||
+				temp_entry->Operation_steered ||
+				(inf && inf->Band != temp_entry->band) ||
+				(!IS_BND_STRG_DUAL_BAND_CLIENT(temp_entry->Control_Flags) &&
+				elapsed_time < BND_STRG_MIN_REPLACE_TIME))
+				continue;
+			if(elapsed_time > max_elapsed_time){
+				max_elapsed_time = elapsed_time;
+				entry = temp_entry;
+			}
+		}
+		if(count >= table->Size)
+			break;
+	}
+
+	/* try find oldest client if not search more suitably */
+	max_elapsed_time = BND_STRG_MIN_REPLACE_TIME;
+	if(!entry){
+		for(i=0; i<table->max_steering_size; i++){
+			temp_entry = & table->Entry[i];
+			if (temp_entry->bValid == TRUE)
+			{
+				count ++;
+				elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
+				if(elapsed_time > max_elapsed_time){
+					max_elapsed_time = elapsed_time;
+					entry = temp_entry;
+				}
+			}
+			if(count >= table->Size)
+				break;
+		}
+	}
+#if 0
 	if(!entry){
 		if(inf)
-		bndstrg_stop(bndstrg, BNDSTRG_LIMIT);
+			bndstrg_stop(bndstrg, BNDSTRG_LIMIT);
 		else
 			bndstrg_stop(bndstrg, BNDSTRG_DAEMON_TBL_FULL);
 	}
+#endif
 	return entry;
 };
 

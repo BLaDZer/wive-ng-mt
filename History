@@ -4509,14 +4509,15 @@
 9) bandsteering: allow fast switch to 5Ghz for new steer mode.<br>
 10) bandsteering: tune steering parametrs for more effective at mt7615.<br>
 11) bandsteering: fix null pointer dereference in new strg version.<br>
-12) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-13) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-14) webui: rework adbblock, dnssec, add alternative dns.<br>
-15) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-16) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-17) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-18) kernel: net: packet: validate address length.<br>
-19) kernel: net: packet: validate address length if non-zero.<br>
-20) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+12) bandsteering: rework replace record logic if table full.br>
+13) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+14) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+15) webui: rework adbblock, dnssec, add alternative dns.<br>
+16) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+17) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+18) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+19) kernel: net: packet: validate address length.<br>
+20) kernel: net: packet: validate address length if non-zero.<br>
+21) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
