@@ -812,7 +812,7 @@ int nvram_load_default(void)
 	/* default macs is OK */
 	int mac_err = 0;
         char *LAN_MAC_ADDR = NULL, *WAN_MAC_ADDR = NULL, *WLAN_MAC_ADDR = NULL, *WLAN2_MAC_ADDR = NULL, *CHECKMAC = NULL;
-        char *MngmtLogin = NULL, *MngmtPassword = NULL, *MngmtStoreSettings = NULL, *cwmpdEnabled = NULL, *cwmp_acs_url = NULL;
+        char *MngmtLogin = NULL, *MngmtPassword = NULL, *MngmtStoreSettings = NULL, *cwmpdEnabled = NULL, *cwmp_acs_url = NULL, *RemoteSSH = NULL;
 
 	/* copy old remotemanagment settings if enabled */
 	MngmtStoreSettings = nvram_get_copy(RT2860_NVRAM, "MngmtStoreSettings");
@@ -821,6 +821,7 @@ int nvram_load_default(void)
 	    MngmtPassword	= nvram_get_copy(RT2860_NVRAM, "MngmtPassword");
 	    cwmpdEnabled	= nvram_get_copy(RT2860_NVRAM, "cwmpdEnabled");
 	    cwmp_acs_url	= nvram_get_copy(RT2860_NVRAM, "cwmp_acs_url");
+	    RemoteSSH		= nvram_get_copy(RT2860_NVRAM, "RemoteSSH");
 
 	    printf("Store remote managment user settings.\n");
 	}
@@ -881,9 +882,7 @@ int nvram_load_default(void)
 	    if  (strlen(MngmtLogin) > 0 && strlen(MngmtPassword) > 0) {
 		nvram_bufset(RT2860_NVRAM, "MngmtLogin", MngmtLogin);
 		nvram_bufset(RT2860_NVRAM, "MngmtPassword", MngmtPassword);
-
-		/* allow remote ssh from WAN */
-		nvram_bufset(RT2860_NVRAM, "RemoteSSH", "2");
+		nvram_bufset(RT2860_NVRAM, "RemoteSSH", RemoteSSH);
 	    }
 
 	    /* restore cwmpd settings */
