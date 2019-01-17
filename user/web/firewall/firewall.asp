@@ -65,8 +65,21 @@
 				}
 			}
 
+			function rulesHaveValueRow(rules, value, row_num) {
+				for (var i=0;i<rules.length;i++) {
+					var row = rules[i];
+					if (row.length > row_num && row[row_num] == value) return true;
+				}
+
+				return false;
+			}
+
 			function submitForwardForm(form) {
 				form.portForwardRules.value = genTableData(portForwardingRules, form);
+				if (form.portForwardEnabled.value != "0" && NVRAM_vpnDGW != "0" && NVRAM_vpnEnabled != "off" && rulesHaveValueRow(portForwardingRules, "VPN", 0) && confirm(_("firewall restart vpn"))) {
+                                    form.vpn_restart.value = "1";
+				}
+
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
@@ -74,12 +87,22 @@
 			function submitFilterForm(form) {
 				form.portFilteringRules.value = genTableData(portFilteringRules, form);
 				form.defaultFirewallPolicy.value = defaultFilterPolicy;
+
+				if (form.portFilterEnabled.value != "0" && NVRAM_vpnDGW != "0" && NVRAM_vpnEnabled != "off" && rulesHaveValueRow(portFilteringRules, "VPN", 0) && confirm(_("firewall restart vpn"))) {
+                                    form.vpn_restart.value = "1";
+				}
+
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
 			function submitFilterInputForm(form) {
 				form.portFilteringInputRules.value = genTableData(portFilteringInputRules, form);
+
+				if (form.portFilterInputEnabled != "0" && NVRAM_vpnDGW != "0" && NVRAM_vpnEnabled != "off" && rulesHaveValueRow(portFilteringInputRules, "VPN", 0) && confirm(_("firewall restart vpn"))) {
+                                    form.vpn_restart.value = "1";
+				}
+
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
@@ -657,6 +680,7 @@
 						<table class="buttons">
 							<tr>
 								<td><input type="hidden" name="portForwardRules" value="">
+								<input type="hidden" name="vpn_restart" value="0">
 								<input type="submit" class="normal" data-tr="button apply" value="Apply">
 								<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
@@ -691,6 +715,7 @@
 							<tr>
 								<td><input type="hidden" name="portFilteringRules" value="">
 									<input type="hidden" name="defaultFirewallPolicy" value="">
+									<input type="hidden" name="vpn_restart" value="0">
 									<input type="submit" class="normal" data-tr="button apply" value="Apply">
 									<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
@@ -722,6 +747,7 @@
 							<tr>
 								<td><input type="hidden" name="portFilteringInputRules" value="">
 									<input type="hidden" name="defaultFirewallInputPolicy" value="">
+									<input type="hidden" name="vpn_restart" value="0">
 									<input type="submit" class="normal" data-tr="button apply" value="Apply">
 									<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>

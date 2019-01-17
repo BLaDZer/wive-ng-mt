@@ -48,6 +48,7 @@
 				_TR("miscWebRemote",			"services misc web remote");
 				_TR("miscWebPort",			"services misc web port");
 				_TR("miscWebPortHTTPS",			"services misc web port https");
+				_TR("miscWebLog",			"services misc web log");
 				_TR("miscSSHRemote",			"services misc ssh remote");
 				_TR("miscSSHPort",			"services misc ssh port");
 				_TR("miscTelnetRemote",			"services misc telnet remote");
@@ -125,6 +126,7 @@
 
 				form.RemoteManagementPort.value			= NVRAM_RemoteManagementPort;
 				form.RemoteManagementPortHTTPS.value		= NVRAM_RemoteManagementPortHTTPS;
+				form.nginx_nolog.value				= NVRAM_nginx_nolog;
 				form.RemoteSSHPort.value			= NVRAM_RemoteSSHPort;
 				form.hwnatThreshold.value			= NVRAM_hw_nat_bind;
 				form.stpEnbl.options.selectedIndex		= NVRAM_stpEnabled;
@@ -305,7 +307,7 @@
 					return false;
 				}
 
-				if (form.RemoteManagementPort.value == rmtManagementPort && form.RemoteManagementPortHTTPS.value == rmtManagementPortHTTPS) {
+				if (form.RemoteManagementPort.value == rmtManagementPort && form.RemoteManagementPortHTTPS.value == rmtManagementPortHTTPS && form.nginx_nolog.value == NVRAM_nginx_nolog) {
 					form.goaheadrestart.value = 0;
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				}
@@ -661,6 +663,16 @@
 						<td class="head" id="miscWebPortHTTPS" style="width: 45%">Remote HTTPS port</td>
 						<td colspan="4">
 							<input class="normal" name="RemoteManagementPortHTTPS">
+						</td>
+					</tr>
+
+					<tr id="http_rmt_log">
+						<td class="head" id="miscWebLog" style="width: 45%">HTTP(S) logging</td>
+						<td colspan="4">
+							<select name="nginx_nolog" class="normal">
+								<option value="0" id="enable">Enable</option>
+								<option value="1" id="disable">Disable</option>
+							</select>
 						</td>
 					</tr>
 

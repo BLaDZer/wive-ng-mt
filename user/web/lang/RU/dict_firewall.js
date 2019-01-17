@@ -26,6 +26,7 @@ var firewall_dictionary = {
 
 	'firewall title'				: 'Другие настройки',
 	'firewall default session limit'		: '(по умолчанию 0 - неограничено)',
+	'firewall restart vpn'				: 'Настройки активного VPN-соединения будут применены только после переподключения. Переподключить VPN сейчас?',
 	'forward title'					: 'Настройки проброса портов (Port forwarding)',
 	'forward introduction'				: 'Вы можете настроить правила проброса портов для открытия сервисов в Интернет.',
 	'forward virtual server'			: 'Настройки проброса портов',

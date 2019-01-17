@@ -284,6 +284,7 @@ parameter_fetch_t service_misc_flags[] =
 	{ ("rmtHTTP"),			"RemoteManagement",	0, ("0")  },
 	{ ("RemoteManagementPort"),	"RemoteManagementPort",	0, ("80") },
 	{ ("RemoteManagementPortHTTPS"),	"RemoteManagementPortHTTPS",	0, ("443") },
+	{ ("nginx_nolog"),		"nginx_nolog",		0, ("0") },
 #ifdef CONFIG_USER_DROPBEAR
 	{ ("rmtSSH"),			"RemoteSSH",		0, ("0")  },
 	{ ("RemoteSSHPort"),		"RemoteSSHPort",	0, ("22") },
@@ -344,7 +345,7 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 	websSetContentType(wp, "text/html");
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 48, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
+		nvram_fromdef(RT2860_NVRAM, 49, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
 						"igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode", "upnpEnabled",
 						"xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",  "RemoteSSH",
 						"RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort", "WatchdogEnabled",
@@ -353,7 +354,7 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 						"natFastpath", "routeFastpath", "filterFastpath", "CrondEnable", "ForceRenewDHCP",
 						"parproutedEnabled", "pinger_check_on", "ping_check_time", "ping_check_interval", "store_ttl",
 						"store_ttl_mcast", "snmpd", "snmpdcommunity", "mss_use_pmtu", "IRQBalance",
-						"smbFastpath", "hw_nat_bind", "RemoteManagementPortHTTPS");
+						"smbFastpath", "hw_nat_bind", "RemoteManagementPortHTTPS", "nginx_nolog");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);

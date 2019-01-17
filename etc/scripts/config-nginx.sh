@@ -3,7 +3,7 @@
 # include global config
 . /etc/scripts/global.sh
 
-eval `nvram_buf_get 2860 RemoteManagementPort RemoteManagementPortHTTPS`
+eval `nvram_buf_get 2860 RemoteManagementPort RemoteManagementPortHTTPS nginx_nolog`
 
 
 
@@ -38,10 +38,15 @@ http {
 
     keepalive_timeout  65;
 
-    error_log syslog:server=unix:/dev/log,facility=local7,tag=nginx,severity=info,nohostname debug;
 #    error_log /var/log/nginx-debug.log;
 #    access_log syslog:server=unix:/dev/log,facility=local7,tag=nginx,severity=info,nohostname;
 EOT
+
+if [ "$nginx_nolog" != "1" ];then
+cat <<EOT >> $NGINX_CONFIG_FILE
+    error_log syslog:server=unix:/dev/log,facility=local7,tag=nginx,severity=info,nohostname debug;
+EOT
+fi
 
 cat <<EOT >> $NGINX_CONFIG_FILE
     server {

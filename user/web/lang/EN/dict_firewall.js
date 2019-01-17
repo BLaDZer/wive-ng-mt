@@ -26,6 +26,7 @@ var firewall_dictionary = {
 
 	'firewall title'				: 'Other Settings',
 	'firewall default session limit'		: '(default 0 - disabled)',
+	'firewall restart vpn'				: 'Settings of an active VPN connection will be applied on reconnect. Would you like to reconnect VPN now?',
 	'forward title'					: 'Port ForwardingSettings',
 	'forward introduction'				: 'You can set up port forwarding to provide services to the Internet.',
 	'forward virtual server'			: 'Port Forwarding Settings',

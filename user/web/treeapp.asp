@@ -162,7 +162,6 @@ if (BUILD_USB == "1")
     if (BUILD_STORAGE == "1")
     {
 	    a.add(850,   0, _("treeapp storage"),		"javascript:a.oo(850);");
-	    a.add(852, 850, _("treeapp disk"),			"javascript:go('storage/disk_admin.asp');");
 	    if (BUILD_FTP == "1" && AUTH_ROLE == "2")
 		a.add(853, 850, _("treeapp ftpsrv"),		"javascript:go('storage/ftpsrv.asp');");
 	    if (BUILD_SMB == "1")

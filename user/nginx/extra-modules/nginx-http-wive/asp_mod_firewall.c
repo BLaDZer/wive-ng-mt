@@ -117,6 +117,7 @@ static void portForward(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *pfe = websGetVar(wp, T("portForwardEnabled"), T("0"));
 	char_t *PortForwardRules = websGetVar(wp, T("portForwardRules"), T(""));
+	char_t *vpn_restart = websGetVar(wp, T("vpn_restart"), T("0"));
 
 	nvram_init(RT2860_NVRAM);
 	ngx_nvram_bufset(wp, "PortForwardEnable", pfe);
@@ -126,7 +127,10 @@ static void portForward(webs_t* wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	firewall_rebuild(1);
-//	websHeader(wp);
+
+	if (CHK_IF_DIGIT(vpn_restart, 1))
+		doSystem("service vpnhelper restart");
+
 	websDone(wp, 200);
 }
 
@@ -136,6 +140,7 @@ static void portFiltering(webs_t* wp, char_t *path, char_t *query)
 	char_t *firewall_enable = websGetVar(wp, T("portFilterEnabled"), T("0"));
 	char_t *default_policy = websGetVar(wp, T("defaultFirewallPolicy"), T("0"));
 	char_t *firewall_rules = websGetVar(wp, T("portFilteringRules"), T(""));
+	char_t *vpn_restart = websGetVar(wp, T("vpn_restart"), T("0"));
 
 	nvram_init(RT2860_NVRAM);
 	ngx_nvram_bufset(wp, "IPPortFilterEnable", firewall_enable);
@@ -148,7 +153,10 @@ static void portFiltering(webs_t* wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	firewall_rebuild(1);
-//	websHeader(wp);
+
+	if (CHK_IF_DIGIT(vpn_restart, 1))
+		doSystem("service vpnhelper restart");
+
 	websDone(wp, 200);
 }
 
@@ -157,6 +165,7 @@ static void portFilteringInput(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *firewall_enable = websGetVar(wp, T("portFilterInputEnabled"), T("0"));
 	char_t *firewall_rules = websGetVar(wp, T("portFilteringInputRules"), T(""));
+	char_t *vpn_restart = websGetVar(wp, T("vpn_restart"), T("0"));
 
 	nvram_init(RT2860_NVRAM);
 	ngx_nvram_bufset(wp, "IPPortFilterInputEnable", firewall_enable);
@@ -166,7 +175,10 @@ static void portFilteringInput(webs_t* wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	firewall_rebuild(1);
-//	websHeader(wp);
+
+	if (CHK_IF_DIGIT(vpn_restart, 1))
+		doSystem("service vpnhelper restart");
+
 	websDone(wp, 200);
 }
 

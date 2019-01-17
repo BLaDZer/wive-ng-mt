@@ -209,6 +209,8 @@ var services_dictionary = {
 	'services misc web remote'		: 'HTTP Remote Management',
 	'services misc web port'		: 'Remote HTTP port',
 	'services misc web port https'		: 'Remote HTTPS port',
+	'services misc web log'			: 'HTTP(S) logging',
+
 	'services misc ssh remote'		: 'SSH Remote Management',
 	'services misc ssh port'		: 'Remote SSH port',
 	'services misc telnet remote'		: 'Remote Telnet',
