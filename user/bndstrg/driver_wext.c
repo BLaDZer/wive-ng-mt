@@ -54,10 +54,10 @@ static void driver_wext_event_wireless(struct driver_wext_data *drv,
          * before processing. 
          */
         os_memcpy(&iwe_buf, pos, IW_EV_LCP_LEN);
-		
-		DBGPRINT(DEBUG_INFO, "cmd = 0x%x len = %d\n", iwe->cmd, iwe->len);
-        
-		if (iwe->len <= IW_EV_LCP_LEN)
+
+	//DBGPRINT(DEBUG_INFO, "cmd = 0x%x len = %d\n", iwe->cmd, iwe->len);
+
+	if (iwe->len <= IW_EV_LCP_LEN)
             return;
 
         custom = pos + IW_EV_POINT_LEN;
@@ -354,12 +354,12 @@ static void driver_wext_event_rtm_newlink(void *ctx, struct ifinfomsg *ifi,
     
     attrlen = len;
 
-   	DBGPRINT(DEBUG_TRACE, "attrlen=%d", attrlen);
+    //DBGPRINT(DEBUG_TRACE, "attrlen=%d", attrlen);
 
     attr = (struct rtattr *) buf;
     rta_len = RTA_ALIGN(sizeof(struct rtattr));
     while (RTA_OK(attr, attrlen)) {
-        DBGPRINT(DEBUG_TRACE, "rta_type=%02x\n", attr->rta_type);
+        //DBGPRINT(DEBUG_TRACE, "rta_type=%02x\n", attr->rta_type);
         if (attr->rta_type == IFLA_WIRELESS) {
             driver_wext_event_wireless(
                 drv, ctx,
