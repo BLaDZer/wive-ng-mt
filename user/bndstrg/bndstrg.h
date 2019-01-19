@@ -57,10 +57,11 @@
 
 #define BND_STRG_AGE_TIME		86400 //24 hrs 60*60*24 dual band records cleanup
 #define BND_STRG_SINGLE_BAND_TIMEOUT	86400 //24 hrs 60*60*24 single band reports cleanup
-#define BND_STRG_DORMANT_TIME		1200   // in sec
+#define BND_STRG_DORMANT_TIME		1200000 //ms
 
 #define BND_STRG_HOLD_TIME		5     		// in sec, orig 50
 #define BND_STRG_CHECK_TIME		7		// in sec, orig 30
+#define BND_STRG_CHECK_5G_TIME		7		// full BND_STRG_CHECK_5G_TIME + BND_STRG_CHECK_TIME
 #define BND_STRG_RSSI_DIFF		30
 #define BND_STRG_RSSI_LOW		-90
 #define BND_STRG_DOWNSTEER_RSSI		-85		// orig -70
@@ -94,10 +95,12 @@
 #define BND_STRG_CHANLOAD_MAX_CNT_5G_L	10
 #define BND_STRG_CHANLOAD_MAX_CNT_5G_H	10
 #define TIME_TO_IDLE 			30
-#define LOW_MCS_IDX 			3
+#define LOW_MCS_IDX 			1
 #define LOW_CHANNEL_UTIL 		30
-#define MCS_BAD_COUNT 			10
-#define RSSI_CHECK_COUNT 		10
+#define MCS_BAD_COUNT 			40
+#define RSSI_CHECK_COUNT 		7
+#define UP_RSSI_CHECK_COUNT 		3
+#define DOWN_RSSI_CHECK_COUNT 		15
 #define IDLE_RXTX_BYTE_COUNT		30
 #define ENTRY_BACKUP_TIME 		30
 #define BND_STRG_PRIORITY_MAX		32
