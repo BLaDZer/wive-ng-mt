@@ -331,7 +331,7 @@ int bndstrg_update_entry_statistics_control_flags(
 		if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) {
                            entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
                            BND_STRG_PRINTQAMSG(table, entry,
-                         ("recived annonce by 5GHz. client (%02x:%02x:%02x:%02x:%02x:%02x) force drop 2.4GHz only flag.\n"), PRINT_MAC(entry->Addr));
+                         ("STAT: recived annonce by 5GHz. client (%02x:%02x:%02x:%02x:%02x:%02x) force drop 2.4GHz only flag.\n"), PRINT_MAC(entry->Addr));
 		}
 
 		/* if 5G rssi is good, client support 5G and connect to 5G allowed - remove 2.4G table record for this. */
@@ -1613,7 +1613,7 @@ int bndstrg_cli_event_req(
 	unsigned char *pSrcAddr = cli_event->Addr;
 	u8			FrameType = cli_event->FrameType;
 	
-	DBGPRINT(DEBUG_TRACE, "%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, Channel = %u frame_type = %u\n",
+	DBGPRINT(DEBUG_TRACE, "EVENT: %02x:%02x:%02x:%02x:%02x:%02x, Band = %u, Channel = %u frame_type = %u\n",
 		PRINT_MAC(cli_event->Addr), cli_event->Band, cli_event->Channel, cli_event->FrameType);
 
 	if (table->bInitialized == FALSE || table->bEnabled == FALSE){
@@ -3757,7 +3757,7 @@ u8 bndstrg_mtk_rule_iterate(
 				band = pre_band[0];
 
 				BND_STRG_PRINTQAMSG(table, entry,
-				    YLW("AUTH: client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				    YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
 				    " RSSI good, force allow high band connect and disallow lowband connect.\n"), PRINT_MAC(entry->Addr));
 			} else {
 				if((entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_BAND_PERSIST)){
