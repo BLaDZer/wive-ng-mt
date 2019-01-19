@@ -27,8 +27,5 @@ romfs:
 	$(ROMFSINST) /bin/$(BNDSTRG_EXEC)
 	$(ROMFSINST) -S ../init.d/W66bndstr /etc/rc.d/W66bndstr
 	$(ROMFSINST) -s /etc/rc.d/W66bndstr /etc/init.d/bndstr
-ifndef LEGACYMODE
-	$(ROMFSINST) /etc/bndstrg.conf
-endif
 clean:
 	rm -f *.o $(BNDSTRG_EXEC)

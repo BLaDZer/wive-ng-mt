@@ -1041,6 +1041,8 @@ void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *in
 		}
 	}
 
+	entry->bConnStatus = TRUE;
+
 #ifdef BNDSTRG_NVRAM_SUPPORT
 	if (bndstrg_nvram_table_lookup(table, cli_event->Addr))
 	{	
@@ -1159,7 +1161,6 @@ void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *in
 #endif				
 	}
 
-	entry->bConnStatus = TRUE;
 #ifdef WPS_SUPPORT
 	//WPS: update band and then update driver entry
 	if((entry->Channel != cli_event->Channel) && (cli_assoc->bWpsAssoc))
@@ -3737,28 +3738,15 @@ u8 bndstrg_mtk_rule_iterate(
 				entry->Control_Flags |= allow_to_connect_band_flag[1];
 				done = TRUE;
 				band = pre_band[1];
-				BND_STRG_PRINTQAMSG(table, entry, YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				" Auth only from lowband, is one band client? Allow lowband connect..\n"), PRINT_MAC(entry->Addr));
-			} else if(statistics_1st_band->AuthReqCount != 0 || statistics_2nd_band->AuthReqCount == 0) /* first allow for high band */
+				BND_STRG_PRINTQAMSG(table, entry,
+				    ("client (%02x:%02x:%02x:%02x:%02x:%02x) Auth only from 2G, Allow lowband connect..\n"), PRINT_MAC(entry->Addr));
+			} else if(statistics_1st_band->AuthReqCount > 0 || statistics_2nd_band->AuthReqCount == 0)
 			{
-				/* disallow low band per default */
 				entry->Control_Flags |= allow_to_connect_band_flag[0];
-
-				/* for tri band 2G dissallow to if high band connect ready */
-				if((!(entry->Control_Flags & low_rssi_flag[0]) && statistics_1st_band->AuthReqCount != 0) &&
-					(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G))
-				{
-				    /* dissallow connect to 2.4GHz */
-				    entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-
-				}
-
 				done = TRUE;
 				band = pre_band[0];
-
 				BND_STRG_PRINTQAMSG(table, entry,
-				    YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				    " RSSI good, force allow high band connect and disallow lowband connect.\n"), PRINT_MAC(entry->Addr));
+				    ("client (%02x:%02x:%02x:%02x:%02x:%02x) Auth only from 5G, allow 5G.\n"), PRINT_MAC(entry->Addr));
 			} else {
 				if((entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_BAND_PERSIST)){
 					if(entry->band == pre_band[0])
@@ -3833,12 +3821,13 @@ u8 bndstrg_mtk_rule_iterate(
 
 			case fBND_STRG_PRIORITY_HT_SUPPORT:
 				if (entry->Control_Flags & not_support_ht_flag[0])
-				{       /*
+				{
 					done = TRUE;
 					band = pre_band[1];
 					entry->Control_Flags |= allow_to_connect_band_flag[1];
 					entry->Manipulable = TRUE;
-					*/
+					BND_STRG_PRINTQAMSG(table, entry,
+					    ("client (%02x:%02x:%02x:%02x:%02x:%02x) not HT/VHT support, steer to 2G.\n"), PRINT_MAC(entry->Addr));
 				}
 				break;
 
@@ -4114,7 +4103,7 @@ u8 bndstrg_mtk_rule_iterate(
 			default:
 				break;
 
-		}		
+		    }
 		}
 
 		if(done)  // break for loop if decision has made.
@@ -4123,9 +4112,7 @@ u8 bndstrg_mtk_rule_iterate(
 				entry->match_steered_rule_id[compare_mode] = table->PriorityList[i];
 			if ((entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_DEFAULT_2G) &&
 					(entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_DEFAULT_5G)) 
-			{
 					entry->steered ++;
-			}
 			break;
 		}
 	}
@@ -4934,7 +4921,7 @@ int BndStrgGetKeyParameter(char *key, char *keyvalue, char *buf)
 	return TRUE;
 }
 
-
+#if 0
 void BndStrg_Update_Default_Param(struct bndstrg_cli_table *table)
 {
 	FILE *fp;
@@ -5022,15 +5009,14 @@ void BndStrg_Update_Default_Param(struct bndstrg_cli_table *table)
 	}
 	return;
 }
+#endif
 
 void bndstrg_read_inf_param(struct bndstrg *bndstrg)
 {
 	FILE *fp;
 	char buf[FILE_BUFFER_SIZE] = {0};
 	char keyvalue[64] = { 0 }, *temp;
-	int i = 0;// value = 0;
-	//char *macptr = NULL;
-	//DBGPRINT(DEBUG_TRACE,"\n");
+	int i = 0;
 	struct bndstrg_iface *inf_2G=NULL, *inf_5GL=NULL, *inf_5GH=NULL;
 
 	fp = fopen(BNDSTRG_DAT_FILE_PATH, "r");
@@ -5140,7 +5126,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	table->nvram_reset = FALSE;
 
 	//get from config
-	BndStrg_Update_Default_Param(table);
+	//BndStrg_Update_Default_Param(table);
 
 	//set parametrs from nvram, for compat with legacy convert ms to sec
 	if (BndStrgRssiDiff != 0)
