@@ -265,11 +265,11 @@ int bndstrg_update_entry_statistics_control_flags(
 		struct bndstrg *bndstrg,
 		struct bndstrg_cli_entry *entry,
 		struct bndstrg_iface *inf,
-		u8	band,
 		char Rssi,
 		u8 FrameSubType)
 {
 	int ret_val = BND_STRG_SUCCESS;
+	u8 band = BAND_INVALID;
 #ifdef BND_STRG_DBG
 	time_t current_time;
 	struct tm * time_info;
@@ -279,6 +279,9 @@ int bndstrg_update_entry_statistics_control_flags(
 	struct bndstrg_cli_table *table = &bndstrg->table;
 	struct bndstrg_entry_stat *statistics = NULL;
 
+	if (inf)
+	    band = inf->Band;
+
 	if (IS_2G_BAND(band))
 	{
 		entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
@@ -287,7 +290,7 @@ int bndstrg_update_entry_statistics_control_flags(
 	}
 	else if (IS_5G_BAND(band))
 	{
-		if (IS_5G_H_BAND(inf->Band)) {
+		if (IS_5G_H_BAND(band)) {
 			statistics = &entry->statistics[IDX_5GH];
 			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_H5G;
 		} else {
@@ -307,14 +310,14 @@ int bndstrg_update_entry_statistics_control_flags(
 		if (statistics->Rssi < table->RssiLow)
 		{
 			if (IS_5G_BAND(band)) {
-				entry->Control_Flags |= IS_5G_H_BAND(inf->Band) ? \
+				entry->Control_Flags |= IS_5G_H_BAND(band) ? \
 				fBND_STRG_CLIENT_LOW_RSSI_H5G : fBND_STRG_CLIENT_LOW_RSSI_L5G;
 			} else {
 				entry->Control_Flags |= fBND_STRG_CLIENT_LOW_RSSI_2G;
 			}
 		} else {
 			if (IS_5G_BAND(band))
-				entry->Control_Flags &= IS_5G_H_BAND(inf->Band) ? \
+				entry->Control_Flags &= IS_5G_H_BAND(band) ? \
 				(~fBND_STRG_CLIENT_LOW_RSSI_H5G) : (~fBND_STRG_CLIENT_LOW_RSSI_L5G);
 			else
 				entry->Control_Flags &= (~fBND_STRG_CLIENT_LOW_RSSI_2G);
@@ -2417,17 +2420,10 @@ static int _bndstrg_event_table_info(struct bndstrg *bndstrg)
 							"\tRssiLow = %d (dB)\n"
 							"\tRSSILowDownSteer = %d (dB)\n"
 							"\tRSSIHighUpSteer = %d (dB)\n"
-#ifdef VENDOR_FEATURE7_SUPPORT
-							"\tRSSIDisconnect = %d (dB)\n"
-							"\tBlackListTime = %d (sec)\n"
-#endif
 							"\tAgeTime = %d (s)\n"
 							"\tDormantTime = %d (s)\n"
 							"\tHoldTime = %d (s)\n"
 							"\tCheckTime = %d (s)\n"
-#ifdef BND_STRG_DBG
-							"\tMntAddr = %02x:%02x:%02x:%02x:%02x:%02x\n"
-#endif /* BND_STRG_DBG */
 							"\tSize = %u\n"
 							"\tActiveClient2G = %03u\n"
 							"\tActiveClient5G = %03u = (L:%03u,H:%03u)\n"
@@ -2454,17 +2450,10 @@ static int _bndstrg_event_table_info(struct bndstrg *bndstrg)
 							table->RssiLow,
 							table->RSSILowDownSteer,
 							table->RSSIHighUpSteer,
-#ifdef VENDOR_FEATURE7_SUPPORT
-							table->RSSIDisconnect,
-							table->BlackListTime,
-#endif
 							table->AgeTime,
 							table->DormantTime,
 							table->HoldTime,
 							table->CheckTime,
-#ifdef BND_STRG_DBG
-							PRINT_MAC(table->MonitorAddr),
-#endif /* BND_STRG_DBG */
 							table->Size,
 							table->active_client_2G,
 							table->active_client_5G,
@@ -2492,7 +2481,7 @@ static int _bndstrg_event_table_info(struct bndstrg *bndstrg)
 		printf("\n");
 
 		if(table->WhiteEntryListSize){
-			u8 i=0, count=0;
+			u8 count=0;
 			BND_STRG_DBGPRINT(DEBUG_OFF," WhiteList:\n");
 			for(i=0; i < BND_STRG_MAX_DISABLE_LIST; i++){
 				if(IS_VALID_MAC(table->WhiteEntryList[i])){
@@ -3478,32 +3467,36 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 #endif
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
-	}else if (/* (elapsed_time >= table->AgeTime) && */(entry->Channel != 0) && (!entry->bConnStatus))
+	}else if ((!entry->bConnStatus) && (elapsed_time >= (table->single_band_timeout/4)) && (entry->Channel != 0)) /* need  wait fallback to original band */
 	{
+		/* do not clean 5GHz single band entry some times */
+		if((IS_BND_STRG_L5G_ONLY_BAND_CLIENT(entry->Control_Flags) ||
+			 IS_BND_STRG_H5G_ONLY_BAND_CLIENT(entry->Control_Flags)) &&
+			 (elapsed_time <= table->single_band_timeout))
+			return FALSE;
 
-		if((IS_BND_STRG_2G_ONLY_BAND_CLIENT(entry->Control_Flags) ||
-			 IS_BND_STRG_L5G_ONLY_BAND_CLIENT(entry->Control_Flags) ||
-			 IS_BND_STRG_H5G_ONLY_BAND_CLIENT(entry->Control_Flags)
-#if 0
-			|| (entry->match_steered_rule_id[CMP_5GH_5GL] = fBND_STRG_PRIORITY_BAND_PERSIST)
-			|| (entry->match_steered_rule_id[CMP_5GH_2G] = fBND_STRG_PRIORITY_BAND_PERSIST)
-			|| (entry->match_steered_rule_id[CMP_5GL_2G] = fBND_STRG_PRIORITY_BAND_PERSIST)
-#endif
-			) && (elapsed_time <= table->single_band_timeout)) {
-				return TRUE;
-			}
+		/* do not clean 2.4GHz single band entry some times */
+		if((IS_BND_STRG_2G_ONLY_BAND_CLIENT(entry->Control_Flags)) &&
+			 (elapsed_time <= table->single_band_timeout/2))
+			return FALSE;
+
+		/* save 5G record more time */
+		if((IS_5G_L_BAND(entry->band) || IS_5G_L_BAND(entry->band)) && elapsed_time <= table->single_band_timeout/4)
+			return FALSE;
 
 		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
 		if(inf)
 			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec >= AgeTime:%d \n"),
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete not connected entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec, AgeTime:%d \n"),
 			PRINT_MAC(entry->Addr),elapsed_time, table->AgeTime);
 #endif
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
-	} if (entry->bConnStatus && (elapsed_time >= table->CheckTime) && IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) &&
-		!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G) && !(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G)) {
+	} if ((entry->bConnStatus) && (elapsed_time >= table->CheckTime) &&
+		    (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags)) &&
+		 !(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G) &&
+		 !(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G)) {
 
 		/* dissallow connect to 2.4GHz and clear 2G only flag */
 		entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
@@ -5395,26 +5388,24 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 
 	/* try find old not try auth band client for record replace */
 	max_elapsed_time = 0;
-	if(!entry){
-		for(i=0; i<table->max_steering_size; i++){
-			temp_entry = & table->Entry[i];
-			if (temp_entry->bValid == TRUE)
-			{
-				count ++;
-				if(temp_entry->bConnStatus || temp_entry->Operation_steered || (inf && inf->Band != temp_entry->band))
-					continue;
-				AuthReqCount = temp_entry->statistics[0].AuthReqCount + temp_entry->statistics[1].AuthReqCount + temp_entry->statistics[2].AuthReqCount;
-				if (AuthReqCount == 0) {
-					elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
-					if(elapsed_time > max_elapsed_time){
-						max_elapsed_time = elapsed_time;
-						entry = temp_entry;
-					}
+	for(i=0; i<table->max_steering_size; i++){
+		temp_entry = & table->Entry[i];
+		if (temp_entry->bValid == TRUE)
+		{
+			count ++;
+			if(temp_entry->bConnStatus || temp_entry->Operation_steered || (inf && inf->Band != temp_entry->band))
+				continue;
+			AuthReqCount = temp_entry->statistics[0].AuthReqCount + temp_entry->statistics[1].AuthReqCount + temp_entry->statistics[2].AuthReqCount;
+			if (AuthReqCount == 0) {
+				elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
+				if(elapsed_time > max_elapsed_time){
+					max_elapsed_time = elapsed_time;
+					entry = temp_entry;
 				}
 			}
-			if(count >= table->Size)
-				break;
 		}
+		if(count >= table->Size)
+			break;
 	}
 
 	/* try find old one band client for record replace */
@@ -5659,7 +5650,7 @@ void bndstrg_update_probe_info(	struct bndstrg *bndstrg,
 			MaxRssi = max(MaxRssi, rssi[i]);
 	}
 
-	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, inf->Band, MaxRssi, APMT2_PEER_PROBE_REQ);
+	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, MaxRssi, APMT2_PEER_PROBE_REQ);
 
 	if (entry->AssocProbeInfoMissMatch == FALSE){
 		if (!(cli_probe->bAllowStaConnectInHt == TRUE)){
@@ -5700,7 +5691,7 @@ void bndstrg_update_auth_info(	struct bndstrg *bndstrg,
 			MaxRssi = max(MaxRssi, rssi[i]);
 	}
 
-	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, inf->Band, MaxRssi, APMT2_PEER_AUTH_REQ);
+	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, MaxRssi, APMT2_PEER_AUTH_REQ);
 	return;
 }
 
