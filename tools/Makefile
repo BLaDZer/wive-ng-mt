@@ -28,7 +28,7 @@ install:
 	make -j1 -C mksquash_xz install
 	make -j$(HOST_NCPU) -C mksquash_lzma install
 	make -j$(HOST_NCPU) -C mkimage
-	make -j$(HOST_NCPU) -C ELFkickers
+	make -j1 -C ELFkickers
 
 clean:
 	rm -rf ./bin
