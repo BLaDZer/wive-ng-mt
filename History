@@ -4509,19 +4509,21 @@
 9) bandsteering: allow fast switch to 5Ghz for new steer mode.<br>
 10) bandsteering: tune steering parametrs for more effective at mt7615.<br>
 11) bandsteering: fix null pointer dereference in new strg version.<br>
-12) bandsteering: rework replace record logic if table full.br>
-13) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-14) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-15) init.d: eoip: fix all to one brige mode.<br>
-16) webui: rework adbblock, dnssec, add alternative dns.<br>
-17) webui: add auto restart vpn reqest at apply netfilter rules.<br>
-18) webui: add ngix nolog mode.<br>
-19) webui: temp remove storage function (rewrite start).<br>
-20) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-21) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-22) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-23) kernel: net: packet: validate address length.<br>
-24) kernel: net: packet: validate address length if non-zero.<br>
-25) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+12) bandsteering: rework replace record logic if table full.<br>
+13) bandsteering: rework pre/post/active by event logic.<br>
+14) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+15) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+16) init.d: eoip: fix all to one brige mode.<br>
+17) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
+18) webui: rework adbblock, dnssec, add alternative dns.<br>
+19) webui: add auto restart vpn reqest at apply netfilter rules.<br>
+20) webui: add ngix nolog mode.<br>
+21) webui: temp remove storage function (rewrite start).<br>
+22) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+23) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+24) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+25) kernel: net: packet: validate address length.<br>
+26) kernel: net: packet: validate address length if non-zero.<br>
+27) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

@@ -39,18 +39,43 @@ get_param()
 
 get_and_parse_lists()
 {
+    # default 24h timeout
+    needsleep="86400"
+
+    # remove last
+    rm -f $list
     rm -f $templist
+
+    # download lists
     for url in $blocklists ; do
 	$LOG "Get ad hosts lists from $url"
 	wget "$url" -O - -q -c >> $templist
     done
 
+    # filter
     if [ -e $templist ]; then
-	$LOG "Filter and remove duplicated records."
+	$LOG "Filter records."
 	dos2unix -u $templist > /dev/null 2>&1
-	grep -vE 'localhost|\|#|^\\|\\$' $templist | grep '^[0-9a-zA-Z]' | awk '{print $2}' | sed $'s/\r$//' | sed '/^$/d' | sort -u > $list
+	grep -vE 'localhost|\|#|^\\|\\$' $templist | grep '^[0-9a-zA-Z]' | awk '{print $2}' | sed $'s/\r$//' | sed '/^$/d' | sort > $list
+	rm -f "$templist"
+    else
+        $LOG "Lists get error. Network problem? Retry by 60 seconds."
+        needsleep="60"
+	return;
     fi
-    mv -f "$list" "$templist"
+
+    # uniq
+    if [ -e $list ]; then
+	$LOG "Remove duplicated records."
+	uniq -i  "$list" "$templist"
+	rm -f "$list"
+    else
+        $LOG "Parse filter error, exit"
+	rm -f /tmp/adblock_runing
+	exit 1;
+    fi
+
+    # create list
     if [ -e $templist ]; then
 	# allow user domains and baisc counters
 	if [ "$unblocklist" != "" ]; then
@@ -71,15 +96,17 @@ get_and_parse_lists()
 	    $LOG "$count domains blocked by DNS."
 	    service dnsserver restart
 	    $LOG "Next adblock update after 24h."
-	    needsleep="86400"
 	else
-	    $LOG "Lists get error. Network problem? Retry by 60 seconds."
-	    needsleep="60"
+    	    $LOG "Create list error, exit"
+	    rm -f /tmp/adblock_runing
+	    exit 1;
 	fi
+	rm -f "$list"
 	rm -f "$templist"
     else
-	$LOG "Lists get error. Network problem? Retry by 60 seconds."
-	needsleep="60"
+    	$LOG "Parse uniq error, exit"
+	rm -f /tmp/adblock_runing
+	exit 1;
     fi
 }
 
