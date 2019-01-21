@@ -4504,27 +4504,28 @@
 4) build_system: mksquash_xz update to 4.3 version.<br>
 5) build_system: add libnettle v3.4.<br>
 6) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
-7) busybox: update to 1.30.0 version.<br>
-8) bandsteering: avoid false positive connect allow to 2.4GHz in some cases.<br>
-9) bandsteering: allow fast switch to 5Ghz for new steer mode.<br>
-10) bandsteering: tune steering parametrs for more effective at mt7615.<br>
-11) bandsteering: fix null pointer dereference in new strg version.<br>
-12) bandsteering: rework replace record logic if table full.<br>
-13) bandsteering: rework pre/post/active by event logic.<br>
-14) bandsteering: ignore probe with RSSI < -96dB.<br>
-15) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-16) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-17) init.d: eoip: fix all to one brige mode.<br>
-18) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
-19) webui: rework adbblock, dnssec, add alternative dns.<br>
-20) webui: add auto restart vpn reqest at apply netfilter rules.<br>
-21) webui: add ngix nolog mode.<br>
-22) webui: temp remove storage function (rewrite start).<br>
-23) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-24) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-25) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-26) kernel: net: packet: validate address length.<br>
-27) kernel: net: packet: validate address length if non-zero.<br>
-28) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+7) build_system: fix doubles in config.sh.<br>
+8) busybox: update to 1.30.0 version.<br>
+9) bandsteering: avoid false positive connect allow to 2.4GHz in some cases.<br>
+10) bandsteering: allow fast switch to 5Ghz for new steer mode.<br>
+11) bandsteering: tune steering parametrs for more effective at mt7615.<br>
+12) bandsteering: fix null pointer dereference in new strg version.<br>
+13) bandsteering: rework replace record logic if table full.<br>
+14) bandsteering: rework pre/post/active by event logic.<br>
+15) bandsteering: ignore probe with RSSI < -96dB.<br>
+16) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+17) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+18) init.d: eoip: fix all to one brige mode.<br>
+19) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
+20) webui: rework adbblock, dnssec, add alternative dns.<br>
+21) webui: add auto restart vpn reqest at apply netfilter rules.<br>
+22) webui: add ngix nolog mode.<br>
+23) webui: temp remove storage function (rewrite start).<br>
+24) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+25) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+26) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+27) kernel: net: packet: validate address length.<br>
+28) kernel: net: packet: validate address length if non-zero.<br>
+29) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

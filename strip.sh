@@ -19,7 +19,7 @@ PARAMS=
 tmp=
 for dir in $RO_ROOT/etc/rc.d $RO_ROOT/etc/scripts
 do
-	tmp="$( grep -r -o "\$CONFIG_[^ \t\"]\+" "$dir"/* | sed 's/^.*$CONFIG_\(.\+\)$/\1/' | sort | uniq )"
+	tmp="$( grep -r -o "\$CONFIG_[^ \t\"]\+" "$dir"/* | sed 's/^.*$CONFIG_\(.\+\)$/\1/' | sort -u )"
 	PARAMS="$PARAMS $tmp"
 done
 
@@ -32,6 +32,10 @@ for i in $PARAMS; do
 	    echo "CONFIG_$i=$var" >> "$SCONFIG_SH"
     fi
 done
+
+sort -u "$SCONFIG_SH" > "$SCONFIG_SH.tmp"
+mv -f "$SCONFIG_SH.tmp" "$SCONFIG_SH"
+
 chmod 777 "$SCONFIG_SH"
 
 echo -------------------------------FIND FILES TO STRIP-----------------------------
