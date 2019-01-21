@@ -5630,18 +5630,22 @@ void bndstrg_update_probe_info(	struct bndstrg *bndstrg,
 	u8	Nss = cli_probe->Nss;			
 	s8 	MaxRssi = -128, i;
 
-#ifdef BND_STRG_QA
-	BND_STRG_PRINTQAMSG(table, entry,"PROBE: [%s] %02x:%02x:%02x:%02x:%02x:%02x, Band:%s, Channel:%d Probe, rssi = %hhd/%hhd/%hhd/%hhd HTCap %s, VHTCap %s, Nss %d\n",
-			inf->ucIfName,PRINT_MAC(cli_event->Addr),bndstrg_get_entry_band(cli_event->Band),cli_event->Channel, rssi[0], rssi[1], rssi[2], rssi[3], 
-			(cli_probe->bAllowStaConnectInHt == 1 ? "TRUE":"FALSE"), (cli_probe->bVHTCapable == 1 ? "TRUE":"FALSE"), Nss);
-#endif /* BND_STRG_QA */
-
 	/* -128 - stream not support by chip - skip it */
 	for ( i = 0; i < 4; i++)
 	{
 		if (rssi[i] && (rssi[i] < 0) && (rssi[i] != -128))
 			MaxRssi = max(MaxRssi, rssi[i]);
 	}
+
+	/* ignore probe with RSSI < RX sens at low OFDM rate */
+	if (MaxRssi < -96)
+		return;
+
+#ifdef BND_STRG_QA
+	BND_STRG_PRINTQAMSG(table, entry,"PROBE: [%s] %02x:%02x:%02x:%02x:%02x:%02x, Band:%s, Channel:%d Probe, rssi = %hhd/%hhd/%hhd/%hhd HTCap %s, VHTCap %s, Nss %d\n",
+			inf->ucIfName,PRINT_MAC(cli_event->Addr),bndstrg_get_entry_band(cli_event->Band),cli_event->Channel, rssi[0], rssi[1], rssi[2], rssi[3], 
+			(cli_probe->bAllowStaConnectInHt == 1 ? "TRUE":"FALSE"), (cli_probe->bVHTCapable == 1 ? "TRUE":"FALSE"), Nss);
+#endif /* BND_STRG_QA */
 
 	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, MaxRssi, APMT2_PEER_PROBE_REQ);
 
