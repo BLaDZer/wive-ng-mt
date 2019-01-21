@@ -61,7 +61,7 @@
 
 #define BND_STRG_HOLD_TIME		5     		// in sec, orig 50
 #define BND_STRG_CHECK_TIME		7		// in sec, orig 30
-#define BND_STRG_CHECK_5G_TIME		7		// full BND_STRG_CHECK_5G_TIME + BND_STRG_CHECK_TIME
+#define BND_STRG_CHECK_5G_TIME		4		// full BND_STRG_CHECK_5G_TIME + BND_STRG_CHECK_TIME
 #define BND_STRG_RSSI_DIFF		30
 #define BND_STRG_RSSI_LOW		-90
 #define BND_STRG_DOWNSTEER_RSSI		-85		// orig -70

@@ -283,8 +283,10 @@ int bndstrg_update_entry_statistics_control_flags(
 	    band = inf->Band;
 
 	if (IS_2G_BAND(band))
-	{
-		entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
+	{	/* do not presteer to 2.4GHz by probe count, is very agressive downsteer */
+		if (FrameSubType != APMT2_PEER_PROBE_REQ)
+			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
+
 		statistics = &entry->statistics[IDX_2G];
 		statistics->Rssi = Rssi;
 	}
@@ -3543,7 +3545,7 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 #ifdef BND_STRG_QA
 				BND_STRG_PRINTQAMSG(table, entry, YLW("Receive no frame by 5G interface within %u seconds,"
 				" client (%02x:%02x:%02x:%02x:%02x:%02x) allow connect to 2.4G.\n"),
-				table->CheckTime + BND_STRG_CHECK_5G_TIME, PRINT_MAC(entry->Addr));
+				table->CheckTime, PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
 				entry->Control_Flags |=	fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
 
@@ -3564,6 +3566,7 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 				/* dissallow connect to 2.4GHz and clear 2G only flag */
 				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
 				entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_SUPPORT_2G);
 			}
 		}
 		return FALSE;
@@ -3730,6 +3733,8 @@ u8 bndstrg_mtk_rule_iterate(
 		{
 			/* low band must be have more then pow4 auth+assoc req for allow connect
 			    or assoc+auth req in low band > 1 and high band req 0
+			    1st_band = 5GHz
+			    2nd_band = 2GHz
 			*/
 			if((statistics_1st_band->AuthReqCount > 0 && statistics_2nd_band->AuthReqCount > 0 &&
 				statistics_1st_band->AuthReqCount < (statistics_2nd_band->AuthReqCount/4)) ||
@@ -3739,14 +3744,27 @@ u8 bndstrg_mtk_rule_iterate(
 				done = TRUE;
 				band = pre_band[1];
 				BND_STRG_PRINTQAMSG(table, entry,
-				    ("client (%02x:%02x:%02x:%02x:%02x:%02x) Auth only from 2G, Allow lowband connect..\n"), PRINT_MAC(entry->Addr));
-			} else if(statistics_1st_band->AuthReqCount > 0 || statistics_2nd_band->AuthReqCount == 0)
+				    ("client (%02x:%02x:%02x:%02x:%02x:%02x) Auth only or more from 2G, Allow lowband connect..\n"), PRINT_MAC(entry->Addr));
+			} else if((statistics_1st_band->AuthReqCount > 0 || statistics_2nd_band->AuthReqCount == 0) ||
+				(statistics_1st_band->AuthReqCount > statistics_2nd_band->AuthReqCount))
 			{
+				/* clear incorrect 2G only flag */
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
+
+				/* set dissallow 2G connect flag */
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+
+				/* if not any req by 2G set 5G only flag and drop support 2G */
+				if (statistics_2nd_band->AuthReqCount == 0) {
+				    entry->Control_Flags |= fBND_STRG_CLIENT_IS_5G_ONLY;
+				    entry->Control_Flags &= (~fBND_STRG_CLIENT_SUPPORT_2G);
+				}
+
 				entry->Control_Flags |= allow_to_connect_band_flag[0];
 				done = TRUE;
 				band = pre_band[0];
 				BND_STRG_PRINTQAMSG(table, entry,
-				    ("client (%02x:%02x:%02x:%02x:%02x:%02x) Auth only from 5G, allow 5G.\n"), PRINT_MAC(entry->Addr));
+				    ("client (%02x:%02x:%02x:%02x:%02x:%02x) Auth only or more from 5G, allow 5G dissallow 2G.\n"), PRINT_MAC(entry->Addr));
 			} else {
 				if((entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_BAND_PERSIST)){
 					if(entry->band == pre_band[0])
@@ -4253,8 +4271,8 @@ u8 bndstrg_association_steering(
 		struct bndstrg_cli_entry *entry,
 		struct bndstrg *bndstrg)
 {
-	u8 band = BAND_INVALID; 
-	
+	u8 band = BAND_INVALID;
+
 	if (!table)
 	{
 		DBGPRINT(DEBUG_ERROR,"%s(): Error! table is NULL!\n", __FUNCTION__);
@@ -4265,58 +4283,54 @@ u8 bndstrg_association_steering(
 		DBGPRINT(DEBUG_ERROR,RED("%s(): Error! entry is NULL!\n"), __FUNCTION__);
 		return FALSE;
 	}
-				
-    if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags)) 
+
+	if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags)) 
 	{
-        if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY)
+    		if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY)
 		{
-            entry->Manipulable = FALSE;
+        		entry->Manipulable = FALSE;
 			entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
 			band = BAND_2G;
 		}
 		else if(entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY)
 		{
-            entry->Manipulable = FALSE;
+        		entry->Manipulable = FALSE;
 			if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 			{
 				 band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
 			}
-            else if(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) 
+        		else if(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) 
 			{
-                entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G;
-                band = BAND_5G_H;
-            }
-            else 
-			{
-                entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G;
+            			entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G;
+            			band = BAND_5G_H;
+    			} else {
+            			entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G;
 				band = BAND_5G_L;
-            }
-		}else if(!IS_2G_BAND(table->Band)){
-			if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
-			{
+        		}
+		} else if(!IS_2G_BAND(table->Band)){
+			    if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
+			    {
 				 band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
-			}
+			    }
 		}
-    }
-    else 
-	{
-        /*
+	} else {
+	    /*
               * compare_mode:  0=H-5G vs L-5G
-              *                         1=H-5G vs 2.4G
-              *                         2=L-5G vs 2.4G
+              *                1=H-5G vs 2.4G
+              *                2=L-5G vs 2.4G
              */
-        if(table->op_mode == OP_TRIBAND) 
-		{
+	    if(table->op_mode == OP_TRIBAND) 
+	    {
 			u8 temp_band = BAND_INVALID; 
-            /* For 5G L/H band all support case*/
+        		/* For 5G L/H band all support case*/
 			if ((entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G)&&
 				(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G))
 			{
 				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
-                switch(band)
+            			switch(band)
 				{
-                    case BAND_5G_L:
-					case BAND_5G_H:
+                		    case BAND_5G_L:
+				    case BAND_5G_H:
 						temp_band = band;
 						if (band == BAND_5G_L)
 							band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
@@ -4327,56 +4341,47 @@ u8 bndstrg_association_steering(
 							//restore 1st round prefer band
 							band = temp_band;
 						}
-                        break;
-                    
-                    case BAND_2G:
-                    default:
+                    			break;
+                		    case BAND_2G:
+                		    default:
 					    //DBGPRINT(DEBUG_ERROR,RED("%s():[%d] debug here!\n"), __FUNCTION__,__LINE__);
-					    break;
-                }
+					break;
+            			}
             }
+
             /* For 5G L band only support case*/
-            else if (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) 
-			{
+            else if (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) {
                 band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
             }
             /* For 5G H band only support case*/
-            else if (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G)
-			{
-                band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);       
-            }
-            else 
-			{
-                DBGPRINT(DEBUG_ERROR,RED("%s(): Unexpected Error!\n"), __FUNCTION__);
-                return FALSE;
+            else if (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) {
+                band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);
+            } else {
+                DBGPRINT(DEBUG_ERROR,RED("%s(): Unexpected Error band assoc select triband!\n"), __FUNCTION__);
             }
         }
-        else if(table->op_mode == OP_DUALBAND) 
-		{
-		    //if(IS_2G_BAND(table->Band)){
+        else if(table->op_mode == OP_DUALBAND) {
+		    if(!(IS_5G_BAND(table->Band))) { /* only upband */
 	        	if(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G)
-	            	    band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G); 
+	            	    band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
 	        	else
-			{
-	            	    DBGPRINT(DEBUG_ERROR,RED("%s(): Unexpected Error!\n"), __FUNCTION__);
-	            	    return FALSE;
-	        	}
-		    //}
+            		    DBGPRINT(DEBUG_ERROR,RED("%s(): Unexpected Error band assoc select dualband!\n"), __FUNCTION__);
+		    }
         }
-	}
+    }
 
-	if ((band != BAND_INVALID) && (band != entry->band)) 
-	{
-		if (!IS_2G_BAND(band)) {
-		    entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-		    entry->Control_Flags &= (~ fBND_STRG_CLIENT_IS_2G_ONLY);
-		}
-		entry->state = ENTRY_READY_TO_ASSOC;
-		bndstrg_client_band_update(bndstrg,entry,band);
-		bndstrg_dump_steered_STA(bndstrg,entry);
+    if ((band != BAND_INVALID) && (band != entry->band)) 
+    {
+	if (IS_5G_BAND(band)) {
+	    entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+	    entry->Control_Flags &= (~ fBND_STRG_CLIENT_IS_2G_ONLY);
 	}
+	entry->state = ENTRY_READY_TO_ASSOC;
+	bndstrg_client_band_update(bndstrg,entry,band);
+	bndstrg_dump_steered_STA(bndstrg,entry);
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 u8 bndstrg_steer_sta(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
@@ -4389,7 +4394,7 @@ u8 bndstrg_steer_sta(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
 
 	if((table->BtmMode & BTM_Only) && (!entry->btm_info.BTMSupport))
 		return FALSE;
-	
+
 	if (entry->Operation_steered == TRUE)
 	{
 		entry->Operation_steered_tick++;
@@ -4413,15 +4418,15 @@ u8 bndstrg_steer_sta(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
 	}
 
 	if(!entry->bConnStatus)
-		return FALSE;	
-	
+		return FALSE;
+
 	if(entry->total_steered_cnt)
 		elapsed_time = bndstrg_get_elapsed_time(entry->CliSteerInfo.steer_tp[entry->CliSteerInfo.end_idx]);
 	else
 		elapsed_time = bndstrg_get_elapsed_time(entry->tp);
-	
+
 	if((elapsed_time) < table->dwell_time){
-#ifdef BND_STRG_QA		
+#ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry,("%s:%d Addr=%02x:%02x:%02x:%02x:%02x:%02x skip operational steering as elapsed time is %u sec less than dwell time %u sec\n"),
 						__func__,__LINE__,PRINT_MAC(entry->Addr), elapsed_time, table->dwell_time);
 #endif
@@ -4429,14 +4434,14 @@ u8 bndstrg_steer_sta(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
 	}
 
 	if(entry->total_steered_cnt >= table->max_steer_count){
-#ifdef BND_STRG_QA		
+#ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry,("%s:%d Addr=%02x:%02x:%02x:%02x:%02x:%02x Max Steer count reached to %d, can't do operational steering\n"),
 						__func__,__LINE__,PRINT_MAC(entry->Addr), entry->total_steered_cnt);
 #endif
 		bndstrg_check_steering_limit(table,entry);
 		return FALSE;
 	}
-	
+
 	if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
 	{
 		if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
@@ -4506,8 +4511,10 @@ find_out:
 	if ((band != BAND_INVALID) && (band != entry->band)) 
 	{
 		entry->state = ENTRY_OPER_STEER_ACTIVE;
-		if (!IS_2G_BAND(band))
+		if (IS_5G_BAND(band)) {
 		    entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		    entry->Control_Flags &= (~ fBND_STRG_CLIENT_IS_2G_ONLY);
+		}
 		bndstrg_client_band_update(bndstrg,entry,band);
 		bndstrg_dump_steered_STA(bndstrg,entry);
 
@@ -5228,7 +5235,7 @@ int bndstrg_init(struct bndstrg *bndstrg,
 
 	ret = bndstrg_table_init(&bndstrg->table);
 	bndstrg->table.bndstrg = bndstrg;//quick path to access bndstrg
-	DBGPRINT(DEBUG_TRACE,GRN("::bndstrg=%p,table=%p\n\r"), bndstrg,&bndstrg->table);
+	//DBGPRINT(DEBUG_TRACE,GRN("::bndstrg=%p,table=%p\n\r"), bndstrg,&bndstrg->table);
 #ifdef BNDSTRG_NVRAM_SUPPORT
 	bndstrg->nvram_support = TRUE;
 	if(bndstrg->table.nvram_reset == TRUE){
