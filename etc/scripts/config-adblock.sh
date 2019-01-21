@@ -70,8 +70,16 @@ get_and_parse_lists()
 	    mv -f "$list" /etc/dnsmasq.d/ads.conf
 	    $LOG "$count domains blocked by DNS."
 	    service dnsserver restart
+	    $LOG "Next adblock update after 24h."
+	    needsleep="86400"
+	else
+	    $LOG "Lists get error. Network problem? Retry by 60 seconds."
+	    needsleep="60"
 	fi
 	rm -f "$templist"
+    else
+	$LOG "Lists get error. Network problem? Retry by 60 seconds."
+	needsleep="60"
     fi
 }
 
@@ -102,8 +110,6 @@ while [ $dns_adblock == "1" ]; do
 	# if not - wait 15 seconds for new try, may me network not aviable
 	if [ "$reachable" = "1" ]; then
 		get_and_parse_lists
-		$LOG "Next adblock update after 24h."
-		needsleep="86400"
 	else
 	        $LOG "Server unreachable (internet connection not ready?) wait 15 sec and repeat try."
 		needsleep="15"
