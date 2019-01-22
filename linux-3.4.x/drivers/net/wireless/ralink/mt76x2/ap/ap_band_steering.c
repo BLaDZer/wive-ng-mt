@@ -672,7 +672,7 @@ static VOID D_ShowTableEntries(PBND_STRG_CLI_TABLE table)
 	D_BndStrgSendMsg(pAd, &msg);
 }
 
-UCHAR ANDROID_RANDOM_OUI[]  = {0xda, 0xa1, 0x19};
+UCHAR ANDROID1_RANDOM_OUI[]  = {0xda, 0xa1, 0x19};
 UCHAR ANDROID2_RANDOM_OUI[]  = {0x92, 0x68, 0xc3};
 UCHAR SNR_AP_OUI[]  = {0xf8, 0xf0, 0x82};
 
