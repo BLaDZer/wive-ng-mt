@@ -131,7 +131,6 @@ dir_$(CONFIG_USER_NGINX)                    += nginx
 # generate certs for apps
 dir_$(CONFIG_LIB_OPENSSL)		    += certsgen
 
-#dir_$(CONFIG_USER_BNDSTR)                   := bndstrg
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
