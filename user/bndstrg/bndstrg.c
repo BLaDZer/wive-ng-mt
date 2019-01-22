@@ -284,7 +284,10 @@ int bndstrg_update_entry_statistics_control_flags(
 
 	if (IS_2G_BAND(band))
 	{	/* do not presteer to 2.4GHz by probe count, is very agressive downsteer */
-		if (FrameSubType != APMT2_PEER_PROBE_REQ)
+		if ((FrameSubType != APMT2_PEER_PROBE_REQ) ||
+			(!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_2G) &&
+			!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) &&
+			!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G)))
 			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
 
 		statistics = &entry->statistics[IDX_2G];
@@ -326,36 +329,6 @@ int bndstrg_update_entry_statistics_control_flags(
 		}
 	}
 
-	/* sanity init clients modes */
-	if (IS_5G_BAND(band)) {
-
-		/* correction wrong 2GHz only flag set for some dualband clients */
-		if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) {
-                           entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
-                           BND_STRG_PRINTQAMSG(table, entry,
-                         ("STAT: recived annonce by 5GHz. client (%02x:%02x:%02x:%02x:%02x:%02x) force drop 2.4GHz only flag.\n"), PRINT_MAC(entry->Addr));
-		}
-
-		/* if 5G rssi is good, client support 5G and connect to 5G allowed - remove 2.4G table record for this. */
-		if ((statistics->Rssi != 0 && statistics->Rssi > -127) && (statistics->Rssi > table->RssiLow)) {
-
-			if(IS_5G_L_BAND(band)) {
-			    entry->Control_Flags |= (fBND_STRG_CLIENT_SUPPORT_L5G);
-			    entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
-			}
-
-			if(IS_5G_H_BAND(band)) {
-			    entry->Control_Flags |= (fBND_STRG_CLIENT_SUPPORT_H5G);
-			    entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
-			}
-
-			entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
-			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-
-			BND_STRG_PRINTQAMSG(table, entry,
-			("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
-		}
-	}
 
 	/* For connection time some STA only scan single band although they are dual band client
 	 * Need to change flag once STA is confirmed to be single band 
@@ -390,6 +363,29 @@ int bndstrg_update_entry_statistics_control_flags(
 			BND_STRG_DBGPRINT(DEBUG_OFF, "%s(): Unexpect FrameSubType (%u)\n", __FUNCTION__, FrameSubType);
 			ret_val = BND_STRG_UNEXP;
 			break;
+	}
+
+	/* sanity init clients modes */
+	if (IS_5G_BAND(band)) {
+		/* if 5G rssi is good, client support 5G and connect to 5G allowed - remove 2.4G table record for this. */
+		if ((statistics->Rssi != 0 && statistics->Rssi > -127) && (statistics->Rssi > table->RssiLow)) {
+
+			if(IS_5G_L_BAND(band)) {
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_SUPPORT_L5G);
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+			}
+
+			if(IS_5G_H_BAND(band)) {
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_SUPPORT_H5G);
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+			}
+
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+
+			BND_STRG_PRINTQAMSG(table, entry,
+			("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
+		}
 	}
 
 	return ret_val;
@@ -3470,21 +3466,22 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 #endif
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
-	}else if ((!entry->bConnStatus) && (elapsed_time >= (table->single_band_timeout/4)) && (entry->Channel != 0)) /* need  wait fallback to original band */
+	}else if ((!entry->bConnStatus) && (entry->Channel != 0)) /* need  wait fallback to original band */
 	{
 		/* do not clean 5GHz single band entry some times */
-		if((IS_BND_STRG_L5G_ONLY_BAND_CLIENT(entry->Control_Flags) ||
-			 IS_BND_STRG_H5G_ONLY_BAND_CLIENT(entry->Control_Flags)) &&
+		if((entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY) &&
 			 (elapsed_time <= table->single_band_timeout))
+			return FALSE;
+
+		/* do not clean 5GHz dual band entry some times */
+		if(((IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags)) ||
+			(IS_5G_L_BAND(entry->band) || IS_5G_L_BAND(entry->band))) &&
+			 (elapsed_time <= table->single_band_timeout)/2)
 			return FALSE;
 
 		/* do not clean 2.4GHz single band entry some times */
 		if((IS_BND_STRG_2G_ONLY_BAND_CLIENT(entry->Control_Flags)) &&
-			 (elapsed_time <= table->single_band_timeout/2))
-			return FALSE;
-
-		/* save 5G record more time */
-		if((IS_5G_L_BAND(entry->band) || IS_5G_L_BAND(entry->band)) && elapsed_time <= table->single_band_timeout/4)
+			 (elapsed_time <= table->single_band_timeout/4))
 			return FALSE;
 
 		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
@@ -3519,8 +3516,14 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 	{
 
 		if(!entry->bConnStatus){
+			/* need have any stat for avoid unneded band switch jam */
+			struct bndstrg_entry_stat *statistics_2G_band = NULL, *statistics_5GL_band = NULL, *statistics_5GH_band = NULL;
+			statistics_5GL_band = &entry->statistics[IDX_5GL];
+			statistics_5GH_band = &entry->statistics[IDX_5GH];
+			statistics_2G_band = &entry->statistics[IDX_2G];
 
 			if (elapsed_time >= (table->CheckTime + BND_STRG_CHECK_5G_TIME) &&
+				(statistics_2G_band->AuthReqCount > 1 && statistics_5GL_band->AuthReqCount == 0 && statistics_5GH_band->AuthReqCount == 0) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY))
@@ -3530,13 +3533,17 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 				*/
 #ifdef BND_STRG_QA
 				BND_STRG_PRINTQAMSG(table, entry, YLW("Receive no frame by 5G interface within %u seconds,"
-				" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 2.4G only.\n"),
-				table->CheckTime + BND_STRG_CHECK_5G_TIME, PRINT_MAC(entry->Addr));
+				" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 2.4G only and allow connect.\n"),
+				(table->CheckTime + BND_STRG_CHECK_5G_TIME), PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
+				entry->Control_Flags |=	fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
 				entry->Control_Flags |=	fBND_STRG_CLIENT_IS_2G_ONLY;
-			} else if (elapsed_time >= (table->CheckTime) &&
+			} else if (elapsed_time >= (table->CheckTime + (BND_STRG_CHECK_5G_TIME/2)) &&
+				(statistics_2G_band->AuthReqCount > statistics_5GL_band->AuthReqCount &&
+				     statistics_2G_band->AuthReqCount > statistics_5GH_band->AuthReqCount) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) &&
+				!(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G))
 			{
 				/* If we don't get any connection req from 5G for a long time,
@@ -3545,11 +3552,12 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 #ifdef BND_STRG_QA
 				BND_STRG_PRINTQAMSG(table, entry, YLW("Receive no frame by 5G interface within %u seconds,"
 				" client (%02x:%02x:%02x:%02x:%02x:%02x) allow connect to 2.4G.\n"),
-				table->CheckTime, PRINT_MAC(entry->Addr));
+				(table->CheckTime + (BND_STRG_CHECK_5G_TIME/2)), PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
 				entry->Control_Flags |=	fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
 
 			}else if (elapsed_time >= table->CheckTime &&
+				(statistics_5GL_band->AuthReqCount > 0 || statistics_5GH_band->AuthReqCount > 0) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_2G) &&
 				!(entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY))
 			{
@@ -3557,10 +3565,9 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 				*   we condider this client is 5G only 
 				*/
 #ifdef BND_STRG_QA
-				BND_STRG_PRINTQAMSG(table, entry,
-								YLW("Receive no frame by 2G interface within %u seconds,"
-									" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 5G only.\n"),
-									table->CheckTime, PRINT_MAC(entry->Addr));
+				BND_STRG_PRINTQAMSG(table, entry, YLW("Receive no frame by 2G interface within %u seconds,"
+				" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 5G only.\n"),
+				table->CheckTime, PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
 				entry->Control_Flags |= fBND_STRG_CLIENT_IS_5G_ONLY;
 				/* dissallow connect to 2.4GHz and clear 2G only flag */
