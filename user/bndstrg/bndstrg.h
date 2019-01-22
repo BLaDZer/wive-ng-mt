@@ -36,12 +36,15 @@
 #include <time.h>
 
 //#define BNDSTRG_BACKUP 1
-#define IFNAME_2G "ra0"
-#define IFNAME_5G "rai0"
+#define IFNAME_2G 			"ra0"
+#define IFNAME_5G 			"rai0"
 
 #define BND_STRG_MAX_TABLE_SIZE		1024
 #define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
-#define BND_STRG_MIN_REPLACE_TIME	60
+
+
+#define BND_STRG_GC_TH			24		// reserved entry for faster replace
+#define BND_STRG_MIN_REPLACE_TIME	120		// replace records only if oldest then 120s
 
 #define BAND_5G		                1
 #define BAND_2G	                    	2
@@ -802,7 +805,7 @@ int bndstrg_init(struct bndstrg *bndstrg, struct bndstrg_event_ops *event_ops, i
 int bndstrg_deinit(struct bndstrg *bndstrg);
 void bndstrg_run(struct bndstrg *bndstrg);
 void bndstrg_stop(struct bndstrg *bndstrg, u8 reason_code);
-struct bndstrg_cli_entry * bndstrg_get_old_entry(struct bndstrg *bndstrg, struct bndstrg_iface *inf);
+struct bndstrg_cli_entry * bndstrg_get_old_entry(struct bndstrg *bndstrg);
 u8 bndstrg_client_band_update(struct bndstrg *bndstrg,struct bndstrg_cli_entry *entry,u8 band);
 void bndstrg_cli_status_rsp (struct bndstrg *bndstrg, struct bnd_msg_cli_status_rsp *cli_status_rsp);
 void bndstrg_update_btm_status(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry);

@@ -150,8 +150,7 @@ struct bndstrg_iface * bndstrg_get_interface_by_channel(
     u8 channel);
 
 int bndstrg_cleanup_table(
-	struct bndstrg *bndstrg,
-	struct bndstrg_iface *inf);
+	struct bndstrg *bndstrg);
 
 void bndstrg_garbage_table(
 	struct bndstrg *bndstrg);
@@ -1096,7 +1095,7 @@ void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *in
 			table->active_client_2G ++;
 			if(table->active_client_2G >= inf->max_driver_table_size)
 			{
-				if(bndstrg_cleanup_table(bndstrg, NULL))
+				if(bndstrg_cleanup_table(bndstrg))
 					    return;
 			}
 			band_idx = IDX_2G;
@@ -1110,7 +1109,7 @@ void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *in
 				table->active_client_H5G ++;
 				if(table->active_client_H5G >= inf->max_driver_table_size)
 				{
-					if(bndstrg_cleanup_table(bndstrg, NULL))
+					if(bndstrg_cleanup_table(bndstrg))
 						    return;
 				}
 				band_idx = IDX_5GH;
@@ -1121,7 +1120,7 @@ void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *in
 				table->active_client_L5G ++;
 				if(table->active_client_L5G >= inf->max_driver_table_size)
 				{
-					if(bndstrg_cleanup_table(bndstrg, NULL))
+					if(bndstrg_cleanup_table(bndstrg))
 						    return;
 				}
 				band_idx = IDX_5GL;
@@ -1417,8 +1416,8 @@ int bndstrg_insert_entry(
 	struct bndstrg *bndstrg = table->bndstrg;
 
 	/* 5 records reserved */
-	if (table->Size >= table->max_steering_size - 5) {
-		if(bndstrg_cleanup_table(bndstrg, NULL))
+	if (table->Size >= (table->max_steering_size - BND_STRG_GC_TH)) {
+		if(bndstrg_cleanup_table(bndstrg))
 			return BND_STRG_TABLE_FULL;
 	}
 
@@ -1589,9 +1588,6 @@ int bndstrg_cli_event_req(
 		DBGPRINT(DEBUG_OFF, "%s BND_STRG_NOT_INITIALIZED\n", __FUNCTION__);
 		return BND_STRG_NOT_INITIALIZED;
 	}
-
-	/* start garbage collector per event */
-	bndstrg_garbage_table(bndstrg);
 
 	inf = bndstrg_get_interface_by_channel(&bndstrg->ctrl_iface,channel);
 	if(!inf){
@@ -4183,8 +4179,8 @@ u8 bndstrg_client_band_update(
 			bndstrg_accessible_cli(bndstrg, inf_source, entry, CLI_DEL);
 	}
 
-	if(inf_target->driver_table_size >=  inf_target->max_driver_table_size){
-		if(bndstrg_cleanup_table(bndstrg, inf_target))
+	if(inf_target->driver_table_size >= inf_target->max_driver_table_size){
+		if(bndstrg_cleanup_table(bndstrg))
 			return FALSE;
 	}
 	bndstrg_accessible_cli(bndstrg, inf_target, entry, CLI_ADD);
@@ -5338,95 +5334,92 @@ struct bndstrg_iface * bndstrg_get_interface_by_channel(
     return NULL;
 }
 
+/* if soft ALG find remove entry not result use this for hard drop not connected records */
 void bndstrg_garbage_table(
 	struct bndstrg *bndstrg)
 {
-	u8 i, elapsed_time = 0, count=0;
+	u8 i;
 	struct bndstrg_cli_table *table = &bndstrg->table;
 	struct bndstrg_cli_entry *temp_entry = NULL;
 
-	/* cleanup not connected records exclude 20 first records of table and fresh records */
-
-	if (table->Size < (table->max_steering_size - 20))
+	/* only if table curent size > high thres */
+	if (table->Size < (table->max_steering_size - BND_STRG_GC_TH))
 		    return;
 
-	for(i=table->max_steering_size; i>20; i--){
-		temp_entry = & table->Entry[i];
+	DBGPRINT(DEBUG_TRACE, "OLD: Try cleanup not connected records exclude 20 first records of table and fresh records.\n");
+
+	/* full remove not connected station and wait renew */
+	for(i=table->max_steering_size; i>0; i--){
+		temp_entry = &table->Entry[i];
 		if (temp_entry->bValid == TRUE && !temp_entry->bConnStatus)
 		{
-			count ++;
-			elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
-			if(elapsed_time > BND_STRG_MIN_REPLACE_TIME) {
+			if(temp_entry->elapsed_time > BND_STRG_MIN_REPLACE_TIME) {
 				struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 				struct bndstrg_iface *inf_target = bndstrg_get_interface(ctrl_iface, NULL, temp_entry->band, TRUE);
-				if(inf_target)
-					bndstrg_accessible_cli(bndstrg, inf_target, temp_entry, CLI_DEL);
-				bndstrg_delete_entry(table,temp_entry->Addr,temp_entry->TableIndex);
 #ifdef BND_STRG_QA
 				BND_STRG_PRINTQAMSG(table, temp_entry, (" %02x:%02x:%02x:%02x:%02x:%02x [band:%s][Channel:%d] remove by garbage collector.\n"),
 					PRINT_MAC(temp_entry->Addr),bndstrg_get_entry_band(temp_entry->band), temp_entry->Channel);
 #endif /* BND_STRG_QA */
+
+				if(inf_target)
+					bndstrg_accessible_cli(bndstrg, inf_target, temp_entry, CLI_DEL);
+				bndstrg_delete_entry(table,temp_entry->Addr,temp_entry->TableIndex);
 			}
 		}
-		if(count >= table->Size)
-			break;
 	}
 }
 
+/* soft ALG find remove entry target */
 int bndstrg_cleanup_table(
-	struct bndstrg *bndstrg,
-	struct bndstrg_iface *inf)
+	struct bndstrg *bndstrg)
 {
-
 	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 	struct bndstrg_cli_table *table = &bndstrg->table;
-	struct bndstrg_cli_entry *entry_del = bndstrg_get_old_entry(bndstrg, inf);
+	struct bndstrg_cli_entry *entry_del;
 	struct bndstrg_iface *inf_target = NULL;
 
-	if(entry_del) {
-	    if (inf)
-		inf_target = inf;
-	    else
-		inf_target = bndstrg_get_interface(ctrl_iface, NULL, entry_del->band, TRUE);
+	/* search record for replace */
+	entry_del = bndstrg_get_old_entry(bndstrg);
 
-	    if(inf_target)
-		bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
-	    bndstrg_delete_entry(table,entry_del->Addr,entry_del->TableIndex);
+	if(entry_del) {
 #ifdef BND_STRG_QA
-	    BND_STRG_PRINTQAMSG(table, entry_del, (" %02x:%02x:%02x:%02x:%02x:%02x [band:%s][Channel:%d] remove by table cleanup logic.\n"),
+		BND_STRG_PRINTQAMSG(table, entry_del, (" %02x:%02x:%02x:%02x:%02x:%02x [band:%s][Channel:%d] remove by table cleanup logic for replace.\n"),
 			PRINT_MAC(entry_del->Addr),bndstrg_get_entry_band(entry_del->band), entry_del->Channel);
 #endif /* BND_STRG_QA */
-	    return 0;
+
+		inf_target = bndstrg_get_interface(ctrl_iface, NULL, entry_del->band, TRUE);
+		if(inf_target)
+		    bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
+		bndstrg_delete_entry(table,entry_del->Addr,entry_del->TableIndex);
+		return 0;
 	} else {
 		DBGPRINT(DEBUG_OFF, "Table full, not find oldest entry for del, try garbage collector start.\n");
 		bndstrg_garbage_table(bndstrg);
-		return 1;
+		return 1; /* skip one itaration after table cleanup */
 	}
 }
 
 struct bndstrg_cli_entry * bndstrg_get_old_entry(
-	struct bndstrg *bndstrg,
-	struct bndstrg_iface *inf)
+	struct bndstrg *bndstrg)
 {
-	u8 i, elapsed_time = 0, max_elapsed_time = 0, count=0;
+	u8 i, max_elapsed_time = 0, count=0;
 	struct bndstrg_cli_table *table = &bndstrg->table;
 	struct bndstrg_cli_entry * entry = NULL, *temp_entry = NULL;
 	u32 AuthReqCount = 0;
 
 	/* try find old not try auth band client for record replace */
-	max_elapsed_time = 0;
-	for(i=0; i<table->max_steering_size; i++){
-		temp_entry = & table->Entry[i];
+	max_elapsed_time = 0; // only by auth do not try and max last event indicator search
+	for (i=0;i<table->max_steering_size;i++) {
+		temp_entry = &table->Entry[i];
 		if (temp_entry->bValid == TRUE)
 		{
 			count ++;
-			if(temp_entry->bConnStatus || temp_entry->Operation_steered || (inf && inf->Band != temp_entry->band))
+			if(temp_entry->bConnStatus || temp_entry->Operation_steered)
 				continue;
 			AuthReqCount = temp_entry->statistics[0].AuthReqCount + temp_entry->statistics[1].AuthReqCount + temp_entry->statistics[2].AuthReqCount;
 			if (AuthReqCount == 0) {
-				elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
-				if(elapsed_time > max_elapsed_time){
-					max_elapsed_time = elapsed_time;
+				if(temp_entry->elapsed_time > max_elapsed_time){
+					max_elapsed_time = temp_entry->elapsed_time;
 					entry = temp_entry;
 				}
 			}
@@ -5437,38 +5430,39 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 
 	/* try find old one band client for record replace */
 	max_elapsed_time = BND_STRG_MIN_REPLACE_TIME;
-	for(i=0; i<table->max_steering_size; i++){
-		temp_entry = & table->Entry[i];
-		if (temp_entry->bValid == TRUE)
-		{
-			count ++;
-			elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
-			if(temp_entry->bConnStatus ||
-				temp_entry->Operation_steered ||
-				(inf && inf->Band != temp_entry->band) ||
-				(!IS_BND_STRG_DUAL_BAND_CLIENT(temp_entry->Control_Flags) &&
-				elapsed_time < BND_STRG_MIN_REPLACE_TIME))
-				continue;
-			if(elapsed_time > max_elapsed_time){
-				max_elapsed_time = elapsed_time;
-				entry = temp_entry;
+	count=0;
+	if(!entry){
+		for (i=0;i<table->max_steering_size;i++) {
+			temp_entry = &table->Entry[i];
+			if (temp_entry->bValid == TRUE)
+			{
+				count ++;
+				if(temp_entry->bConnStatus ||
+					temp_entry->Operation_steered ||
+					(!IS_BND_STRG_DUAL_BAND_CLIENT(temp_entry->Control_Flags) &&
+					temp_entry->elapsed_time < BND_STRG_MIN_REPLACE_TIME))
+					continue;
+				if(temp_entry->elapsed_time > max_elapsed_time){
+					max_elapsed_time = temp_entry->elapsed_time;
+					entry = temp_entry;
+				}
 			}
-		}
-		if(count >= table->Size)
-			break;
+			if(count >= table->Size)
+				break;
+		    }
 	}
 
 	/* try find oldest client if not search more suitably */
 	max_elapsed_time = BND_STRG_MIN_REPLACE_TIME;
+	count=0;
 	if(!entry){
-		for(i=0; i<table->max_steering_size; i++){
-			temp_entry = & table->Entry[i];
+		for (i=0;i<table->max_steering_size;i++) {
+			temp_entry = &table->Entry[i];
 			if (temp_entry->bValid == TRUE)
 			{
 				count ++;
-				elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
-				if(elapsed_time > max_elapsed_time){
-					max_elapsed_time = elapsed_time;
+				if(temp_entry->elapsed_time > max_elapsed_time){
+					max_elapsed_time = temp_entry->elapsed_time;
 					entry = temp_entry;
 				}
 			}
