@@ -39,13 +39,13 @@
 #define IFNAME_2G "ra0"
 #define IFNAME_5G "rai0"
 
-#define BND_STRG_MAX_TABLE_SIZE		512
+#define BND_STRG_MAX_TABLE_SIZE		1024
 #define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
 #define BND_STRG_MIN_REPLACE_TIME	60
 
 #define BAND_5G		                1
 #define BAND_2G	                    	2
-#define BAND_2G5G                   (BAND_2G | BAND_5G)
+#define BAND_2G5G                   	(BAND_2G | BAND_5G)
 #define BAND_5G_L	                4
 #define BAND_5G_H	                8
 #define BAND_INVALID                	0x00
@@ -55,13 +55,13 @@
 #define APMT2_PEER_ASSOC_REQ        	2
 #define APMT2_PEER_AUTH_REQ		3
 
-#define BND_STRG_AGE_TIME		86400 //24 hrs 60*60*24 dual band records cleanup
-#define BND_STRG_SINGLE_BAND_TIMEOUT	86400 //24 hrs 60*60*24 single band reports cleanup
-#define BND_STRG_DORMANT_TIME		1200000 //ms
+#define BND_STRG_DORMANT_TIME		1200000		//20 minutes
+#define BND_STRG_AGE_TIME		1200000		//20 minutes (now not used)
+#define BND_STRG_SINGLE_BAND_TIMEOUT	21600		//6 hrs 60*60*8 single band reports cleanup
 
 #define BND_STRG_HOLD_TIME		5     		// in sec, orig 50
 #define BND_STRG_CHECK_TIME		7		// in sec, orig 30
-#define BND_STRG_CHECK_5G_TIME		4		// full BND_STRG_CHECK_5G_TIME + BND_STRG_CHECK_TIME
+#define BND_STRG_CHECK_5G_TIME		3		// full BND_STRG_CHECK_5G_TIME + BND_STRG_CHECK_TIME
 #define BND_STRG_RSSI_DIFF		30
 #define BND_STRG_RSSI_LOW		-90
 #define BND_STRG_DOWNSTEER_RSSI		-85		// orig -70
