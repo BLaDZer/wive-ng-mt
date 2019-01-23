@@ -39,11 +39,11 @@
 #define IFNAME_2G 			"ra0"
 #define IFNAME_5G 			"rai0"
 
-#define BND_STRG_MAX_TABLE_SIZE		1024
+#define BND_STRG_MAX_TABLE_SIZE		512
 #define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
 
 
-#define BND_STRG_GC_TH			24		// reserved entry for faster replace
+#define BND_STRG_GC_TH			12		// reserved entry for faster replace
 #define BND_STRG_MIN_REPLACE_TIME	120		// replace records only if oldest then 120s
 
 #define BAND_5G		                1
@@ -58,8 +58,8 @@
 #define APMT2_PEER_ASSOC_REQ        	2
 #define APMT2_PEER_AUTH_REQ		3
 
-#define BND_STRG_DORMANT_TIME		1200000		//20 minutes
-#define BND_STRG_AGE_TIME		1200000		//20 minutes (now not used)
+#define BND_STRG_DORMANT_TIME		1200		//20 minutes
+#define BND_STRG_AGE_TIME		1200		//20 minutes (now not used)
 #define BND_STRG_SINGLE_BAND_TIMEOUT	21600		//6 hrs 60*60*8 single band reports cleanup
 
 #define BND_STRG_HOLD_TIME		5     		// in sec, orig 50

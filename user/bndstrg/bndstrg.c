@@ -1411,7 +1411,7 @@ int bndstrg_insert_entry(
 	struct bndstrg_cli_entry **entry_out)
 {
 	int i;
-	unsigned char HashIdx;
+	unsigned long HashIdx;
 	struct bndstrg_cli_entry *entry = NULL, *this_entry = NULL;
 	struct bndstrg *bndstrg = table->bndstrg;
 
@@ -1479,7 +1479,7 @@ int bndstrg_insert_entry(
 
 int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index)
 {
-	u16 HashIdx = 0;
+	unsigned long HashIdx = 0;
 	struct bndstrg_cli_entry *entry = NULL, *pre_entry, *this_entry;
 	int ret_val = BND_STRG_SUCCESS;
 
@@ -1489,16 +1489,18 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 			DBGPRINT(DEBUG_ERROR, RED("%s()::debug here\n"), __FUNCTION__);
 			return BND_STRG_INVALID_ARG;
 		}
-		BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
-			__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+
 		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
-#ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry, YLW("%s[%d]Addr=%02x:%02x:%02x:%02x:%02x:%02x\n"),
-			__func__,__LINE__,PRINT_MAC(entry->Addr));
-#endif
 		entry = table->Hash[HashIdx];
+
 		while (entry) {
 			if (MAC_ADDR_EQUAL(pAddr, entry->Addr)) {
+				BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+				__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+#ifdef BND_STRG_QA
+				BND_STRG_PRINTQAMSG(table, entry, YLW("%s[%d]Addr=%02x:%02x:%02x:%02x:%02x:%02x\n"),
+				__FUNCTION__,__LINE__,PRINT_MAC(entry->Addr));
+#endif
 				/* this is the entry we're looking for */
 				break;
 			} else {
@@ -1521,13 +1523,12 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 			BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
 			__FUNCTION__, Index, PRINT_MAC(entry->Addr), table->Size);
 		    }
-		    if (entry->bValid) {
+		    if (entry->bValid)
 			HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
-		    }
 		}
 	}
 
-	if (entry && entry->bValid) 
+	if (entry && entry->bValid)
 	{
 		pre_entry = NULL;
 		this_entry = table->Hash[HashIdx];
@@ -1626,7 +1627,7 @@ int bndstrg_cli_event_req(
 		ret_val = bndstrg_insert_entry(table, pSrcAddr, &entry);
 		if (ret_val == BND_STRG_TABLE_FULL) {
 			/* try cleanup and retry */
-			bndstrg_garbage_table(bndstrg);
+			bndstrg_cleanup_table(bndstrg);
 			ret_val = bndstrg_insert_entry(table, pSrcAddr, &entry);
 			return ret_val;
 		}
@@ -2588,8 +2589,7 @@ static int _bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band, u8 
 			{
 				entry = &table->Entry[i];
 				if (entry->bValid == TRUE) {
-					bndstrg_check_entry_aged(bndstrg,
-											  entry);
+					bndstrg_check_entry_aged(bndstrg, entry);
 				}
 			}
 		}
@@ -2919,7 +2919,7 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 	case BND_SEND_BTM:
 		{
 			int k = 0;
-			u16 HashIdx=0;
+			unsigned long HashIdx=0;
 			char	*value;
 			u8		macAddr[MAC_ADDR_LEN];
 			//u8		macAddrzero[MAC_ADDR_LEN] = { 0 };
@@ -3339,13 +3339,13 @@ u8 bndstrg_sta_update(struct bndstrg *bndstrg)
 	u32 count=0;
 	struct bndstrg_cli_entry *entry = NULL;
 	struct bndstrg_cli_table *table = &bndstrg->table;
-	
+
 	for (i = 0; i < table->max_steering_size; i++)
 	{
 		entry = &table->Entry[i];
 		if ((entry->bValid == TRUE) && (entry->bConnStatus))
 		{
-		    count++;
+			count++;
 			if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) ||
 				IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 			{
@@ -3419,40 +3419,40 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 
 	if(entry->Channel == 0 && elapsed_time >= table->DormantTime)
 	{
-		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
-		if(inf)
-			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 #ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec >= DormantTime:%d \n"),
 			PRINT_MAC(entry->Addr), elapsed_time, table->DormantTime);
 #endif
+		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+		if(inf)
+			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
-	}else if ((!entry->bConnStatus) && (entry->Channel != 0)) /* need  wait fallback to original band */
+	}else if ((!entry->bConnStatus) && (entry->Channel != 0) && (IS_5G_BAND(entry->band) || IS_2G_BAND(entry->band))) /* need  wait fallback to original band */
 	{
 		/* do not clean 5GHz single band entry some times */
 		if((entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY) &&
 			 (elapsed_time <= table->single_band_timeout))
-			return FALSE;
+			return TRUE;
 
 		/* do not clean 5GHz dual band entry some times */
 		if(((IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags)) ||
 			(IS_5G_L_BAND(entry->band) || IS_5G_L_BAND(entry->band))) &&
 			 (elapsed_time <= table->single_band_timeout)/2)
-			return FALSE;
+			return TRUE;
 
 		/* do not clean 2.4GHz single band entry some times */
 		if((IS_BND_STRG_2G_ONLY_BAND_CLIENT(entry->Control_Flags)) &&
 			 (elapsed_time <= table->single_band_timeout/8))
-			return FALSE;
-
-		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
-		if(inf)
-			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+			return TRUE;
 #ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry, RED("Delete not connected entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec.\n"),
 			PRINT_MAC(entry->Addr),elapsed_time);
 #endif
+
+		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+		if(inf)
+			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
 	} if ((entry->bConnStatus) && (elapsed_time >= table->CheckTime) &&
@@ -3464,13 +3464,13 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 		entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
 		entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
 
-		inf = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
-		if(inf)
-			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 #ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry, RED("Delete 2GHz entry copy (%02x:%02x:%02x:%02x:%02x:%02x), is dualband client and 5GHz RSSI good.\n"),
 			PRINT_MAC(entry->Addr));
 #endif
+		inf = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
+		if(inf)
+			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
 	}
@@ -4144,9 +4144,9 @@ u8 bndstrg_client_band_update(
 
 #ifdef BND_STRG_QA
 
-	BND_STRG_PRINTQAMSG(table,entry,"Addr=%02x:%02x:%02x:%02x:%02x:%02x,entry->band=%s,prefer_band=%s elpased_time=%u sec\n",
+	BND_STRG_PRINTQAMSG(table,entry,"UPDATE: Addr=%02x:%02x:%02x:%02x:%02x:%02x,entry->band=%s,prefer_band=%s elpased_time=%u sec\n",
 						PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band),bndstrg_get_entry_band(band), bndstrg_get_elapsed_time(entry->tp));
-	BND_STRG_PRINTQAMSG(table,entry,"5GH_5GL:%s \t5GH_2G:%s \t5GL_2G:%s \n",
+	BND_STRG_PRINTQAMSG(table,entry,"UPDATE: 5GH_5GL:%s \t5GH_2G:%s \t5GL_2G:%s \n",
 					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GH_5GL]],
 					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GH_2G]],
 					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GL_2G]]);
@@ -4537,21 +4537,21 @@ u8 bndstrg_operation_steering(
 		}
 	}
 #endif
-	
+
 	for(i=0;i<table->max_steering_size;i++){
 
 		entry = &table->Entry[i];
-		if ((!entry) || (!entry->bValid))
+		if (!entry || !entry->bValid)
 			continue;
-		else
-		    count++;
-		
+
+		count++;
+
 		if ((entry->bConnStatus == FALSE) && (entry->Operation_steered == FALSE))
 			continue;
-		
+
 #ifdef VENDOR_FEATURE7_SUPPORT
 		if(entry->low_rssi_disconnect_cnt >= RSSI_CHECK_COUNT){
-#ifdef BND_STRG_QA		
+#ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry,("Addr=%02x:%02x:%02x:%02x:%02x:%02x Disconnect STA as rssi less than %d rssi threshold\n"),
 			PRINT_MAC(entry->Addr), table->RSSIDisconnect);
 #endif
@@ -4567,9 +4567,9 @@ u8 bndstrg_operation_steering(
 
 		if (steered == TRUE)
 			break;
-		
+
 		if(count >= table->Size)
-		    break;
+		        break;
 	}
 
 	return TRUE;
@@ -4580,11 +4580,11 @@ u8 bndstrg_inf_status_polling(struct bndstrg *bndstrg,struct bndstrg_cli_table *
     struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
     struct bndstrg_iface *inf;
     u8 i,inf_ready_count = 0;
-	u8 band_cnt[MAX_INF_NUM] = {0};
-	static	int polling_cnt = 0;
+    u8 band_cnt[MAX_INF_NUM] = {0};
+    static	int polling_cnt = 0;
 	
-	polling_cnt++;
-	memset(band_cnt,0x00,sizeof(band_cnt));
+    polling_cnt++;
+    memset(band_cnt,0x00,sizeof(band_cnt));
     /* polling all interface until bndstrg is ready */
     for(i=0; i<ctrl_iface->Size; i++)
     {
@@ -4764,7 +4764,7 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 		entry = &table->Entry[i];
 		if (entry->bValid == TRUE)
 		{
-		    count++;
+			count++;
 
 			/* process non-connected STA entry only */
 			if((entry->Operation_steered == TRUE) || (entry->bConnStatus == TRUE))
@@ -4793,6 +4793,9 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 #endif
 			}
 #endif /*WPS_SUPPORT*/
+			/* check aged entry */
+			bndstrg_check_entry_aged(bndstrg,entry);
+
 			/* For disconnected STA, process association steering */
 			if((table->BndStrgMode & PRE_CONNECTION_STEERING) &&
 			    (entry->enable_compare_flag) && (entry->Channel == 0))
@@ -4805,19 +4808,9 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 				entry->Channel = inf->Channel;
 			}
 
-			/* check aged entry */
-			if (bndstrg_check_entry_aged(bndstrg,entry)) 
-			{
-				/* if entry is connected, it should run _bndstrg_allow_connection
-				 * to do 5G_DYNAMIC_RSSI and LOAD_BALANCE
-				 */
-				if (!entry->bConnStatus)
-					continue;
-			}
-
 		}
 		if(count >= table->Size)
-		    break;
+			break;
 	}
 
 	if(table->BndStrgMode & POST_CONNECTION_STEERING){
@@ -5107,8 +5100,8 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	    table->RssiLow = BndStrgRssiLow;
 
 	if (BndStrgAge != 0) {
-	    table->AgeTime = (BndStrgAge);
-	    table->DormantTime = (BndStrgAge);
+	    table->AgeTime = (BndStrgAge/1000);
+	    table->DormantTime = (BndStrgAge/1000);
 	}
 
 	if (BndStrgHoldTime != 0)
@@ -5338,7 +5331,7 @@ struct bndstrg_iface * bndstrg_get_interface_by_channel(
 void bndstrg_garbage_table(
 	struct bndstrg *bndstrg)
 {
-	u8 i;
+	u8 i, count = 0;
 	struct bndstrg_cli_table *table = &bndstrg->table;
 	struct bndstrg_cli_entry *temp_entry = NULL;
 
@@ -5349,10 +5342,11 @@ void bndstrg_garbage_table(
 	DBGPRINT(DEBUG_TRACE, "OLD: Try cleanup not connected records exclude 20 first records of table and fresh records.\n");
 
 	/* full remove not connected station and wait renew */
-	for(i=table->max_steering_size; i>0; i--){
+	for (i=0;i<table->max_steering_size;i++) {
 		temp_entry = &table->Entry[i];
 		if (temp_entry->bValid == TRUE && !temp_entry->bConnStatus)
 		{
+			count ++;
 			if(temp_entry->elapsed_time > BND_STRG_MIN_REPLACE_TIME) {
 				struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 				struct bndstrg_iface *inf_target = bndstrg_get_interface(ctrl_iface, NULL, temp_entry->band, TRUE);
@@ -5366,6 +5360,8 @@ void bndstrg_garbage_table(
 				bndstrg_delete_entry(table,temp_entry->Addr,temp_entry->TableIndex);
 			}
 		}
+		if(count >= (BND_STRG_GC_TH*2))
+			break;
 	}
 }
 
