@@ -3221,7 +3221,7 @@ int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 				if (msg.data.reject_body.DaemonPid != getpid()) {
 					BND_STRG_DBGPRINT(DEBUG_OFF,
 									  "driver was occpuy by other daemon,pid=%d,%d\n\r",getpid(),msg.data.reject_body.DaemonPid);
-					bndstrg->state = BNDSTRG_LEAVE;
+					//bndstrg->state = BNDSTRG_LEAVE;
 				}
 			}
 			break;
