@@ -1426,7 +1426,7 @@ int bndstrg_insert_entry(
 		entry = &table->Entry[i];
 
 		/* pick up the first available vacancy*/
-		if (entry->bValid == FALSE)	{
+		if (entry && entry->bValid == FALSE)	{
 			memset(entry, 0, sizeof(struct bndstrg_cli_entry));
 			/* Fill Entry */
 			get_current_system_tick(&entry->tp);
