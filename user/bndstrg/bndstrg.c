@@ -5448,8 +5448,27 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 		    }
 	}
 
-	/* try find oldest client if not search more suitably */
+	/* try find oldest client with minimal age if not search more suitably */
 	max_elapsed_time = BND_STRG_MIN_REPLACE_TIME;
+	count=0;
+	if(!entry){
+		for (i=0;i<table->max_steering_size;i++) {
+			temp_entry = &table->Entry[i];
+			if (temp_entry->bValid == TRUE)
+			{
+				count ++;
+				if(temp_entry->elapsed_time > max_elapsed_time){
+					max_elapsed_time = temp_entry->elapsed_time;
+					entry = temp_entry;
+				}
+			}
+			if(count >= table->Size)
+				break;
+		}
+	}
+
+	/* try find oldest client if not search more suitably, alarma need increase table size */
+	max_elapsed_time = 0;
 	count=0;
 	if(!entry){
 		for (i=0;i<table->max_steering_size;i++) {
