@@ -4528,6 +4528,7 @@
 28) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
 29) kernel: net: packet: validate address length.<br>
 30) kernel: net: packet: validate address length if non-zero.<br>
-31) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+31) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
+32) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
