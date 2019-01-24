@@ -3171,7 +3171,7 @@ table.form tr.ssid-row {
 		<tr id="basicKickStaRssiLowDelay_tr">
 			<td class="head" data-tr="basic roaming rssi low delay">How time rssi check before kick</td>
 			<td class="val"><input type="text" name="KickStaRssiLowDelay" class="normal" maxlength="4">
-				<span class="range" data-tr="basic roaming rssi low delay range"> 0 - 200 seconds, default 5 </span></td>
+				<span class="range" data-tr="basic roaming rssi low delay range"> 0 - 200 seconds, default 60 </span></td>
 		</tr>
 		<tr id="tmpBlockAfterKick_tr">
 			<td class="head" data-tr="adv tmpblockafterkick">Temporary block probe/assoc req from kicked client</td>

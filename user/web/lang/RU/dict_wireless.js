@@ -136,7 +136,7 @@ var wireless_dictionary = {
 	'basic roaming assoc ignor range'		: ' 0 - -100 dBm, по умолчанию 0',
 	'basic roaming rssi low range'			: ' 0 - -100 dBm, по умолчанию -78',
 	'basic roaming rssi low psm range'		: ' 0 - -100 dBm, по умолчанию -80',
-	'basic roaming rssi low delay range'		: ' 0 - 200 секунд, по умолчанию 20',
+	'basic roaming rssi low delay range'		: ' 0 - 200 секунд, по умолчанию 60',
 	'basic roaming probe rssi range'		: ' 0 - -100 dBm, по умолчанию -76',
 	'basic roaming rssi thres range'		: ' 0 - -100 dBm, по умолчанию -70',
 	'basic roaming rrm'				: 'Управление радиоресурсами 802.11K',

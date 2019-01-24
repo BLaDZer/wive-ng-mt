@@ -135,7 +135,7 @@ var wireless_dictionary = {
 	'basic roaming assoc ignor range'	: '  0 - -100 dBm, default 0 (off)',
 	'basic roaming rssi low range'		: '  0 - -100 dBm, default -78',
 	'basic roaming rssi low psm range'	: '  0 - -100 dBm, default -80',
-	'basic roaming rssi low delay range'	: '  0 - 200 seconds, default 20',
+	'basic roaming rssi low delay range'	: '  0 - 200 seconds, default 60',
 	'basic roaming probe rssi range'	: '  0 - -100 dBm, default -76',
 	'basic roaming rrm'			: 'Radio Resource Managment 802.11K',
 	'basic roaming ft'			: 'Fast Transition 802.11R',
