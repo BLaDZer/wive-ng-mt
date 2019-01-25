@@ -1493,14 +1493,11 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
 		entry = table->Hash[HashIdx];
 
+		BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+		__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+
 		while (entry) {
 			if (MAC_ADDR_EQUAL(pAddr, entry->Addr)) {
-				BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
-				__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
-#ifdef BND_STRG_QA
-				BND_STRG_PRINTQAMSG(table, entry, YLW("%s[%d]Addr=%02x:%02x:%02x:%02x:%02x:%02x\n"),
-				__FUNCTION__,__LINE__,PRINT_MAC(entry->Addr));
-#endif
 				/* this is the entry we're looking for */
 				break;
 			} else {
@@ -3392,7 +3389,7 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 	struct bndstrg_iface *inf = NULL;
 
-	if (!entry)
+	if (!entry && !entry->bValid)
 	    return FALSE;
 
 	elapsed_time = bndstrg_get_entry_elapsed_time(entry);
