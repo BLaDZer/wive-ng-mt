@@ -267,10 +267,13 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 		char_t *dns_userblock = websGetVar(wp, T("dns_userblock"), T(""));
 		ngx_nvram_bufset(wp, "dns_userblock", dns_userblock);
 
+#ifdef CONFIG_LIB_NETTLE
+#ifdef CONFIG_USER_DNSMASQSEC
 		// Enable DNSSEC
 		char_t *dns_sec = websGetVar(wp, T("dns_sec"), T("0"));
 		ngx_nvram_bufset(wp, "dns_sec", dns_sec);
-
+#endif
+#endif
 		/* force remove adlist if disable block */
 		if (CHK_IF_DIGIT(dns_adblock, 0))
 		    doSystem("rm -f /etc/dnsmasq.d/ads.conf");

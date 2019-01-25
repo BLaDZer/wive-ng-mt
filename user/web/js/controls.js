@@ -9,6 +9,15 @@
 
 *******************************************/
 
+function formatBytes(bytes,decimals) {
+   if(bytes == 0) return '0 B';
+   var k = 1024,
+       dm = decimals <= 0 ? 0 : decimals || 2,
+       sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+       i = Math.floor(Math.log(bytes) / Math.log(k));
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 // checks if value is number in range [minval, maxval]
 function inRange(value, minval, maxval) {
     if (!isFinite(value)) return false;
@@ -26,6 +35,36 @@ if (!Array.prototype.indexOf) {
          }
          return -1;
     }
+}
+
+if (!Array.prototype.filter)
+{
+  Array.prototype.filter = function(fun /*, thisp */)
+  {
+    "use strict";
+
+    if (this == null)
+      throw new TypeError();
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun != "function")
+      throw new TypeError();
+
+    var res = [];
+    var thisp = arguments[1];
+    for (var i = 0; i < len; i++)
+    {
+      if (i in t)
+      {
+        var val = t[i]; // in case fun mutates this
+        if (fun.call(thisp, val, i, t))
+          res.push(val);
+      }
+    }
+
+    return res;
+  };
 }
 
 if (document.getElementsByClassName === undefined)

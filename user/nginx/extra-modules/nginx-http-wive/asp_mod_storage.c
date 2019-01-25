@@ -10,6 +10,128 @@ static int dir_count;
 static int part_count;
 static int media_dir_count;
 
+static void storageRemoveFile(webs_t* wp, char_t *path, char_t *query) {
+	char* file_name_in = websGetVar(wp, T("name"), T(""));
+	char file_name[PATH_MAX] = {0};
+	snprintf(file_name, PATH_MAX, "/media/%s", file_name_in);
+
+	if (strstr(file_name, "/../") != NULL)
+	{
+		websError(wp, 500, T("Incorrect pathname!"));
+		return;
+	}
+
+	int errcode = remove(file_name);
+
+	if (errcode != 0) {
+		websError(wp, 500, T("File removal error! (%i, %s)"), errcode, file_name);
+		return;
+	}
+
+	outWrite("%i", errcode);
+}
+
+static void storageUnmountDrive(webs_t* wp, char_t *path, char_t *query) {
+	char* pathname_in = websGetVar(wp, T("name"), T(""));
+	char pathname[PATH_MAX] = {0};
+	snprintf(pathname, PATH_MAX, "/media/%s", pathname_in);
+
+	if (strstr(pathname, "/../") != NULL)
+	{
+		outWrite("-1");
+		return;
+	}
+
+	int status = doSystem("umount \"%s\" && rmdir \"%s\"", pathname, pathname); //FIXME: insecure
+	if (!WIFEXITED(status)) {
+		outWrite("-1");
+		return;
+	}
+
+	outWrite("%i", WEXITSTATUS(status));
+}
+
+
+
+static void storageGetDir(webs_t* wp, char_t *path, char_t *query) {
+	DIR *dir;
+	struct stat fstat;
+	struct dirent *ent;
+	int perm;
+	int first = 1;
+
+	char* dir_name_in = websGetVar(wp, T("name"), T(""));
+	char dir_name[PATH_MAX] = {0};
+	snprintf(dir_name, PATH_MAX, "/media/%s", dir_name_in);
+	char* resolved = realpath(dir_name, NULL);
+	strcpy(dir_name, resolved);
+	free(resolved);
+
+
+	outWrite("[\n");
+
+	if ((dir = opendir(dir_name)) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+
+			if (!first) outWrite(",\n");
+			outWrite("{ \"name\":\"%s\"", ent->d_name);
+
+			const char* dtype = "UNK";
+			if (ent->d_type == DT_DIR) dtype = "DIR";
+			if (ent->d_type == DT_REG) dtype = "FILE";
+			if (ent->d_type == DT_LNK) dtype = "LINK";
+
+			char fullpath[PATH_MAX] = {0};
+			snprintf(fullpath, PATH_MAX, "%s/%s", dir_name, ent->d_name);
+			resolved = realpath(fullpath, NULL);
+			strcpy(fullpath, resolved);
+			free(resolved);
+
+			if (stat(fullpath, &fstat) < 0) {
+				perm = -1;
+			} else {
+				perm = fstat.st_mode;
+			}
+
+			outWrite(", \"perm\":%i", perm);
+
+			if (ent->d_type == DT_DIR && strstr(fullpath,"/media/") == fullpath && strlen(ent->d_name)>2 && ent->d_name[0] == 's' && ent->d_name[1] == 'd') {
+				dtype = "DRIVE";
+
+				FILE *fp_mount = NULL;
+				char partition[PATH_MAX] = {0};
+				char mpath[PATH_MAX] = {0};
+				char fs[32] = {0};
+				char fsflags[1024] = {0};
+
+				if (NULL != (fp_mount = fopen("/proc/mounts", "r")))
+				{
+					while(EOF != fscanf(fp_mount, "%s %s %s %s %*s %*s\n", partition, mpath, fs, fsflags))
+					{
+						if (0 == strcmp(mpath, fullpath)) {
+							outWrite(", \"partition\":\"%s\", \"fs\":\"%s\", \"fsflags\":\"%s\"", partition, fs, fsflags);
+							break;
+						}
+					}
+					fclose(fp_mount);
+				}
+			}
+
+			outWrite(", \"type\":\"%s\"", dtype);
+
+			if (ent->d_type == DT_REG) {
+				outWrite(", \"size\":%lld", (long long)fstat.st_size);
+			}
+
+			outWrite(" }");
+			first = 0;
+	}
+
+		closedir(dir);
+	}
+	outWrite("\n]\n");
+}
+
 static void storageDiskAdm(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *submit;
@@ -315,6 +437,10 @@ void asp_mod_storage_init() {
 	aspDefineFunc(T("getMaxVol"), getMaxVol, ADMIN);
 	websFormDefine(T("storageDiskAdm"), storageDiskAdm, ADMIN);
 	websFormDefine(T("storageDiskPart"), storageDiskPart, ADMIN);
+
+	websFormDefine(T("storageGetDir"), storageGetDir, ADMIN);
+	websFormDefine(T("storageRemoveFile"), storageRemoveFile, ADMIN);
+	websFormDefine(T("storageUnmountDrive"), storageUnmountDrive, ADMIN);
 #ifdef CONFIG_FTPD
 	websFormDefine(T("storageFtpSrv"), storageFtpSrv, ADMIN);
 #endif

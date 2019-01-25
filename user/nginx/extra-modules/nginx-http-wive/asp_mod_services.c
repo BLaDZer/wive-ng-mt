@@ -880,6 +880,14 @@ static int getOpenSSLBuilt(webs_t *wp, char** params, int nparams) {
 #endif
 }
 
+static int getNettleBuilt(webs_t *wp, char** params, int nparams) {
+#ifdef CONFIG_LIB_NETTLE
+	return outWrite(T("1"));
+#else
+	return outWrite(T("0"));
+#endif
+}
+
 static int getSmbFPBuilt(webs_t *wp, char** params, int nparams) {
 #ifdef CONFIG_NETFILTER_FP_SMB
 	return outWrite(T("1"));
@@ -934,6 +942,7 @@ void asp_mod_services_init()
 	aspDefineFunc(("getProcessList"), getProcessList, EVERYONE);
 	aspDefineFunc(("getSMPBuilt"), getSMPBuilt, EVERYONE);
 	aspDefineFunc(("getOpenSSLBuilt"), getOpenSSLBuilt, EVERYONE);
+	aspDefineFunc(("getNettleBuilt"), getNettleBuilt, EVERYONE);
 	aspDefineFunc(("getSmbFPBuilt"), getSmbFPBuilt, EVERYONE);
 	aspDefineFunc(("getARPwatchBuilt"), getARPwatchBuilt, EVERYONE);
 	aspDefineFunc(("getCWMPAutoAvailable"), getCWMPAutoAvailable, EVERYONE);

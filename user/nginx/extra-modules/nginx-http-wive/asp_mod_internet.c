@@ -427,6 +427,15 @@ static int getDnsmasqBuilt(webs_t *wp, char** params, int nparams)
 #endif
 }
 
+static int getDnsmasqSecBuilt(webs_t *wp, char** params, int nparams)
+{
+#ifdef CONFIG_USER_DNSMASQSEC
+	return outWrite(T("1"));
+#else
+	return outWrite(T("0"));
+#endif
+}
+
 static int getCdpBuilt(webs_t *wp, char** params, int nparams)
 {
 #ifdef CONFIG_USER_CDP
@@ -1630,6 +1639,7 @@ int asp_mod_internet_init()
 	aspDefineFunc(("getLanMac"), getLanMac, EVERYONE);
 	aspDefineFunc(("getLanNetmask"), getLanNetmask, EVERYONE);
 	aspDefineFunc(("getDnsmasqBuilt"), getDnsmasqBuilt, EVERYONE);
+	aspDefineFunc(("getDnsmasqSecBuilt"), getDnsmasqSecBuilt, EVERYONE);
 	aspDefineFunc(("getGWBuilt"), getGWBuilt, EVERYONE);
 	aspDefineFunc(("getCdpBuilt"), getCdpBuilt, EVERYONE);
 	aspDefineFunc(("getLltdBuilt"), getLltdBuilt, EVERYONE);

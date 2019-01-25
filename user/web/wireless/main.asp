@@ -2508,8 +2508,8 @@ table.form tr.ssid-row {
 				<td class="title"></td>
 				<td class="title" align="center" data-tr="basic network name">Network name</td>
 				<td class="title" align="center" data-tr="basic hssid">Hidden</td>
-				<td class="title" align="center"><span data-tr="basic clients">Clients</span><br><span data-tr="basic isolated">Isolated</span></td>
-				<td class="title" align="center"><span id="basicBroadcast">Broadcast</span><br><span data-tr="basic isolated">Isolated</span></td>
+				<td class="title wordwrap" align="center" data-tr="basic clients isolated">Clients Isolated</td>
+				<td class="title wordwrap" align="center" data-tr="basic broadcast isolated">Broadcast Isolated</td>
 				<td class="title" align="center" data-tr="basic action">Action</td>
 			</tr>
 			<tr id="div_11g_name" class="ssid-row">

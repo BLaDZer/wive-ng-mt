@@ -286,7 +286,7 @@ void asp_mod_firewall_init(void)
 	aspDefineFunc("getPortForwardRules",            getPortForwardRules,            EVERYONE);
 
 	websFormDefine("portFiltering",                 portFiltering,                  EVERYONE);
-	websFormDefine("portFilteringInput",            portFilteringInput,             EVERYONE);
+	websFormDefine("portFilteringInput",            portFilteringInput,             ADMIN);
 	websFormDefine("portForward",                   portForward,                    EVERYONE);
 	websFormDefine("setFirewall",                   setFirewall,                    EVERYONE);
 	websFormDefine("setFirewallDMZ",                setFirewallDMZ,                 EVERYONE);

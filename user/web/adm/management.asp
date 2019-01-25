@@ -296,7 +296,7 @@
 									<form method="POST" name="Lang" action="/goform/setSysLang">
 										<select name="langSelection" id="langSelection" class="half"></select>
 										<input type="hidden" name="submit-url" value="/adm/management.asp">&nbsp;
-										<input type="submit" class="half" value="Apply" id="manLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500);">&nbsp;&nbsp;
+										<input type="submit" value="Apply" id="manLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500);">&nbsp;&nbsp;
 									</form>
 								</td>
 							</tr>
@@ -337,7 +337,7 @@
 									<td class="head" ></td>
 									<td colspan="1">
 										<input type="hidden" name="submit-url" value="/adm/management.asp">
-										<input type="submit" class="half" value="Apply" id="manAdmApply">
+										<input type="submit" value="Apply" id="manAdmApply">
 									</td>
 
 									<td colspan="2" style="text-align: center;">

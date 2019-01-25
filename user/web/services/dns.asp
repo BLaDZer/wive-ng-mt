@@ -170,6 +170,7 @@
 				displayElement('dnsproxy',	BUILD_DNSMASQ);
 				displayElement(['div_hosts', 'div_hosts_add', 'div_dnsblock', 'dnsToLocalRedirRow', 'div_misc'], form.dnsPEnabled.value != '0');
 				displayElement(['div_dnsblock_except', 'div_dnsblock_except_add'], form.dnsPEnabled.value != '0' && form.dns_adblock.value != '0');
+				displayElement('div_dnssec',	BUILD_DNSMASQSEC && BUILD_NETTLE);
 			}
 
 			function deleteDnsEntry(elem) {
@@ -582,7 +583,7 @@
 						</thead>
 						<tbody>
 
-							<tr>
+							<tr id="div_dnssec">
 								<td class="head" data-tr="services dns misc dnssec">Enable DNSSEC</td>
 								<td>
 									<select name="dns_sec" class="mid" onChange="changeDNSSEC(this.form);">

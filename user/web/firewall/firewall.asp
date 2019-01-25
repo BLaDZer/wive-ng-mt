@@ -42,6 +42,7 @@
 
 				showWarning();
 				init_translation_model();
+				disableControlsByAuth();
 			}
 
 			function checkValuesDMZ(form) {
@@ -328,7 +329,7 @@
 						'<td rowspan="2" style="white-space: normal;">' + showPortRange(row[5], row[6]) + '</td>' + // Source port range
 						'<td rowspan="2" style="white-space: normal;">' + showPortRange(row[9], row[10]) + '</td>' + // Destination port range
 						'<td rowspan="2" style="max-width: 90px; white-space: wrap; overflow: hidden;">' + row[12] + '&nbsp;</td>' + // Comment
-						'<td rowspan="2" style="text-align: center;"><a style="color: #ff0000;" title="' + _("forward delete record") + '" href="javascript:deleteForwardingInputItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td>' +
+						'<td rowspan="2" style="text-align: center;"><a class="auth-hide-user" style="color: #ff0000;" title="' + _("forward delete record") + '" href="javascript:deleteForwardingInputItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td>' +
 						'</tr><tr>' +
 						'<td colspan="2">' + showValue(row[2]) + '</td>' + // MAC
 						'<td>' + showValue(row[4]) + '</td>' + // Source IP Mask
@@ -339,22 +340,24 @@
 					table += '<tr><td colspan="7" style="text-align: left;">' + _("forward no filter rules") + '</td></tr>';
 
 				// Controls
+				if (AUTH_ROLE == 2) {
 				table +=
-					'<tr>'+
-					'<td><select name="interface" tabindex="30" style="width: 95%"><option value="LAN">LAN</option><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
-					'<td><select name="protocol" tabindex="31" style="width: 95%" onchange="protocolChange(this.form);"><option value="5">None</option><option value="1">TCP</option><option value="2">UDP</option><option value="4">ICMP</option></select></td>' +
-					'<td><input type="text" tabindex="33" maxlength="15" name="sip_address" class="normal"></td>' +
-					'<td><input type="text" tabindex="35" maxlength="5" name="sFromPort" disabled="disabled" class="short"></td>' +
-					'<td><input type="text" tabindex="37" maxlength="5" name="dFromPort" disabled="disabled" class="short"></td>' +
-					'<td rowspan="2"><input tabindex="39" type="text" style="width: 95%;" maxlength="18" name="comment" style="width: 95%"></td>' +
-					'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="40" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringInputItem(this.form);"' + disabled + '></td>' +
-					'</tr>' +
-					'<tr>' +
-					'<td colspan="2"><input type="text" tabindex="32" style="width: 95%" maxlength="17" name="mac_address"></td>' +
-					'<td><input type="text" tabindex="34" maxlength="15" name="sip_mask" class="normal"></td>' +
-					'<td><input type="text" tabindex="36" maxlength="5" name="sToPort" disabled="disabled" class="short"></td>' +
-					'<td><input type="text" tabindex="38" maxlength="5" name="dToPort" disabled="disabled" class="short"></td>' +
-					'</tr>';
+						'<tr>'+
+						'<td><select name="interface" tabindex="30" style="width: 95%"><option value="LAN">LAN</option><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
+						'<td><select name="protocol" tabindex="31" style="width: 95%" onchange="protocolChange(this.form);"><option value="5">None</option><option value="1">TCP</option><option value="2">UDP</option><option value="4">ICMP</option></select></td>' +
+						'<td><input type="text" tabindex="33" maxlength="15" name="sip_address" class="normal"></td>' +
+						'<td><input type="text" tabindex="35" maxlength="5" name="sFromPort" disabled="disabled" class="short"></td>' +
+						'<td><input type="text" tabindex="37" maxlength="5" name="dFromPort" disabled="disabled" class="short"></td>' +
+						'<td rowspan="2"><input tabindex="39" type="text" style="width: 95%;" maxlength="18" name="comment" style="width: 95%"></td>' +
+						'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="40" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringInputItem(this.form);"' + disabled + '></td>' +
+						'</tr>' +
+						'<tr>' +
+						'<td colspan="2"><input type="text" tabindex="32" style="width: 95%" maxlength="17" name="mac_address"></td>' +
+						'<td><input type="text" tabindex="34" maxlength="15" name="sip_mask" class="normal"></td>' +
+						'<td><input type="text" tabindex="36" maxlength="5" name="sToPort" disabled="disabled" class="short"></td>' +
+						'<td><input type="text" tabindex="38" maxlength="5" name="dToPort" disabled="disabled" class="short"></td>' +
+						'</tr>';
+				}
 
 				// Close manager
 				table += '</table>';
@@ -733,7 +736,7 @@
 								</tr>
 								<tr>
 									<td class="head" data-tr="port basic filter input">MAC/IP/Port Filtering</td>
-									<td><select id="portFilterInputEnabled" name="portFilterInputEnabled" class="normal" onChange="updateFilteringInputState(this.form);">
+									<td><select id="portFilterInputEnabled" name="portFilterInputEnabled" class="normal auth-disable-user" onChange="updateFilteringInputState(this.form);">
 										<option value="0" data-tr="button disable" selected="selected">Disable</option>
 										<option value="1" data-tr="button enable">Enable</option>
 									</select></td>
@@ -748,7 +751,7 @@
 								<td><input type="hidden" name="portFilteringInputRules" value="">
 									<input type="hidden" name="defaultFirewallInputPolicy" value="">
 									<input type="hidden" name="vpn_restart" value="0">
-									<input type="submit" class="normal" data-tr="button apply" value="Apply">
+									<input type="submit" class="normal auth-hide-user" data-tr="button apply" value="Apply">
 									<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
 						</table>

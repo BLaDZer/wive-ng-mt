@@ -34,12 +34,14 @@ var BUILD_DYNAMIC_ROUTING                                            = '<% getDy
 var BUILD_CHILLI                                                     = '<% getChilliBuilt(); %>';
 var BUILD_NODOG                                                      = '<% getNoDogBuilt(); %>';
 var BUILD_OPENSSL                                                    = '<% getOpenSSLBuilt(); %>';
+var BUILD_NETTLE                                                     = '<% getNettleBuilt(); %>'          == '1';
 var BUILD_DATE                                                       = '<% getDATEBuilt(); %>';
 var BUILD_IGMPPROXY                                                  = '<% getIgmpProxyBuilt(); %>'       == '1';
 var BUILD_FASTPATH                                                   = '<% getFastPathBuilt(); %>';
 var BUILD_SMBFP                                                      = '<% getSmbFPBuilt(); %>'           == '1';
 var BUILD_TELNETD                                                    = '<% getTelnetdBuilt(); %>'         == '1';
 var BUILD_DNSMASQ                                                    = '<% getDnsmasqBuilt(); %>'         == '1';
+var BUILD_DNSMASQSEC                                                 = '<% getDnsmasqSecBuilt(); %>'      == '1';
 var BUILD_UPNP                                                       = '<% getUpnpBuilt(); %>'            == '1';
 var BUILD_EOIP                                                       = '<% getEOIPBuilt(); %>'            == '1';
 var BUILD_ARPPT                                                      = '<% getARPptBuilt(); %>'           == '1';
