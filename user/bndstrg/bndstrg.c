@@ -401,18 +401,25 @@ int bndstrg_update_entry_statistics_control_flags(
 
 struct bndstrg_cli_entry* bndstrg_table_lookup(struct bndstrg_cli_table *table, unsigned char *pAddr)
 {
-	unsigned long HashIdx;
+	unsigned long HashIdx = 0, count = 0;
 	struct bndstrg_cli_entry *entry = NULL;
+
+	if (!pAddr || !IS_VALID_MAC(pAddr))
+		return NULL;
 
 	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
 	entry = table->Hash[HashIdx];
 
 	while (entry && entry->bValid)
 	{
-		if (MAC_ADDR_EQUAL(entry->Addr, pAddr))
+		count++;
+		if (MAC_ADDR_EQUAL(entry->Addr, pAddr) && IS_VALID_MAC(entry->Addr))
 			break;
 		else
 			entry = entry->pNext;
+
+		if (count >= BND_HASH_TABLE_SIZE)
+			entry = NULL;
 	}
 
 	return entry;
@@ -1481,89 +1488,119 @@ int bndstrg_insert_entry(
 
 int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index)
 {
-	unsigned long HashIdx = 0;
-	struct bndstrg_cli_entry *entry = NULL, *pre_entry, *this_entry;
+	unsigned long i, count = 0, HashIdx = 0;
+	struct bndstrg_cli_entry * entry = NULL, *pre_entry = NULL, *this_entry = NULL;
 	int ret_val = BND_STRG_SUCCESS;
 
-	if (Index >= table->max_steering_size)
-	{
-		if (pAddr == NULL) {
-			DBGPRINT(DEBUG_ERROR, RED("%s()::debug here\n"), __FUNCTION__);
-			return BND_STRG_INVALID_ARG;
-		}
+	if (table->Size == 0) {
+		DBGPRINT(DEBUG_ERROR, RED("%s(): table size 0\n"), __FUNCTION__);
+		return BND_STRG_INVALID_ARG;
+	}
 
+	/* first direct get record by mac hash */
+	if (pAddr && IS_VALID_MAC(pAddr)) {
 		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
 		entry = table->Hash[HashIdx];
+		if (entry && (!MAC_ADDR_EQUAL(pAddr, entry->Addr) || !IS_VALID_MAC(entry->Addr) || !entry->bValid)) {
+		    BND_STRG_DBGPRINT(DEBUG_WARN,
+			"%s(): %02x:%02x:%02x:%02x:%02x:%02x, %02x:%02x:%02x:%02x:%02x:%02x not equal. Table Size = %u\n",
+			__FUNCTION__, PRINT_MAC(pAddr), PRINT_MAC(entry->Addr), table->Size);
+		    entry = NULL;
+		}
+	}
 
-		BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
-		__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+	/* second try get record by index */
+	if (!entry && Index < table->max_steering_size) {
+		entry = &table->Entry[Index];
+		if (entry && entry->bValid && IS_VALID_MAC(entry->Addr)) {
+			HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
+		} else {
+			BND_STRG_DBGPRINT(DEBUG_WARN, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Entry not correct. Table Size = %u\n",
+				__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+			entry = NULL;
+		}
+	}
 
-		while (entry) {
-			if (MAC_ADDR_EQUAL(pAddr, entry->Addr)) {
-				/* this is the entry we're looking for */
+	/* third direct scan by mac */
+	if (!entry && pAddr && IS_VALID_MAC(pAddr)) {
+		for (i = 0; i < table->max_steering_size; i++) {
+			entry = &table->Entry[i];
+			if (entry && entry->bValid && IS_VALID_MAC(entry->Addr)) {
+				HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
 				break;
 			} else {
-				entry = entry->pNext;
+				BND_STRG_DBGPRINT(DEBUG_WARN, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Entry not find in table. Table Size = %u\n",
+					__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+
+				entry = NULL;
 			}
 		}
 
-		if (entry == NULL)
-		{
-			BND_STRG_DBGPRINT(DEBUG_WARN, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Entry not found.\n",
-				__FUNCTION__, Index, PRINT_MAC(pAddr));
-			return BND_STRG_INVALID_ARG;
-		}
 	}
-	else {
-		entry = &table->Entry[Index];
-		if (entry) {
-		    /* decrease noise debug, skip null records */
-		    if (table->Size > 0 || entry->Addr[0] != entry->Addr[5] || entry->Addr[2] != entry->Addr[4]) {
-			BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
-			__FUNCTION__, Index, PRINT_MAC(entry->Addr), table->Size);
-		    }
-		    if (entry->bValid)
-			HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
+
+	/* fourth direct scan in hashtable */
+	if (!entry && pAddr && IS_VALID_MAC(pAddr)) {
+		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
+		entry = table->Hash[HashIdx];
+		while (entry)
+		{
+			count++;
+			if (MAC_ADDR_EQUAL(entry->Addr, pAddr) && IS_VALID_MAC(entry->Addr) && entry->bValid)
+				break;
+			else
+				entry = entry->pNext;
+
+			if (count >= BND_HASH_TABLE_SIZE)
+				entry = NULL;
+		}
+
+		if (!entry) {
+			BND_STRG_DBGPRINT(DEBUG_WARN, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Entry not find in hashtable. Table Size = %u\n",
+				__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
 		}
 	}
 
-	if (entry && entry->bValid)
+
+	if (!entry || !entry->bValid || !IS_VALID_MAC(entry->Addr))
+		return BND_STRG_INVALID_ARG;
+
+	/* update Hash list*/
+	HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
+	pre_entry = NULL;
+	this_entry = table->Hash[HashIdx];
+	if (this_entry != NULL)
 	{
-		pre_entry = NULL;
-		this_entry = table->Hash[HashIdx];
-		if (this_entry != NULL)
+		for (i = 0; i < BND_HASH_TABLE_SIZE; i++)
 		{
-			/* update Hash list*/
-			do
+			if (this_entry == entry)
 			{
-				if (this_entry == entry)
-				{
-					if (pre_entry == NULL)
-						table->Hash[HashIdx] = entry->pNext;
-					else
-						pre_entry->pNext = entry->pNext;
-					break;
-				}
+				if (pre_entry == NULL)
+					table->Hash[HashIdx] = entry->pNext;
+				else
+					pre_entry->pNext = entry->pNext;
+				break;
+			}
 
-				pre_entry = this_entry;
-				this_entry = this_entry->pNext;
-			} while (this_entry);
+			pre_entry = this_entry;
+			this_entry = this_entry->pNext;
+			if (!this_entry)
+				break;
 		}
-
-		/* not found !!!*/
-		memset(entry->Addr, 0, MAC_ADDR_LEN);
-
-		/* cleanup statistic */
-		memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
-
-		entry->tp.tv_sec = 0;
-		entry->elapsed_time = 0;
-		entry->bValid = FALSE;
-		entry->band = BAND_INVALID;
-		entry->Control_Flags = 0;
-		memset(entry,0x00,sizeof(struct bndstrg_cli_entry));
-		table->Size--;
 	}
+
+	/* cleanup record */
+	memset(entry->Addr, 0, MAC_ADDR_LEN);
+
+	/* cleanup statistic */
+	memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
+
+	entry->tp.tv_sec = 0;
+	entry->elapsed_time = 0;
+	entry->bValid = FALSE;
+	entry->band = BAND_INVALID;
+	entry->Control_Flags = 0;
+	memset(entry,0x00,sizeof(struct bndstrg_cli_entry));
+	table->Size--;
 
 	return ret_val;
 }
@@ -3419,8 +3456,8 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 	if(entry->Channel == 0 && entry->elapsed_time >= table->DormantTime)
 	{
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec >= DormantTime:%d \n"),
-			PRINT_MAC(entry->Addr), elapsed_time, table->DormantTime);
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) Index=%u as elapsed time %u sec >= DormantTime:%d \n"),
+			PRINT_MAC(entry->Addr), entry->TableIndex, elapsed_time, table->DormantTime);
 #endif
 		/* avoid double age deleted entry */
 		entry->elapsed_time = 0;
