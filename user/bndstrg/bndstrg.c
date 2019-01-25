@@ -1434,6 +1434,7 @@ int bndstrg_insert_entry(
 			memcpy(entry->Addr, pAddr, MAC_ADDR_LEN);
 			entry->TableIndex = i;
 			entry->bValid = TRUE;
+			entry->elapsed_time = 0;
 			entry->match_steered_rule_id[0] = fBND_STRG_PRIORITY_MAX;
 			entry->match_steered_rule_id[1] = fBND_STRG_PRIORITY_MAX;
 			entry->match_steered_rule_id[2] = fBND_STRG_PRIORITY_MAX;
@@ -1460,6 +1461,7 @@ int bndstrg_insert_entry(
 		}
 		entry->CliSteerInfo.end_idx = -1;
 		entry->band = BAND_INVALID;
+		entry->elapsed_time = 0;
 		if(table->BndStrgMode == POST_CONNECTION_STEERING)
 			entry->state = ENTRY_READY_TO_ASSOC;
 		else
