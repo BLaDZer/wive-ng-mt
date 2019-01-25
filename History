@@ -4516,21 +4516,22 @@
 16) bandsteering: implement garbage collector.<br>
 17) bandsteering: add second android random OUI (92:68:C3) to skip list.<br>
 18) bandsteering: age only valid entry.<br>
-19) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-20) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-21) init.d: eoip: fix all to one brige mode.<br>
-22) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
-23) webui: rework adbblock, dnssec, add alternative dns.<br>
-24) webui: add auto restart vpn reqest at apply netfilter rules.<br>
-25) webui: add ngix nolog mode.<br>
-26) webui: temp remove storage function (rewrite start).<br>
-27) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-28) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-29) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-30) kernel: net: packet: validate address length.<br>
-31) kernel: net: packet: validate address length if non-zero.<br>
-32) kernel: net: packet: do not leak dev refcounts on error exit.<br>
-33) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
-34) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+19) bandsteering: avoid double age deleted entry.<br>
+20) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+21) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+22) init.d: eoip: fix all to one brige mode.<br>
+23) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
+24) webui: rework adbblock, dnssec, add alternative dns.<br>
+25) webui: add auto restart vpn reqest at apply netfilter rules.<br>
+26) webui: add ngix nolog mode.<br>
+27) webui: temp remove storage function (rewrite start).<br>
+28) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+29) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+30) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+31) kernel: net: packet: validate address length.<br>
+32) kernel: net: packet: validate address length if non-zero.<br>
+33) kernel: net: packet: do not leak dev refcounts on error exit.<br>
+34) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
+35) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

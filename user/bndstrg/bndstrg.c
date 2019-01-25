@@ -3414,12 +3414,14 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 	} else
 		entry->enable_compare_flag = TRUE;
 
-	if(entry->Channel == 0 && elapsed_time >= table->DormantTime)
+	if(entry->Channel == 0 && entry->elapsed_time >= table->DormantTime)
 	{
 #ifdef BND_STRG_QA
 		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec >= DormantTime:%d \n"),
 			PRINT_MAC(entry->Addr), elapsed_time, table->DormantTime);
 #endif
+		/* avoid double age deleted entry */
+		entry->elapsed_time = 0;
 		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
 		if(inf)
 			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
@@ -3446,7 +3448,8 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 		BND_STRG_PRINTQAMSG(table, entry, RED("Delete not connected entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec.\n"),
 			PRINT_MAC(entry->Addr),elapsed_time);
 #endif
-
+		/* avoid double age deleted entry */
+		entry->elapsed_time = 0;
 		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
 		if(inf)
 			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
@@ -3465,6 +3468,8 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 		BND_STRG_PRINTQAMSG(table, entry, RED("Delete 2GHz entry copy (%02x:%02x:%02x:%02x:%02x:%02x), is dualband client and 5GHz RSSI good.\n"),
 			PRINT_MAC(entry->Addr));
 #endif
+		/* avoid double age deleted entry */
+		entry->elapsed_time = 0;
 		inf = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
 		if(inf)
 			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
