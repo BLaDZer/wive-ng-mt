@@ -4517,25 +4517,27 @@
 17) bandsteering: add second android random OUI (92:68:C3) to skip list.<br>
 18) bandsteering: age only valid entry.<br>
 19) bandsteering: avoid double age deleted entry.<br>
-20) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-21) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-22) init.d: eoip: fix all to one brige mode.<br>
-23) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
-24) webui: rework adbblock, dnssec, add alternative dns.<br>
-25) webui: add auto restart vpn reqest at apply netfilter rules.<br>
-26) webui: add ngix nolog mode.<br>
-27) webui: temp remove storage function (rewrite start).<br>
-28) webui: add Storage / Disk Management.<br>
-29) webui: fix permissions for Firewall input.<br>
-30) webui: hide dnssec if not support.<br>
-31) webui: translate fixups.<br>
-32) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-33) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-34) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-35) kernel: net: packet: validate address length.<br>
-36) kernel: net: packet: validate address length if non-zero.<br>
-37) kernel: net: packet: do not leak dev refcounts on error exit.<br>
-38) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
-39) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+20) bandsteering: more safe find old entry logic.<br>
+22) bandsteering: implement dynamic dormant time for more smooth records cleanup.<br>
+22) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+23) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+24) init.d: eoip: fix all to one brige mode.<br>
+25) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
+26) webui: rework adbblock, dnssec, add alternative dns.<br>
+27) webui: add auto restart vpn reqest at apply netfilter rules.<br>
+28) webui: add ngix nolog mode.<br>
+29) webui: temp remove storage function (rewrite start).<br>
+30) webui: add Storage / Disk Management.<br>
+31) webui: fix permissions for Firewall input.<br>
+32) webui: hide dnssec if not support.<br>
+33) webui: translate fixups.<br>
+34) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+35) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+36) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+37) kernel: net: packet: validate address length.<br>
+38) kernel: net: packet: validate address length if non-zero.<br>
+39) kernel: net: packet: do not leak dev refcounts on error exit.<br>
+40) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
+41) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

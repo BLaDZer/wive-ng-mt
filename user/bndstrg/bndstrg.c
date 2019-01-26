@@ -391,8 +391,11 @@ int bndstrg_update_entry_statistics_control_flags(
 			entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
 			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
 
-			BND_STRG_PRINTQAMSG(table, entry,
-			("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
+			/* decrease noise debug important if only client allready connected */
+			if (entry->bConnStatus) {
+				BND_STRG_PRINTQAMSG(table, entry,
+				("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
+			}
 		}
 	}
 
@@ -1445,10 +1448,6 @@ int bndstrg_insert_entry(
 			entry->match_steered_rule_id[0] = fBND_STRG_PRIORITY_MAX;
 			entry->match_steered_rule_id[1] = fBND_STRG_PRIORITY_MAX;
 			entry->match_steered_rule_id[2] = fBND_STRG_PRIORITY_MAX;
-#ifdef BND_STRG_QA
-			BND_STRG_PRINTQAMSG(table, entry, YLW("%s[%d]Addr=%02x:%02x:%02x:%02x:%02x:%02x\n"),
-								__func__,__LINE__,PRINT_MAC(entry->Addr));
-#endif
 			break;
 		}
 		entry = NULL;
@@ -1478,11 +1477,11 @@ int bndstrg_insert_entry(
 
 		/* init statistic */
 		memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
+
+		BND_STRG_DBGPRINT(DEBUG_INFO,"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+		__FUNCTION__, i, PRINT_MAC(pAddr), PRINT_MAC(entry->Addr), table->Size);
+
 	}
-
-	BND_STRG_DBGPRINT(DEBUG_INFO,"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
-		__FUNCTION__, i, PRINT_MAC(pAddr), table->Size);
-
 	return BND_STRG_SUCCESS;
 }
 
@@ -1493,7 +1492,7 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 	int ret_val = BND_STRG_SUCCESS;
 
 	if (table->Size == 0) {
-		DBGPRINT(DEBUG_ERROR, RED("%s(): table size 0\n"), __FUNCTION__);
+		//DBGPRINT(DEBUG_ERROR, RED("%s(): table size 0\n"), __FUNCTION__);
 		return BND_STRG_INVALID_ARG;
 	}
 
@@ -1665,7 +1664,9 @@ int bndstrg_cli_event_req(
 			/* try cleanup and retry */
 			bndstrg_cleanup_table(bndstrg);
 			ret_val = bndstrg_insert_entry(table, pSrcAddr, &entry);
-			return ret_val;
+			/* insert not not successful */
+			if (ret_val == BND_STRG_TABLE_FULL)
+				return ret_val;
 		}
 #ifdef BNDSTRG_NVRAM_SUPPORT
 		if (table->bndstrg->nvram_support && entry){
@@ -3453,11 +3454,11 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 	} else
 		entry->enable_compare_flag = TRUE;
 
-	if(entry->Channel == 0 && entry->elapsed_time >= table->DormantTime)
+	if(entry->Channel == 0 && entry->elapsed_time >= (table->DormantTime + (BND_STRG_MAX_TABLE_SIZE - table->Size)))
 	{
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) Index=%u as elapsed time %u sec >= DormantTime:%d \n"),
-			PRINT_MAC(entry->Addr), entry->TableIndex, elapsed_time, table->DormantTime);
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) Index=%u as elapsed time %u sec >= DormantTime:%d Table Size = %u.\n"),
+			PRINT_MAC(entry->Addr), entry->TableIndex, elapsed_time, (table->DormantTime + (BND_STRG_MAX_TABLE_SIZE - table->Size)), table->Size);
 #endif
 		/* avoid double age deleted entry */
 		entry->elapsed_time = 0;
@@ -3484,8 +3485,8 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 			 (elapsed_time <= table->single_band_timeout/8))
 			return TRUE;
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry, RED("Delete not connected entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec.\n"),
-			PRINT_MAC(entry->Addr),elapsed_time);
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete not connected entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec. Table Size = %u.\n"),
+			PRINT_MAC(entry->Addr),elapsed_time, table->Size);
 #endif
 		/* avoid double age deleted entry */
 		entry->elapsed_time = 0;
@@ -3504,8 +3505,8 @@ u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *e
 		entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
 
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry, RED("Delete 2GHz entry copy (%02x:%02x:%02x:%02x:%02x:%02x), is dualband client and 5GHz RSSI good.\n"),
-			PRINT_MAC(entry->Addr));
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete 2GHz entry copy (%02x:%02x:%02x:%02x:%02x:%02x), is dualband client and 5GHz RSSI good. Table Size = %u.\n"),
+			PRINT_MAC(entry->Addr), table->Size);
 #endif
 		/* avoid double age deleted entry */
 		entry->elapsed_time = 0;
@@ -5451,7 +5452,7 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 		if (temp_entry->bValid == TRUE)
 		{
 			count ++;
-			if(temp_entry->bConnStatus || temp_entry->Operation_steered)
+			if(!temp_entry || temp_entry->bConnStatus || temp_entry->Operation_steered)
 				continue;
 			AuthReqCount = temp_entry->statistics[0].AuthReqCount + temp_entry->statistics[1].AuthReqCount + temp_entry->statistics[2].AuthReqCount;
 			if (AuthReqCount == 0) {
@@ -5471,6 +5472,8 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 	if(!entry){
 		for (i=0;i<table->max_steering_size;i++) {
 			temp_entry = &table->Entry[i];
+			if(!temp_entry || temp_entry->bConnStatus)
+				continue;
 			if (temp_entry->bValid == TRUE)
 			{
 				count ++;
@@ -5495,6 +5498,8 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 	if(!entry){
 		for (i=0;i<table->max_steering_size;i++) {
 			temp_entry = &table->Entry[i];
+			if(!temp_entry || temp_entry->bConnStatus)
+				continue;
 			if (temp_entry->bValid == TRUE)
 			{
 				count ++;
@@ -5508,12 +5513,14 @@ struct bndstrg_cli_entry * bndstrg_get_old_entry(
 		}
 	}
 
-	/* try find oldest client if not search more suitably, alarma need increase table size */
+	/* try find oldest client ignore connstatus flag if not search more suitably, alarma need increase table size */
 	max_elapsed_time = 0;
 	count=0;
 	if(!entry){
 		for (i=0;i<table->max_steering_size;i++) {
 			temp_entry = &table->Entry[i];
+			if(!temp_entry)
+				continue;
 			if (temp_entry->bValid == TRUE)
 			{
 				count ++;
