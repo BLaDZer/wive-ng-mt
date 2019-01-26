@@ -619,6 +619,7 @@ DfsEnable=0
 PcieAspm=0
 IRQBalance=auto
 nginx_nolog=0
+BtnRstTimeout=10
 WAN_MAC_ADDR=00:0C:43:30:52:62
 LAN_MAC_ADDR=00:0C:43:30:52:64
 WLAN_MAC_ADDR=00:0C:43:30:52:66

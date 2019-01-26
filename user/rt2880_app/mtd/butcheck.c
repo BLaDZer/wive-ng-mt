@@ -20,9 +20,11 @@
 #define TEST_BIT(x, n)		(((x) & (1 << n)) != 0)
 #endif
 
-#define LOADDEFAULTS		5   //seconds
-#define FULLRESETTIME		90  //seconds
-#define CWMPENABLEAUTO		3   //times
+#define LOADDEFAULTS		10   	//seconds
+#define FULLRESETTIME		100  	//seconds
+#define CWMPENABLEAUTO		3	//times
+
+int loaddeftime = LOADDEFAULTS;
 
 static int gpio_read_but(int *value) {
 	int fd, req;
@@ -91,8 +93,8 @@ static void gpio_wait(void) {
 		presstime_reset++;
 	    } else {
 		if (presstime_reset > 0) {
-		    if (presstime_reset > LOADDEFAULTS) {
-			if (presstime_reset < FULLRESETTIME) {
+		    if (presstime_reset > loaddeftime) {
+			if (presstime_reset < (FULLRESETTIME + loaddeftime)) {
 			    printf("butcheck_reset: fs_nvram_reset - load nvram default and restore original rwfs...");
     			    system("fs nvramreset && fs restore");
 	    		    sleep(2);
@@ -144,8 +146,34 @@ static void gpio_wait(void) {
 	}
 }
 
-int main(int argc, char *argv[]) {
-    printf("Start buttons services\n");
-    gpio_wait();
+int usage(void) {
+    printf("GPIO buttons service. -t <sec> set reset timeout.\n");
     return 0;
+}
+
+int main(int argc, char *argv[])
+{
+	int c, timeoutparam = -1;
+
+	while ((c = getopt(argc, argv, "t:")) != EOF) {
+		switch (c) {
+		case 't':
+			if ((sscanf(optarg, "%d", &timeoutparam) != 1) || (timeoutparam <= 0)) {
+				fprintf(stderr, "invalid timeout value\n");
+				usage();
+			}
+			break;
+		default:
+			usage();
+			break;
+		}
+	}
+
+	if (timeoutparam > LOADDEFAULTS)
+	    loaddeftime = timeoutparam;
+
+        printf("Start buttons service. Reset timeout = %d\n", loaddeftime);
+	gpio_wait();
+
+	return 0;
 }

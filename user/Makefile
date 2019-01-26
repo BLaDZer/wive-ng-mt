@@ -120,10 +120,10 @@ endif
 # development tools
 dir_$(CONFIG_USER_STRACE)		    += strace
 
-#only ralink apps and scripts
+# hw specific data and tools
 dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 
-#need last busybox and nginx
+# need last busybox and nginx
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 
 dir_$(CONFIG_USER_NGINX)                    += nginx
@@ -131,7 +131,6 @@ dir_$(CONFIG_USER_NGINX)                    += nginx
 # generate certs for apps
 dir_$(CONFIG_LIB_OPENSSL)		    += certsgen
 
-#dir_$(CONFIG_USER_BNDSTR)                   := bndstrg
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"

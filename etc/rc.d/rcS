@@ -100,7 +100,14 @@ ln -sf /var/lock /var/locks
 
 chmod 777 /tmp
 
-butcheck &
+eval `nvram_buf_get 2860 BtnRstTimeout`
+if [ "$BtnRstTimeout" != "" ] && [ "$BtnRstTimeout" != "0" ]; then
+    BtnRstTimeout="-t $BtnRstTimeout"
+else
+    BtnRstTimeout=""
+fi
+
+butcheck $BtnRstTimeout &
 
 # start entropy increase daemon
 if [ -e /bin/haveged ]; then
