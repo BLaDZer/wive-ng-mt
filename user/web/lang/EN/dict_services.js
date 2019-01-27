@@ -44,6 +44,7 @@ var services_dictionary = {
 
 	'services dns wrong domain'		: 'Incorrect domain name!',
 	'services dns domain in use'		: 'The domain name you have entered already exists!',
+	'services dns ip in use'		: 'The IP Address you have entered already exists!',
 
 	'services dns filter'			: 'Ad Blocking',
 	'services dns filter enable'		: 'Enable DNS Filtering',
@@ -61,6 +62,11 @@ var services_dictionary = {
 	'services dns hosts add title'		: 'Add Local DNS Entry',
 	'services dns hosts add button'		: 'Add New Entry',
 	'services dns hosts remove'		: 'Remove Entry',
+
+	'services dns diff title'		: 'Upstream DNS Servers',
+	'services dns diff address'		: 'DNS Server Address',
+	'services dns diff add title'		: 'Add Upstream DNS',
+	'services dns diff add button'		: 'Add New Address',
 
 	'services dns misc title'		: 'Miscellaneous',
 	'services dns misc dnssec'		: 'Enable DNSSEC',
@@ -270,6 +276,10 @@ var services_dictionary = {
 	'services misc hw'			: 'HW Only',
 	'services misc router'			: 'Router',
 	'services misc storage'			: 'Local services',
+	'services misc management store'	: 'Store management settings on Reset to Defaults',
+	'services misc reset btn timeout'	: 'Reset Button Timeout',
+	'services misc reset btn timeout invalid': 'Invalid Reset Button Timeout value! Should be whole number not less than 10.',
+	'services misc reset btn timeout range' : 'sec (10 - 300)',
 
 	'services account table'		: 'IP Accounting table',
 	'services account no statistic'		: 'No statistics available now',

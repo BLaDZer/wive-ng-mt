@@ -99,6 +99,7 @@ var NVRAM_UserPassword                                               = '<% getCf
 
 var NVRAM_MngmtLogin                                                 = '<% getCfgGeneral(1, "MngmtLogin",                          ""); %>';
 var NVRAM_MngmtPassword                                              = '<% getCfgGeneral(1, "MngmtPassword",                       ""); %>';
+var NVRAM_MngmtStoreSettings                                         = '<% getCfgGeneral(1, "MngmtStoreSettings",                  "0"); %>';
 
 var NVRAM_Login                                                      = '<% getCfgGeneral(1, "Login",                               "Admin"); %>';
 var NVRAM_Password                                                   = '<% getCfgGeneral(1, "Password",                            "Admin"); %>';
@@ -141,6 +142,7 @@ var NVRAM_dnsPEnabled                                                = '<% getCf
 var NVRAM_dns_adblock                                                = '<% getCfgGeneral(1, "dns_adblock",                         "0"); %>';
 var NVRAM_dns_adblock_skip                                           = '<% getCfgGeneral(1, "dns_adblock_skip",                    ""); %>';
 var NVRAM_dns_userblock                                              = '<% getCfgGeneral(1, "dns_userblock",                       ""); %>';
+var NVRAM_dns_diffsrv                                                = '<% getCfgGeneral(1, "dns_diffsrv",                         ""); %>';
 var NVRAM_dns_sec                                                    = '<% getCfgGeneral(1, "dns_sec",                             "0"); %>';
 var NVRAM_port1_swmode                                               = '<% getCfgGeneral(1, "port1_swmode",                        "auto"); %>';
 var NVRAM_port2_swmode                                               = '<% getCfgGeneral(1, "port2_swmode",                        "auto"); %>';
@@ -539,3 +541,4 @@ var NVRAM_l2tp_eth_psid                                              = '<% getCf
 var NVRAM_l2tp_eth_sport                                             = '<% getCfgGeneral(1, "l2tp_eth_sport",                     "5000"); %>';
 var NVRAM_l2tp_eth_dport                                             = '<% getCfgGeneral(1, "l2tp_eth_dport",                     "6000"); %>';
 var NVRAM_l2tp_eth_brifs                                             = '<% getCfgGeneral(1, "l2tp_eth_brifs",                     ""); %>';
+var NVRAM_BtnRstTimeout                                              = '<% getCfgGeneral(1, "BtnRstTimeout",                      "10"); %>';

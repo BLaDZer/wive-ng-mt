@@ -17,7 +17,11 @@
 function initValue(form)
 {
 	form.TransEnabled.value = defaultNumber("<% getCfgZero(1, "TransmissionEnabled"); %>", '0');
-	form.transAccess.value = '<% getCfgGeneral(1, "TransAccess"); %>'
+
+	// FIXME: WAN port access is temporarily disabled
+	form.transAccess.value = ('<% getCfgGeneral(1, "TransAccess"); %>' == 0)?'0':'1'; 
+	displayElement([ 'transAccess_lanwan' ], 0 );
+
 	form.transAuthor.value = '<% getCfgGeneral(1, "TransAuthor"); %>'
 	TransEnabledSwitch(form);
 }
@@ -133,7 +137,7 @@ function submit_apply(parm)
             <td><select name="transAccess" class="half">
                 <option value="0">Disable</option>
                 <option value="1">LAN</option>
-                <option value="2">LAN &amp; WAN</option>
+                <option value="2" id="transAccess_lanwan">LAN &amp; WAN</option>
               </select>
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               <input type="button" style="{width:80px;}" onClick="location.href='http://<% getLanIp(); %>:<% getCfgGeneral(1, "TransRPCPort"); %>'" name="WebGUI" value="WebGUI"></td>

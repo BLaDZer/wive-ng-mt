@@ -238,8 +238,8 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 7, "dnsPEnabled", "DDNSProvider", "DDNS", "DDNSAccount", "DDNSPassword",
-						"dnsToLocalRedir", "dns_sec");
+		nvram_fromdef(RT2860_NVRAM, 8, "dnsPEnabled", "DDNSProvider", "DDNS", "DDNSAccount", "DDNSPassword",
+						"dnsToLocalRedir", "dns_diffsrv", "dns_sec");
 		return;
 	}
 
@@ -267,6 +267,9 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 		char_t *dns_userblock = websGetVar(wp, T("dns_userblock"), T(""));
 		ngx_nvram_bufset(wp, "dns_userblock", dns_userblock);
 
+		char_t *dns_diffsrv = websGetVar(wp, T("dns_diffsrv"), T(""));
+		ngx_nvram_bufset(wp, "dns_diffsrv", dns_diffsrv);
+
 #ifdef CONFIG_LIB_NETTLE
 #ifdef CONFIG_USER_DNSMASQSEC
 		// Enable DNSSEC
@@ -283,6 +286,7 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 	else
 	{
 		ngx_nvram_bufset(wp, "dnsToLocalRedir", "0");
+		ngx_nvram_bufset(wp, "dns_diffsrv", "");
 	}
 
 

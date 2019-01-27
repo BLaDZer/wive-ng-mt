@@ -4532,13 +4532,15 @@
 32) webui: fix permissions for Firewall input.<br>
 33) webui: hide dnssec if not support.<br>
 34) webui: translate fixups.<br>
-35) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-36) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-37) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-38) kernel: net: packet: validate address length.<br>
-39) kernel: net: packet: validate address length if non-zero.<br>
-40) kernel: net: packet: do not leak dev refcounts on error exit.<br>
-41) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
-42) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+35) webui: add diferent DNS option.<br>
+36) webui: add add managment store settings and reset button timeout options.<br>
+37) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+38) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+39) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+40) kernel: net: packet: validate address length.<br>
+41) kernel: net: packet: validate address length if non-zero.<br>
+42) kernel: net: packet: do not leak dev refcounts on error exit.<br>
+43) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
+44) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>

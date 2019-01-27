@@ -333,6 +333,8 @@ parameter_fetch_t service_misc_flags[] =
 #ifdef CONFIG_NETFILTER_FP_SMB
 	{ ("smbFastpath"),		"smbFastpath",		0, ("0")  },
 #endif
+	{ ("MngmtStoreSettings"),	"MngmtStoreSettings",	0, ("0")  },
+	{ ("BtnRstTimeout"),		"BtnRstTimeout",	0, ("")  },
 	{ NULL,				NULL,			0, NULL    } // Terminator
 };
 
@@ -345,7 +347,7 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 	websSetContentType(wp, "text/html");
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 49, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
+		nvram_fromdef(RT2860_NVRAM, 51, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
 						"igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode", "upnpEnabled",
 						"xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",  "RemoteSSH",
 						"RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort", "WatchdogEnabled",
@@ -354,7 +356,8 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 						"natFastpath", "routeFastpath", "filterFastpath", "CrondEnable", "ForceRenewDHCP",
 						"parproutedEnabled", "pinger_check_on", "ping_check_time", "ping_check_interval", "store_ttl",
 						"store_ttl_mcast", "snmpd", "snmpdcommunity", "mss_use_pmtu", "IRQBalance",
-						"smbFastpath", "hw_nat_bind", "RemoteManagementPortHTTPS", "nginx_nolog");
+						"smbFastpath", "hw_nat_bind", "RemoteManagementPortHTTPS", "nginx_nolog", "MngmtStoreSettings",
+						"BtnRstTimeout");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);

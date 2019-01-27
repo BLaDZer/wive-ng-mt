@@ -43,6 +43,15 @@
 					addAdblockEntry(dns_userblock[i], 0);
 				}
 
+				var dns_diffsrv = NVRAM_dns_diffsrv.split(" ");
+				if (dns_diffsrv.length == 1 && dns_diffsrv[0] == "") {
+					dns_diffsrv.length = 0;
+				}
+
+				for (var i=0;i<dns_diffsrv.length;i++) {
+					addDiffEntry(dns_diffsrv[i]);
+				}
+
 				var adblock_skip_domains = NVRAM_dns_adblock_skip.split("|");
 				if (adblock_skip_domains.length == 1 && adblock_skip_domains[0] == "") {
 					adblock_skip_domains.length = 0;
@@ -154,6 +163,18 @@
 				}
 				form.dns_local_hosts.value = hosts_str;
 
+
+				var elems = document.getElementsByClassName("diff_entry");
+				var diff_str = "";
+				for (var i=0;i<elems.length;i++) {
+					var arr = diffEntryToArray(elems[i]);
+					var addr = arr[0];
+
+					if (diff_str != "") diff_str += " ";
+					diff_str += addr;
+				}
+				form.dns_diffsrv.value = diff_str;
+
 				ajaxShowTimer(document.DNSForm, 'timerReloader', _('message apply'), 7);
 				return true;
 			}
@@ -168,13 +189,18 @@
 
 			function updateVisibility(form) {
 				displayElement('dnsproxy',	BUILD_DNSMASQ);
-				displayElement(['div_hosts', 'div_hosts_add', 'div_dnsblock', 'dnsToLocalRedirRow', 'div_misc'], form.dnsPEnabled.value != '0');
+				displayElement(['div_hosts', 'div_hosts_add', 'div_dnsblock', 'dnsToLocalRedirRow', 'div_diffsrv', 'div_diffsrv_add', 'div_misc'], form.dnsPEnabled.value != '0');
 				displayElement(['div_dnsblock_except', 'div_dnsblock_except_add'], form.dnsPEnabled.value != '0' && form.dns_adblock.value != '0');
-				displayElement('div_dnssec',	BUILD_DNSMASQSEC && BUILD_NETTLE);
+				displayElement('div_misc',	BUILD_DNSMASQSEC && BUILD_NETTLE); // FIXME: change this when adding more misc settings
 			}
 
 			function deleteDnsEntry(elem) {
 				var entries_container = document.getElementById("localDnsEntries");
+				entries_container.removeChild(elem);
+			}
+
+			function deleteDiffEntry(elem) {
+				var entries_container = document.getElementById("diffDnsEntries");
 				entries_container.removeChild(elem);
 			}
 
@@ -294,6 +320,73 @@
 
 				entries_container.appendChild(generateHostsEntry(ip_elem.value, name_elem.value, 1));
 				return true;
+			}
+
+			function addDiffEntry(addr) {
+				var entries_container = document.getElementById("diffDnsEntries");
+
+				var elems = document.getElementsByClassName("diff_entry");
+				for (var i=0;i<elems.length;i++) {
+
+					var diff_addr = diffEntryToArray(elems[i])[0];
+					if (diff_addr == addr) {
+						return false;
+					}
+				}
+
+				entries_container.appendChild(generateDiffEntry(addr));
+				return true;
+			}
+
+			function addDiffEntryClick() {
+				var entries_container = document.getElementById("diffDnsEntries");
+				var addr_elem = document.getElementById("diff_new_addr");
+
+				try {
+					ipaddr.IPv6.parse(addr_elem.value);
+				} catch (e) {
+					if (!validateIP(addr_elem, true)) {
+						addr_elem.focus();
+						return false;
+					}
+				}
+
+				if (!addDiffEntry(addr_elem.value)) {
+					alert(_('services dns ip in use'));
+					addr_elem.focus();
+					return false;
+				}
+
+				return true;
+			}
+
+
+			function generateDiffEntry(addr) {
+				var tr = document.createElement("tr");
+				tr.className = "diff_entry";
+
+				var td = document.createElement("td");
+				td.className = "diff_addr";
+				td.innerHTML = addr;
+				tr.appendChild(td);
+
+				var td = document.createElement("td");
+				td.style.textAlign = "center";
+				td.style.cursor = "pointer";
+				td.innerHTML = "<a onClick='deleteDiffEntry(this.parentElement.parentElement);' style='color: #ff0000;' title='" + _("services dns hosts remove") + "' ><img src='/graphics/cross.png' alt='[x]'></a>";
+				tr.appendChild(td);
+
+				return tr;
+			}
+
+			function diffEntryToArray(entry) {
+				var addr = "";
+
+				for (var i=0;i<entry.childNodes.length;i++) {
+					var cnode = entry.childNodes[i];
+					if (cnode.className == "diff_addr") addr = cnode.innerHTML;
+				}
+				return [addr];
 			}
 
 			function hostsEntryToArray(entry) {
@@ -529,6 +622,38 @@
 							</tr>
 							<tr>
 								<td colspan=2><input type='button' data-tr="services dns hosts add button" onClick='addDnsEntry();'></input></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<input type="hidden" id="dns_diffsrv" name="dns_diffsrv"></input>
+					<table class="form" id="div_diffsrv">
+						<col style="width: 87%" />
+						<col style="width: 13%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="services dns diff title" colspan="2">Upstream DNS Addresses</td>
+							</tr>
+						</thead>
+						<tbody id="diffDnsEntries">
+						</tbody>
+					</table>
+
+					<table class="form" id="div_diffsrv_add">
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="services dns diff add title"  colspan="2">Add Diff DNS Entry</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="head" data-tr="services dns diff address">DNS Server Address</td>
+								<td><input type='text' id='diff_new_addr'></input></td>
+							</tr>
+							<tr>
+								<td colspan=2><input type='button' data-tr="services dns diff add button" onClick='addDiffEntryClick();'></input></td>
 							</tr>
 						</tbody>
 					</table>

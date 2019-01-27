@@ -84,6 +84,9 @@
 				_TR("miscDontModifyTTL",		"services misc dont modify ttl");
 				_TR("miscDontModifyMCTTL",		"services misc multicast ttl");
 				_TR("miscUsePMTU",			"services misc use pmtu");
+				_TR("miscMngmtStoreSettings",		"services misc management store");
+				_TR("miscBtnRstTimeout",		"services misc reset btn timeout");
+				_TR("miscBtnRstTimeoutRange",		"services misc reset btn timeout range");
 				_TR("miscIRQBalance",			"services misc irqbalance");
 				_TR("miscIGMPAuto",			"services misc auto");
 				_TR("miscIGMPHW",			"services misc hw");
@@ -149,6 +152,8 @@
 				form.hw_nat_sixPT.options.selectedIndex		= NVRAM_hw_nat_six;
 				form.pingerEnable.value				= NVRAM_pinger_check_on;
 				form.mssPmtu.value				= NVRAM_mss_use_pmtu;
+				form.MngmtStoreSettings.value			= NVRAM_MngmtStoreSettings;
+				form.BtnRstTimeout.value			= NVRAM_BtnRstTimeout;
 				form.natMode.value				= NVRAM_nat_mode;
 				form.rmtHTTP.value				= NVRAM_RemoteManagement;
 				form.rmtSSH.value				= NVRAM_RemoteSSH;
@@ -304,6 +309,13 @@
 					alert(_("services misc snmp community invalid"));
 					form.snmpdcommunity.select();
 					form.snmpdcommunity.focus();
+					return false;
+				}
+
+				if (!validateNum(form.BtnRstTimeout.value, false) || (1*form.BtnRstTimeout.value)<10 || (1*form.BtnRstTimeout.value)>300) {
+					alert(_("services misc reset btn timeout invalid"));
+					form.BtnRstTimeout.select();
+					form.BtnRstTimeout.focus();
 					return false;
 				}
 
@@ -504,7 +516,7 @@
 			}
 
 			function showOthersMenu() {
-				var elements = [ 'miscVLANDoubleTag_row', 'irqbalance', 'miscReinitWAN_row', 'miscDHCPRenew_row', 'miscSysfwPingFrmWANFilterHead_row', 'miscStp_row', 'miscDontModifyTTL_row', 'mcast_store_ttl_row', 'miscUsePMTU_row' ];
+				var elements = [ 'miscVLANDoubleTag_row', 'irqbalance', 'miscReinitWAN_row', 'miscDHCPRenew_row', 'miscSysfwPingFrmWANFilterHead_row', 'miscStp_row', 'miscDontModifyTTL_row', 'mcast_store_ttl_row', 'miscUsePMTU_row', 'miscMngmtStoreSettings_row', 'miscBtnRstTimeout_row' ];
 				if (statusOthersMenu == 0) {
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc others"));
 					statusOthersMenu = 1;
@@ -1066,6 +1078,27 @@
 							</select>
 						</td>
 					</tr>
+
+					<tr id="miscMngmtStoreSettings_row">
+						<td class="head wordwrap" id="miscMngmtStoreSettings" style="width: 45%">Store management settings on Reset to Defaults</td>
+						<td colspan="4">
+							<select name="MngmtStoreSettings" class="normal">
+								<option value="0" id="disable">Disable</option>
+								<option value="1" id="enable">Enable</option>
+							</select>
+						</td>
+					</tr>
+
+
+					<tr id="miscBtnRstTimeout_row">
+						<td class="head" id="miscBtnRstTimeout" style="width: 45%">Reset button Timeout</td>
+						<td colspan="4">
+							<input class="normal" name="BtnRstTimeout"></input>
+							<span class="range" id="miscBtnRstTimeoutRange">sec</input>
+						</td>
+					</tr>
+
+
 				</table>
 				<table class="buttons">
 					<tr>

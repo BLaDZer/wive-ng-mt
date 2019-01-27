@@ -45,6 +45,7 @@ var services_dictionary = {
 
 	'services dns wrong domain'		: 'Введено некорректное доменное имя!',
 	'services dns domain in use'		: 'Введённое доменное имя уже присутствует в списке!',
+	'services dns ip in use'		: 'Введённый IP-адрес уже присутствует в списке!',
 
 	'services dns filter'			: 'Блокировка рекламы',
 	'services dns filter enable'		: 'Включить фильтрацию DNS',
@@ -62,6 +63,11 @@ var services_dictionary = {
 	'services dns hosts add title'		: 'Добавить локальную запись DNS',
 	'services dns hosts add button'		: 'Добавить новую запись',
 	'services dns hosts remove'		: 'Удалить запись',
+
+	'services dns diff title'		: 'Список Upstream DNS',
+	'services dns diff address'		: 'Адрес DNS-сервера',
+	'services dns diff add title'		: 'Добавить адрес Upstream DNS',
+	'services dns diff add button'		: 'Добавить новый адрес',
 
 	'services dns misc title'		: 'Прочие настройки',
 	'services dns misc dnssec'		: 'Включить DNSSEC',
@@ -271,6 +277,10 @@ var services_dictionary = {
 	'services misc hw'			: 'Только аппаратный',
 	'services misc router'			: 'Маршрутизация',
 	'services misc storage'			: 'Локальные сервисы',
+	'services misc management store'	: 'Сохранять менеджмент-доступ при сбросе на заводские настройки',
+	'services misc reset btn timeout'	: 'Таймаут кнопки сброса',
+	'services misc reset btn timeout invalid': 'Неверное значение таймаута кнопки сброса. Необходимо ввести целое число не менее 10.',
+	'services misc reset btn timeout range' : 'сек (10 - 300)',
 
 	'services account table'		: 'Таблица учета трафика',
 	'services account no statistic'		: 'Статистика сейчас недоступна',
