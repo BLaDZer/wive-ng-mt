@@ -813,16 +813,19 @@ int nvram_load_default(void)
 	int mac_err = 0;
         char *LAN_MAC_ADDR = NULL, *WAN_MAC_ADDR = NULL, *WLAN_MAC_ADDR = NULL, *WLAN2_MAC_ADDR = NULL, *CHECKMAC = NULL, *BtnRstTimeout = NULL;
         char *MngmtLogin = NULL, *MngmtPassword = NULL, *MngmtStoreSettings = NULL, *cwmpdEnabled = NULL, *cwmp_acs_url = NULL, *RemoteSSH = NULL;
+        char *IPPortFilterInputEnable = NULL, *IPPortFilterInputRules = NULL;
 
 	/* copy old remotemanagment settings if enabled */
 	MngmtStoreSettings = nvram_get_copy(RT2860_NVRAM, "MngmtStoreSettings");
 	if (atoi(MngmtStoreSettings) == 1) {
-	    MngmtLogin		= nvram_get_copy(RT2860_NVRAM, "MngmtLogin");
-	    MngmtPassword	= nvram_get_copy(RT2860_NVRAM, "MngmtPassword");
-	    cwmpdEnabled	= nvram_get_copy(RT2860_NVRAM, "cwmpdEnabled");
-	    cwmp_acs_url	= nvram_get_copy(RT2860_NVRAM, "cwmp_acs_url");
-	    RemoteSSH		= nvram_get_copy(RT2860_NVRAM, "RemoteSSH");
-	    BtnRstTimeout	= nvram_get_copy(RT2860_NVRAM, "BtnRstTimeout");
+	    MngmtLogin			= nvram_get_copy(RT2860_NVRAM, "MngmtLogin");
+	    MngmtPassword		= nvram_get_copy(RT2860_NVRAM, "MngmtPassword");
+	    cwmpdEnabled		= nvram_get_copy(RT2860_NVRAM, "cwmpdEnabled");
+	    cwmp_acs_url		= nvram_get_copy(RT2860_NVRAM, "cwmp_acs_url");
+	    RemoteSSH			= nvram_get_copy(RT2860_NVRAM, "RemoteSSH");
+	    BtnRstTimeout		= nvram_get_copy(RT2860_NVRAM, "BtnRstTimeout");
+	    IPPortFilterInputEnable	= nvram_get_copy(RT2860_NVRAM, "IPPortFilterInputEnable");
+	    IPPortFilterInputRules	= nvram_get_copy(RT2860_NVRAM, "IPPortFilterInputRules");
 
 	    printf("Store remote managment user settings.\n");
 	}
@@ -890,8 +893,12 @@ int nvram_load_default(void)
 	    nvram_bufset(RT2860_NVRAM, "cwmpdEnabled", cwmpdEnabled);
 	    nvram_bufset(RT2860_NVRAM, "cwmp_acs_url", cwmp_acs_url);
 
-	    /* restore cwmpd settings */
+	    /* restore reset button settings */
 	    nvram_bufset(RT2860_NVRAM, "BtnRstTimeout", BtnRstTimeout);
+
+	    /* restore input firewall settings  */
+	    nvram_bufset(RT2860_NVRAM, "IPPortFilterInputEnable", IPPortFilterInputEnable);
+	    nvram_bufset(RT2860_NVRAM, "IPPortFilterInputRules", IPPortFilterInputRules);
 
 	    /* set keep remote managment flag */
 	    nvram_bufset(RT2860_NVRAM, "MngmtStoreSettings", "1");
