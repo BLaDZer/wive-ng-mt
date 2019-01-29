@@ -71,14 +71,14 @@ romfs.post::
 	rm -f $(KERNELZ).lzma
 ifeq	($(CONFIG_RT2880_ROOTFS_IN_FLASH),y)
 	#############COMPRESS ROMFS################
-	$(ROOTDIR)/tools/bin/mksquashfs_xz $(ROMFSDIR) $(RAMDISK) -all-root -no-exports -noappend -nopad -no-xattrs -no-recovery -always-use-fragments
+	$(ROOTDIR)/toolchain/tools/bin/mksquashfs_xz $(ROMFSDIR) $(RAMDISK) -all-root -no-exports -noappend -nopad -no-xattrs -no-recovery -always-use-fragments
 endif
 
 image:
 	##############CREATE IMAGE#################
 	$(CROSS_COMPILE)objcopy -O binary -R .note -R .comment -S $(LINUXDIR)/vmlinux  $(KERNELZ)
 	cd $(IMAGEDIR) ; rm -f $(KERNELZ).*; \
-	$(ROOTDIR)/tools/bin/lzma_alone e -a1 -lc1 -lp2 -pb2 -d27 $(KERNELZ) $(KERNELZ).$(COMP)
+	$(ROOTDIR)/toolchain/tools/bin/lzma_alone e -a1 -lc1 -lp2 -pb2 -d27 $(KERNELZ) $(KERNELZ).$(COMP)
 ifeq    ($(CONFIG_BLK_DEV_INITRD),)
 ifeq    ($(CONFIG_ROOTFS_IN_FLASH_NO_PADDING),)
 	# Original Kernel Image Size

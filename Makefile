@@ -63,7 +63,10 @@ LINUX_CONFIG	:= $(LINUXDIR)/.config
 ARCH_CONFIG	:= $(ROOTDIR)/vendors/config/mips/config.arch
 CONFIG_CONFIG	:= $(ROOTDIR)/config/.config
 VERSION_CONFIG	:= $(ROOTDIR)/version
-PATH		:= $(PATH):$(ROOTDIR):$(ROOTDIR)/tools:$(ROOTDIR)/toolchain/bin:$(ROOTDIR)/lib/lib:$(ROOTDIR)/lib/include:$(LINUXDIR):$(LIBCDIR)
+
+# path to all needed dirs
+PATH		:= $(PATH):$(ROOTDIR):$(ROOTDIR)/tools:$(ROOTDIR)/toolchain/tools:$(ROOTDIR)/toolchain/bin
+PATH		+= $(ROOTDIR)/lib/lib:$(ROOTDIR)/lib/include:$(LINUXDIR):$(LIBCDIR):$(LIBCDIRSHARED)/lib:$(LIBCDIRSHARED)/include
 
 # May use a different compiler
 CONFIG_CROSS_COMPILER_PATH	:= $(ROOTDIR)/toolchain/bin/
@@ -72,7 +75,7 @@ KERNEL_CROSS_COMPILE		:= $(CROSS_COMPILE)
 CROSS_COMPILER_PREFIX		:= $(CROSS_COMPILE)
 
 # NUM MAKE PROCESS = CPU NUMBER IN THE SYSTEM * CPU_OVERLOAD
-CPU_OVERLOAD		:= 4
+CPU_OVERLOAD		?= 6
 HOST_NCPU		:= $(shell if [ -f /proc/cpuinfo ]; then n=`grep -c processor /proc/cpuinfo`; if [ $$n -gt 1 ];then expr $$n \* ${CPU_OVERLOAD}; else echo $$n; fi; else echo 1; fi)
 CONFIG_SHELL		:= $(shell if [ -x "$$BASH" ]; then echo $$BASH; else if [ -x /bin/bash ]; then echo /bin/bash; else echo sh; fi ; fi)
 SHELL			:= $(CONFIG_SHELL)

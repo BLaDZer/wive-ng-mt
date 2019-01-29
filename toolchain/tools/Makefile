@@ -1,0 +1,43 @@
+# use host target
+CC        = gcc
+GCC       = gcc
+CXX       = g++
+AS        = as
+AR        = ar
+LD        = ld
+NM        = nm
+OBJCOPY   = objcopy
+RANLIB    = ranlib
+STRIP     = strip
+STRIPTOOL = $(STRIP)
+
+CFLAGS    = -Wall -O2
+LDFLAGS   =
+
+#NUM MAKE PROCESS = CPU NUMBER IN THE SYSTEM * CPU_OVERLOAD
+CPU_OVERLOAD	?= 6
+HOST_NCPU	:= $(shell if [ -f /proc/cpuinfo ]; then n=`grep -c processor /proc/cpuinfo`; if [ $$n -gt 1 ];then expr $$n \* ${CPU_OVERLOAD}; else echo $$n; fi; else echo 1; fi)
+
+all: install
+
+install:
+	mkdir -p bin
+	if [ -f "xz/DoConfigure.sh" ]; then ( cd xz; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ;
+	make -j1 -C mksquash_xz install
+	make -j$(HOST_NCPU) -C mksquash_lzma install
+	make -j1 -C ELFkickers
+	cp -f ELFkickers/bin/* bin
+
+clean:
+	rm -rf ./bin
+	rm -rf ./headers
+	rm -rf ./ELFkickers/bin
+	make -C ELFkickers clean
+	make -C mksquash_xz clean
+	make -C mksquash_lzma clean
+	if [ -f xz/Makefile ]; then \
+	    make -C xz distclean ; \
+	fi ;
+
+mrproper:
+	echo "OK"

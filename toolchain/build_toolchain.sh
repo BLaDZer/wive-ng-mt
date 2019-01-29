@@ -16,8 +16,6 @@ GCC=YES
 UCLIB=YES
 GCCCPP=YES
 
-CPU_OVERLOAD=4
-
 export LANGUAGE=en_EN.UTF-8:en
 
 export LC_PAPER=en_EN.UTF-8
@@ -157,8 +155,24 @@ if [ "$INSTALL_DEP" = "YES" ]; then
     fi
 fi
 
-mkdir -p $WCURDIR
+CPU_OVERLOAD=6
+if [ -f /proc/cpuinfo ]; then
+    n=`grep -c processor /proc/cpuinfo`;
+    if [ $n -gt 1 ]; then
+	HOST_NCPU=`expr $n \* $CPU_OVERLOAD`;
+    else
+	HOST_NCPU=$n;
+    fi;
+else
+    HOST_NCPU=1;
+fi
 
+# build image tools
+make -C tools clean
+make -j$HOST_NCPU -C tools
+
+# build toolchain
+mkdir -p $WCURDIR
 cd $WCURDIR
 mkdir -p ${TARGET}-toolchain  && cd ${TARGET}-toolchain
 
@@ -217,17 +231,6 @@ if [ "$HEADERS" = "YES" ]; then
     ln -rsf $CURDIR/usr/include $CURDIR/include
 fi
 export KERNEL_HEADERS=$CURDIR/usr/include
-
-if [ -f /proc/cpuinfo ]; then
-    n=`grep -c processor /proc/cpuinfo`;
-    if [ $n -gt 1 ]; then
-	HOST_NCPU=`expr $n \* $CPU_OVERLOAD`;
-    else
-	HOST_NCPU=$n;
-    fi;
-else
-    HOST_NCPU=1;
-fi
 
 if [ "$BINUTILS" = "YES" ]; then
     echo "=====================BUILD-BINUTILS====================="

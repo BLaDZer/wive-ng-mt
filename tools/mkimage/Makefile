@@ -52,4 +52,4 @@ mkimage.o: mkimage.c
 	$(CC) -M $(HOST_CFLAGS) $(CPPFLAGS) $(OBJS:.o=.c) > $@
 
 clean:
-	rm -f *.o mkimage
+	rm -f *.o mkimage .depend

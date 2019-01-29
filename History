@@ -4499,48 +4499,49 @@
 <br>
 <b>7.8.x</b><br>
 1) build_system: review, fix build in new distros and decrease result binary size.<br>
-2) build_system: replace sstrip to ELFkickers 3.1 version.<br>
-3) build_system: xz update to 5.2.4 version.<br>
-4) build_system: mksquash_xz update to 4.3 version.<br>
-5) build_system: add libnettle v3.4.<br>
-6) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
-7) build_system: fix doubles in config.sh.<br>
-8) add BtnRstTimeout parametr for replace default reset button timeout.<br>
-9) busybox: update to 1.30.0 version.<br>
-10) bandsteering: avoid false positive connect allow to 2.4GHz in some cases.<br>
-11) bandsteering: allow fast switch to 5Ghz for new steer mode.<br>
-12) bandsteering: tune steering parametrs for more effective at mt7615.<br>
-13) bandsteering: fix null pointer dereference in new strg version.<br>
-14) bandsteering: rework replace record logic if table full.<br>
-15) bandsteering: rework pre/post/active by event logic.<br>
-16) bandsteering: ignore probe with RSSI < -96dB.<br>
-17) bandsteering: implement garbage collector.<br>
-18) bandsteering: add second android random OUI (92:68:C3) to skip list.<br>
-19) bandsteering: age only valid entry.<br>
-20) bandsteering: avoid double age deleted entry.<br>
-21) bandsteering: more safe find old entry logic.<br>
-22) bandsteering: implement dynamic dormant time for more smooth records cleanup.<br>
-23) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
-24) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
-25) init.d: eoip: fix all to one brige mode.<br>
-26) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
-27) webui: rework adbblock, dnssec, add alternative dns.<br>
-28) webui: add auto restart vpn reqest at apply netfilter rules.<br>
-29) webui: add ngix nolog mode.<br>
-30) webui: temp remove storage function (rewrite start).<br>
-31) webui: add Storage / Disk Management.<br>
-32) webui: fix permissions for Firewall input.<br>
-33) webui: hide dnssec if not support.<br>
-34) webui: translate fixups.<br>
-35) webui: add diferent DNS option.<br>
-36) webui: add add managment store settings and reset button timeout options.<br>
-37) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
-38) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
-39) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
-40) kernel: net: packet: validate address length.<br>
-41) kernel: net: packet: validate address length if non-zero.<br>
-42) kernel: net: packet: do not leak dev refcounts on error exit.<br>
-43) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
-44) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
+2) build_system: move compression and sstrip tool to toolchain (avoid allways rebuild, save time).<br>
+3) build_system: replace sstrip to ELFkickers 3.1 version.<br>
+4) build_system: xz update to 5.2.4 version.<br>
+5) build_system: mksquash_xz update to 4.3 version.<br>
+6) build_system: add libnettle v3.4.<br>
+7) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
+8) build_system: fix doubles in config.sh.<br>
+9) add BtnRstTimeout parametr for replace default reset button timeout.<br>
+10) busybox: update to 1.30.0 version.<br>
+11) bandsteering: avoid false positive connect allow to 2.4GHz in some cases.<br>
+12) bandsteering: allow fast switch to 5Ghz for new steer mode.<br>
+13) bandsteering: tune steering parametrs for more effective at mt7615.<br>
+14) bandsteering: fix null pointer dereference in new strg version.<br>
+15) bandsteering: rework replace record logic if table full.<br>
+16) bandsteering: rework pre/post/active by event logic.<br>
+17) bandsteering: ignore probe with RSSI < -96dB.<br>
+18) bandsteering: implement garbage collector.<br>
+19) bandsteering: add second android random OUI (92:68:C3) to skip list.<br>
+20) bandsteering: age only valid entry.<br>
+21) bandsteering: avoid double age deleted entry.<br>
+22) bandsteering: more safe find old entry logic.<br>
+23) bandsteering: implement dynamic dormant time for more smooth records cleanup.<br>
+24) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+25) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+26) init.d: eoip: fix all to one brige mode.<br>
+27) init.d: fix adblock work at W4N and others 64Mb RAM devices.<br>
+28) webui: rework adbblock, dnssec, add alternative dns.<br>
+29) webui: add auto restart vpn reqest at apply netfilter rules.<br>
+30) webui: add ngix nolog mode.<br>
+31) webui: temp remove storage function (rewrite start).<br>
+32) webui: add Storage / Disk Management.<br>
+33) webui: fix permissions for Firewall input.<br>
+34) webui: hide dnssec if not support.<br>
+35) webui: translate fixups.<br>
+36) webui: add diferent DNS option.<br>
+37) webui: add add managment store settings and reset button timeout options.<br>
+38) kernel: include/linux/compiler*.h: fix OPTIMIZER_HIDE_VAR.<br>
+39) kernel: fs: auto flush cache at close_fd (prevent lost data at unplannec usb disconnect).<br>
+40) kernel: net: neigh: better handling of transition to NUD_PROBE state.<br>
+41) kernel: net: packet: validate address length.<br>
+42) kernel: net: packet: validate address length if non-zero.<br>
+43) kernel: net: packet: do not leak dev refcounts on error exit.<br>
+44) kernel: net: ip: on queued skb use skb_header_pointer instead of pskb_may_pull.<br>
+45) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
