@@ -1445,6 +1445,11 @@ int bndstrg_insert_entry(
 			entry->TableIndex = i;
 			entry->bValid = TRUE;
 			entry->elapsed_time = 0;
+			entry->steered = 0;
+			entry->tx_mcs_bad_cnt = 0;
+			entry->rx_mcs_bad_cnt = 0;
+			entry->low_rssi_bad_cnt = 0;
+			entry->good_rssi_cnt = 0;
 			entry->match_steered_rule_id[0] = fBND_STRG_PRIORITY_MAX;
 			entry->match_steered_rule_id[1] = fBND_STRG_PRIORITY_MAX;
 			entry->match_steered_rule_id[2] = fBND_STRG_PRIORITY_MAX;
@@ -1595,6 +1600,11 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 
 	entry->tp.tv_sec = 0;
 	entry->elapsed_time = 0;
+	entry->steered = 0;
+	entry->tx_mcs_bad_cnt = 0;
+	entry->rx_mcs_bad_cnt = 0;
+	entry->low_rssi_bad_cnt = 0;
+	entry->good_rssi_cnt = 0;
 	entry->bValid = FALSE;
 	entry->band = BAND_INVALID;
 	entry->Control_Flags = 0;
@@ -2985,7 +2995,7 @@ static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 				}
 			}
 			if(entry){
-				entry->Operation_steered = 1;
+				entry->Operation_steered = TRUE;
 				if(IS_2G_BAND(entry->connected_band))
 					bndstrg_client_band_update(bndstrg,entry,BAND_5G_L);
 				else if(IS_5G_H_BAND(entry->connected_band))
@@ -3057,23 +3067,24 @@ int bndstrg_wnm_event_btm_rsp (struct bndstrg *bndstrg, struct wnm_event *wnm_ev
 	struct btm_rsp_frame *rsp_frame = NULL;
 	struct bndstrg_iface *inf = NULL;
 	entry = bndstrg_table_lookup(table, (unsigned char*)rsp_data->peer_mac_addr);
+
 	if(!entry)
 		return 0;
 
 	rsp_frame = (struct btm_rsp_frame *)rsp_data->btm_rsp;
 	entry->btm_info.BTMState = btm_rsp_rx;
 	entry->btm_info.BTMRsp = rsp_frame->status_code;
-	
+
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry,
-			("BTM RSP: Req is %s \n"),(rsp_frame->status_code == 0 ? "Accepted":"Rejected"));
+	BND_STRG_PRINTQAMSG(table, entry,
+		("BTM RSP: Req is %s \n"),(rsp_frame->status_code == 0 ? "Accepted":"Rejected"));
 #endif /* BND_STRG_QA */
 
 	if(entry->btm_info.BTMRsp == 0)
 	{
 		/*BTM accepted clear source band info from entry*/
 		if(entry->connected_band != BAND_INVALID){
-		switch (entry->btm_info.BTMSourceBand){
+			switch (entry->btm_info.BTMSourceBand) {
 			case BAND_2G:
 				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
 				table->active_client_2G --;
@@ -3088,7 +3099,7 @@ int bndstrg_wnm_event_btm_rsp (struct bndstrg *bndstrg, struct wnm_event *wnm_ev
 				table->active_client_H5G --;
 				table->active_client_5G --;
 			break;
-		}
+			}
 		}
 		entry->btm_info.BTMState = btm_init;
 		inf = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, entry->btm_info.BTMSourceBand, TRUE);
@@ -3114,6 +3125,11 @@ int bndstrg_wnm_event_btm_rsp (struct bndstrg *bndstrg, struct wnm_event *wnm_ev
 int bndstrg_wnm_event_handle(struct bndstrg *bndstrg, char *data)
 {
 	struct wnm_event *wnm_event_data = (struct wnm_event *)data;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+
+	/* skip all btm event if BTM_OFF */
+	if (table && table->BtmMode == BTM_Off)
+		return 0;
 
 	switch (wnm_event_data->event_id)
 	{
@@ -4194,8 +4210,7 @@ u8 bndstrg_client_band_update(
 					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GL_2G]]);
 #endif /* BND_STRG_QA */
 
-	if(table->BtmMode != BTM_Only || 
-		entry->Operation_steered != TRUE)
+	if(table->BtmMode != BTM_Only || entry->Operation_steered != TRUE)
 	{
 		switch (entry->band) {
 		case BAND_2G :
@@ -4212,7 +4227,7 @@ u8 bndstrg_client_band_update(
 		}
 	}
 
-	if(entry->Operation_steered && entry->btm_info.BTMSupport && (table->BtmMode != BTM_Off)){
+	if(entry->Operation_steered && entry->btm_info.BTMSupport && table->BtmMode != BTM_Off){
 		/* Steer 11v client using BTM*/
 		entry->btm_info.BTMSourceBand = entry->connected_band;
 		bndstrg_wnm_send_btm_req(bndstrg, inf_source, inf_target, entry);
