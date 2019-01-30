@@ -2,7 +2,7 @@
 <html>
 <!-- Copyright (c) Go Ahead Software Inc., 1994-2000. All Rights Reserved. -->
 <!-- Copyright (c) Ralink (2004-2010) Tech Inc. All Rights Reserved. -->
-<!-- Copyright (c) Wive-NG project (2010-2018) http://wive-ng.sf.net, http://wive-ng.ru, http://wi-cat.ru. All Rights Reserved. -->
+<!-- Copyright (c) Wive-NG project (2010-2019) http://wive-ng.sf.net, http://wive-ng.ru, http://wi-cat.ru. All Rights Reserved. -->
 <head>
 <title>Form submitted</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">

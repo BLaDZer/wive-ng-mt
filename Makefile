@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2001-2004, SnapGear (www.snapgear.com)
 # Copyright (c) 2001, Lineo
-# Copyright (c) 2010-2016, Wive-NG (wive-ng.sf.net)
+# Copyright (c) 2010-2019, Wive-NG (wive-ng.sf.net)
 #
 
 ############################################################################
