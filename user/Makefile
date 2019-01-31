@@ -75,9 +75,6 @@ dir_$(CONFIG_USER_CWMPD)                    += netcwmp
 dir_$(CONFIG_USER_CLI)                      += cli
 dir_$(CONFIG_USER_RADIUS)                   += freeradius
 
-dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
-dir_$(CONFIG_USER_ARPWATCH)		    += arpwatch
-
 ifdef CONFIG_RT2880_FLASH_8M
 dir_$(CONFIG_USER_SAMBA)		    += samba
 else
@@ -88,6 +85,11 @@ dir_$(CONFIG_USER_WSDD2)		    += wsdd2
 
 dir_$(CONFIG_USER_CHILLISPOT)               += chillispot
 dir_$(CONFIG_USER_NODOGSPLASH)              += nodogsplash
+
+# diagnostic tools
+dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
+dir_$(CONFIG_USER_ARPWATCH)		    += arpwatch
+dir_$(CONFIG_USER_ARPSCAN)		    += arp-scan
 
 #for usb printer support
 dir_$(CONFIG_USER_P910ND)		    += p910nd

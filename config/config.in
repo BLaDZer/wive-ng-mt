@@ -116,8 +116,9 @@ bool 'busybox'                  CONFIG_USER_BUSYBOX_BUSYBOX
 bool 'ethtool'			CONFIG_USER_ETHTOOL
 bool 'tcpdump'			CONFIG_USER_TCPDUMP
 bool 'arpwatch'			CONFIG_USER_ARPWATCH
+bool 'arpscan'			CONFIG_USER_ARPSCAN
 
-if [ "$CONFIG_USER_TCPDUMP" = "y" ] || [ "$CONFIG_USER_ARPWATCH" = "y" ]; then
+if [ "$CONFIG_USER_TCPDUMP" = "y" ] || [ "$CONFIG_USER_ARPWATCH" = "y" ] || [ "CONFIG_USER_ARPSCAN" = "y" ]; then
 	define_bool CONFIG_LIB_PCAP y
 fi
 endmenu

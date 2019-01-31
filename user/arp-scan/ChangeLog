@@ -1,0 +1,845 @@
+2017-07-19 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Print "locally administered" for qualifing OUIs.  Thanks to sanderjo
+	  for this pull request.
+
+2017-05-29 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Updated ieee-oui.txt and ieee-iab.txt files.
+
+2016-09-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Use the new libpcap 1.0 API functions pcap_create(),
+	  pcap_set_XXX(), pcap_activate() instead of the old pcap_open_live().
+	  This requires libpcap 1.0 or later, so this and future versions of
+	  arp-scan will not work with libpcap 0.9 or earlier.
+
+	* configure.ac: Change pcap compatibility test to check for pcap_create
+	  instead of pcap_sendpacket to test for libpcap 1.0 or later.
+
+	* configure.ac: Increment version number to 1.9.5 to reflect the
+	  libpcap API change.
+
+	* Modified copyright statement in files to include up to 2016.
+
+2016-08-31 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h: Merge changes by tissieres to use
+	  source_mac rather than interface_mac in the pcap filter. This
+	  requires us to enable promiscuous mode to ensure that the
+	  ARP replies are received.
+
+	* configure.ac: Increment version number to 1.9.4 to reflect the
+	  changes made since 2016-08-13.
+
+2016-08-30 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Merge changes by Rhig to add "-l" option.
+
+	* arp-fingerprint: Added patterns for FreeBSD 10.3, DragonflyBSD 4.6,
+	  Windows10, Linux 4.0, Linux 4.6, OpenBSD 5.9, NetBSD 7.0.
+
+2016-08-22 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Remove function replacement for inet_aton, as all
+	  systems I'm aware of have this function now.  This replacement
+	  was needed for Solaris 8, but Solaris 10 does not need it and I
+	  doubt that anyone is still using versions of Solaris prior to 10.
+
+	* inet_aton.c: Removed.
+
+2016-08-20 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h: Use posix hash table functions hcreate(),
+	  hsearch() and hdestroy() instead of the gas hash table code.
+
+	* hash.c, hash.h, obstack.c, obstack.h: Removed.
+
+2016-08-13 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* get-oui, get-oui.1, arp-scan.1: Update IEEE OUI download location.
+
+	* ieee-oui.txt: Updated from IEEE website using modified script.
+
+	* check-decode: Updated manufacturer names to match updated OUI file.
+
+	* configure.ac: Increased version number from 1.9.2 to 1.9.3 to
+	  reflect the various changes made on github between Aug 2013 and
+	  Aug 2016.
+
+	* acinclude.m4: Assume long long int format is %lld if cross compiling.
+
+	* arp-scan.c: Correct warning message for invalid IP addresses to avoid
+	  segmentation violation.
+
+2015-11-13 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* get-iab: Read the OUI from the data in the file instead of using
+	  the constant 24-bit number 0050C2.  This is required because the
+	  0050C2 IEEE OUI has been fully used, and allocations have started
+	  from the 40D855 IEEE OUI.
+
+	* *.c: Removed unneeded trailing whitespace in source code.  Thanks
+	  to "jubalh" for this pull request.
+
+	* arp-scan.c, check-run1: Change --help and --version options to output
+	  to stdout (fd 0) instead of stderr (fd 1) in accordance with GNU
+	  Coding Standards section 4.7, "Standards for Command Line Interfaces".
+	  Thanks to "srdja" for this pull request.
+
+	* get-oui, get-iab: omit trailing whitespace from ieee-oui.txt and
+	  ieee-iab.txt files.
+
+	* ieee-oui.txt, ieee-iab.txt: Updated from IEEE website using modified
+	  scripts.
+
+2013-12-02 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* link-packet-socket.c: Die with an error if we can't open a raw
+	  packet socket to obtain the interface MAC address.  This avoids
+	  a segmentation violation on Linux if we try to run arp-scan against
+	  a specific interface without the required privileges.
+
+2013-12-02 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h arp-scan.1: Added new --randomseed option,
+	  which allows the random numer generator to be seeded with a specific
+	  value.
+
+	* arp-scan.c, arp-scan.h, utils.c: Removed --debug (-d) option. This
+	  has not been used for years, and the associated debug code was
+	  causing more clutter than it was worth.
+
+	* check-host-list: Added test to check generation of random host list.
+
+2013-12-01 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac, .gitignore: Added configure option --enable-gcov to
+	  enable gcov code coverage.
+
+2013-11-12 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added fingerprint for Cisco IOS 15.0.
+
+2013-11-02 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.1: Added new --plain (-x) option to supress
+	  printing of header and footer text, and only display one output
+	  line for each responding host. Idea from Stefan Tomanek's arp-scan
+	  fork on github at https://github.com/wertarbyte/arp-scan.
+
+2013-09-21 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* get-oui, get-iab: Use LWP::UserAgent instead of LWP::Simple to enable
+	  us to obtain the raw content rather than the decoded content. This
+	  avoids Unicode/UTF-8 issues caused by a change in behaviour between
+	  LWP 5.813 on Debian Lenny and 5.836 on Debian Squeeze.
+
+	* ieee-oui.txt, ieee-iab.txt: Updated from IEEE website using modified
+	  scripts.
+
+2013-09-05 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added fingerprint for WIZnet W5100 on Arduino
+	  Ethernet shield.
+
+2013-09-05 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Change the bug-report string in AC_INIT from the
+	  arp-scan email address to the github URL.
+
+	* Added references to the github repository in various files in
+	  place of the arp-scan email address.
+
+	* Updated ieee-oui.txt and ieee-iab.txt files.
+
+2013-08-15 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Removed $Id$ keywords from all files, and associated rcsid variables
+	  from C source. These are not really needed and they don't work with
+	  git.
+
+	* check-run1: Added GPL licence text, which had been accidentally
+	  ommitted when the script was written.
+
+	* configure.ac: Incremented version to 1.9.2 to distinguish new
+	  version under git revision control.
+
+	* .gitignore: new file containing file patterns that should not be
+	  committed to the repository.
+
+2013-08-15 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* ChangeLog: Removed pointless id keywords.
+
+	* Final SVN revision before migration to git.
+
+2013-07-25 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Released arp-scan version 1.9.
+	  tarball arp-scan-1.9.tar.gz, size 488442 bytes
+	  md5sum 38584d6c1edfa9f6b41d496e4a5539f1
+
+	* configure.ac: Incremented version to 1.9.1.
+
+2013-07-24 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+	* configure.ac: Incremented version number to 1.9.
+
+	* NEWS: Updated with latest changes.
+
+2013-05-09 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+	* Built with autoconf 2.69 and automake 1.11 from Debian Wheezy to
+	  add support for ARM 64 bit CPU architecture and remove configure
+	  warnings about conftest.dSYM on MacOS X.
+
+2013-05-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added FreeBSD 8.2, FreeBSD 9.1, DragonflyBSD 3.0,
+	  DragonflyBSD 3.2, Linux 3.2, Linux 3.8, NetBSD 5.1, NetBSD 6.0,
+	  OpenBSD 4.8, OpenBSD 5.1 and RiscOS 5.19.
+
+	* NEWS: Updated with changes since last release.
+
+	* configure.ac: Incremented version number to 1.8.4.
+
+2013-04-25 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h: Changed arp-scan to use the libpcap
+	  function pcap_sendpacket() instead of our own link-layer specific
+	  link_send() functions. This means that we now require libpcap
+	  version 0.9.3 or later.
+
+	* link-bpf.c, link-dlpi.c, link-packet-socket.c: Removed unneeded
+	  link-layer specific link_send() functions. Changed link_open()
+	  and link_close() functions to static, and modified
+	  get_hardware_address() and get_source_ip() functions to call
+	  link_open/link_close directly. Included link_t typedef in
+	  link_handle struct declaration.
+
+	* configure.ac: Change the libpcap function check from
+	  pcap_lib_version() to pcap_sendpacket(), to ensure that we have
+	  a recent enough version of libpcap.
+
+	* arp-scan.c: New function get_source_ip() to get the interface IP
+	  address using platform-independent code.
+
+	* link-bpf.c, link-dlpi.c, link-packet-socket.c: Removed unneeded
+	  link-layer specific get_source_ip() functions.
+
+2013-04-15 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Modified copyright statement in files to include up to 2013.
+
+	* get-oui, get-iab: Modified regex to allow optional whitespace at
+	  the beginning of line.
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+	* check-decode: Updated for new IEEE OUI vendors.
+
+	* configure.ac: Incremented version number to 1.8.3.
+
+	* arp-scan.c: Removed unneeded errlen declaration to avoid "set but
+	  not used" warning with GCC 4.6 and later.
+
+2013-01-01 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added Windows 8
+
+2012-08-08 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Added OS pattern for Dragonfly BSD.
+
+2012-06-06 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added fingerprint for BeOS.
+
+2012-05-29 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Copy the pcap_header->ts structure to a temporary
+	  struct timeval before passing to timeval_diff during rtt calculation.
+	  We can't pass a pointer to pcap_header->ts directly to timeval_diff
+	  because it's not guaranteed to have the same size as a struct
+	  timeval. E.g. OpenBSD 5.1 on amd64. Thanks to Stuart Henderson at
+	  OpenBSD for spotting this bug.
+
+2012-05-20 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* get-oui, get-iab: Applied patch from Stuart Henderson at OpenBSD.
+	  This allows the -u (alternative URL) option to be correctly handled,
+	  and changes the default URLs to the new locations on the IEEE
+	  website (the old locations still work, but with a redirect).
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+2011-12-30 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h, arp-scan.1: If the location of the various
+	  MAC/Vendor mapping files (IEEE OUI, IEEE IAB or custom) are not
+	  specified on the command line with the appropriate option, then
+	  look for them in the current directory before looking in the system
+	  wide location.
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+	* check-decode: Updated patterns to reflect vendor name changes in
+	  latest IEEE OUI file.
+
+2011-12-18 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Incremented version to 1.8.2
+
+2011-09-27 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.h, arp-scan.c, arp-scan.1: Added new option --rtt (-D) to
+          calculate and display the packet round-trip time.
+
+2011-08-18 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.h, arp-scan.1: Raised default timeout from 100ms to 500ms.
+	  It is suspected that the default timeout is too short in some
+	  situations, and this may be one of the causes of duplicate responses.
+
+	* arp-scan.h, link-bpf.c: Include <net/bpf.h> before arp-scan.h in
+	  link-bpf.c, and remove conditional inclusion of <net/bpf.h> in
+	  arp-scan.h. This causes <net/bpf.h> to be included before <pcap.h>
+	  on all systems that use BPF, e.g. BSD and MacOS. This should prevent
+	  the problems that occur on some of these systems, and remove the need
+	  for conditional inclusion to prevent them.
+
+	* arp-fingerprint: Added additional fingerprint for Linux 2.6 on
+	  Amazon Kindle.
+
+2011-07-31 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added fingerprint for GNU/Hurd
+
+2011-07-04 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Makefile.am: Added pkt-custom-request-vlan-llc.dat to EXTRA_DIST.
+
+2011-03-07 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Incremented version to 1.8.1.
+
+2011-03-01 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Released arp-scan version 1.8.
+	  tarball arp-scan-1.8.tar.gz, size 430221 bytes
+	  md5sum be8826574ec566217eb7ca040fe472f9
+
+	* configure.ac: Remove version number from AM_INIT_AUTOMAKE macro,
+	  as this usage is obsolete now. Incremented version to 1.8.
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+2011-02-26 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* pkt-custom-request-vlan-llc.dat: New data file for check-packet
+	  script containing custom ARP request with 802.1Q VLAN tag and
+	  LLC/SNAP framing.
+
+	* check-packet: Added check for custom ARP request with 802.1Q VLAN
+	  tag and LLC/SNAP framing.
+
+2011-02-25 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* pkt-vlan-llc-response.pcap: New file containing an example of
+	  an ARP reply with 802.1Q tag and LLC/SNAP framing. From a Cisco
+	  2621 router.
+
+	* pkt-trailer-response.pcap: Renamed from pkt-trailer-reply.pcap.
+
+	* check-decode: New checks for trailer response and 802.1Q/LLC
+	  responses.
+
+	* arp-scan.c: Modified pcap filter string to capture ARP responses
+	  with both 802.1Q tag and LLC/SNAP framing.
+
+	* Makefile.am: Include pkt-trailer-response.pcap and
+	  pkt-vlan-llc-response.pcap.
+
+2011-02-21 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Modified usage() so that it can output either brief or
+          detailed help output depending on a new "detailed" argument.  Now,
+          detailed output, including information on the available options, is
+          only displayed when arp-scan is run with the --help option.  For
+          error conditions such as incorrect options, it only produces brief
+          output.
+
+	* arp-scan.c: Modify display_packet() to report responses where the
+	  ARP protocol type (ar$pro) is not IP (0x0800). This allows trailer
+	  negotiation responses to be distinguished from regular ARP replies.
+
+	* pkt-trailer-reply.pcap: New file containing an example of a trailer
+	  negotiation ARP response from a Quasijarus 4.3BSD system on SIMH VAX.
+
+	* arp-fingerprint: Added fingerprint for Blackberry OS.
+
+2011-02-19 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.h: On Apple Mac OS X systems with Xcode 2.5 and later,
+	  include <net/bpf.h> before <pcap.h>.
+
+	* configure.ac: Increment version number to 1.7.6.
+
+2011-02-06 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* acinclude.m4: Changed GCC_FORTIFY_SOURCE macro so the test program
+	  doesn't include <features.h>, because that header file is not
+	  present on all the operating systems that we support, e.g. OpenBSD.
+
+2011-02-04 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Use pcap_get_selectable_fd() rather than pcap_fileno()
+	  to get the pcap file descriptor.
+
+	* check-host-list: Added new test to check the creation of the host
+	  list.
+
+2011-02-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: When using --writepkttofile we no longer open a link
+	  layer socket or a pcap handle, so we don't need root privileges.
+
+	* check-packet: Remove check for root privileges as this is no longer
+	  needed.
+
+	* check-decode: Added two new tests to improve code coverage.
+
+	* arp-scan.c, arp-scan.h: Modify add_host_pattern() and add_host() so
+	  we always use the more efficient inet_pton() rather than
+	  get_host_address() for IPnet/bits, IPnet:mask and IPstart-IPend
+	  patterns.
+
+2011-02-02 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Change operation of --readpktfromfile so it reads from
+	  a pcap savefile rather than from a raw file.
+
+	* pkt-simple-response.pcap, pkt-padding-response.pcap,
+	  pkt-vlan-response.pcap, pkt-llc-response.pcap: New pcap format
+	  files for check-decode.
+
+	* check-decode: Modified to use new pcap format savefiles, and remove
+	  check for root privileges as this is no longer needed.
+
+2011-01-31 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* link-dlpi.c: Fix "comparison between signed and unsigned" warning in
+	  function dlpi_msg.
+
+	* arp-fingerprint: Added fingerprint for Windows 7.
+
+	* arp-scan.c: Changed what gets displayed for the different verbose
+	  levels, and updated the --help output to reflect the new behaviour.
+
+2011-01-30 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* check-packet, check-decode: New checks to check packet creation and
+	  packet decoding.
+
+	* pkt-custom-request.dat, pkt-custom-request-llc.dat,
+	  pkt-custom-request-padding.dat, pkt-custom-request-vlan.dat,
+	  pkt-padding-response.dat, pkt-simple-request.dat,
+	  pkt-simple-response.dat: Data files for check-packet and check-decode
+	  scripts.
+
+	* Makefile.am: Add new check scripts and data files.
+
+	* arp-scan.c, arp-scan.h: Added undocumented options --writepkttofile
+	  and --readpktfromfile to allow data to be written to or read from a
+	  file instead of the network for testing.
+
+	* arp-scan.c: Use "stdin" instead of fdopen(0,"r") when using
+	  --filename=-, fixing a bug which was causing fd 0 to be closed.
+	  Set the frame type correctly for LLC/SNAP format frames: before
+	  it was always set to 0x0806.
+
+	* configure.ac: Add headers required for --writepkttofile and
+	  --readpktfromfile.  Increment version number to 1.7.5.
+
+2011-01-09 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* COPYING: Changed license from GPLv2 to GPLv3.
+
+	* Modified licence statement in source files to specify GPLv3
+
+	* Modified copyright statement in files to include up to 2011.
+
+2010-12-22 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Change req_interval back from unsigned to int. This
+	  addresses a bug in the timing code that was introduced in svn
+	  r18043, which caused the packet rate to be very high irrespective
+	  of the specified interval.
+
+	* configure.ac: Enable -Wextra warnings for gcc. Increment version
+	  number to 1.7.4.
+
+2010-12-22 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* hash.c, hash.h, obstack.c, obstack.h: Updated version of GAS hash
+	  table code to the latest version from GNU binutils 2.21.  This new
+	  version addresses the shadowed variable warnings that the old version
+	  used to produce when compiled with -Wshadow.
+
+	* configure.ac: define ATTRIBUTE_UNUSED macro to enable portable use
+	  of attribute unused to mark possibly unused function arguments.
+
+	* arp-scan.c: Minor changes to remove a couple of shadowed variable
+	  warnings.
+
+2010-12-07 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* acinclude.m4: Added GCC_WEXTRA macro to determine if the C compiler
+	  supports the -Wextra switch to enable extra warnings.
+
+	* arp-scan.c, arp-scan.h, utils.c: Remove unused function parameters
+	  and address signed/unsigned comparisons highlighted by -Wextra.
+
+2010-12-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.1: Added warning about setting ar$spa to the destination
+	  IP address. Suggested by Ed Schaller.
+
+2010-04-25 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Added 2.11BSD
+
+2009-08-15 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, utils.c: Improve handling of --bandwidth and
+	  --interval options: Allow either upper or lowercase
+	  multiplier letters and give an error if an unknown multiplier
+	  character is used.  Previously an unknown multiplier character
+	  or one with the wrong case was silently ignored and treated as
+	  no multiplier at all.
+
+	* wrappers.c: Change Strtoul and Strtol so they give an error
+	  if the underlying function finishes at an unconvertible
+	  character other than NULL or whitespace.
+
+	* configure.ac: Added extra warning "-Wwrite-strings" for gcc.
+
+2009-08-14 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h, configure.ac, error.c: Removed syslog
+	  functionality as this is not used and has been #ifdef'ed out
+	  for some time.
+
+2009-05-06 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* autoconf.ac: Updated to autoconf 2.61
+
+2009-03-06 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* acinclude.m4: Added macros to detect compiler support for
+	  -fstack-protect, -D_FORTIFY_SOURCE and -Wformat-security.
+
+	* configure.ac: Conditionally enable compiler flags for
+	  -fstack-protect, -D_FORTIFY_SOURCE and -Wformat-security using
+	  the new acinclude.m4 autoconf macros.
+
+	* configure.ac: Incremented version to 1.7.2.
+
+2008-08-01 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint get-iab get-oui: Replaced "#!/usr/bin/perl" shebang
+	  with "#!/usr/bin/env perl" to increase portability.  This allows
+	  these perl scripts to work on systems where perl is not installed in
+	  /usr/bin, such as NetBSD.
+
+2008-07-26 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Incremented version to 1.7.1.
+
+	* arp-fingerprint: Added NetBSD 4.0, FreeBSD 7.0 and Vista SP1
+
+2008-07-25 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Released arp-scan version 1.7.
+	  tarball arp-scan-1.7.tar.gz, size 344,771 bytes
+	  md5sum a9927dba2b1dbdfd1c3b3bb09615fc14
+
+2008-07-24 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+	* configure.ac: Incremented version to 1.7.
+
+2008-07-11 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.a: Removed reference to RMIF environment variable.
+	  arp-scan now uses the value specified with --interface, or
+	  if that is not specified, picks an interface with
+	  pcap_lookupdev().
+
+	* configure.ac: Incremented version to 1.6.4 for pre-release
+	  testing.
+
+	* *.c, *.h: Modified copyright statements to read 2005-2008.
+
+2008-05-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Added --pcapsavefile (-W) option to allow received
+	  ARP responses to be saved in the specified pcap savefile for
+	  later analysis.
+
+	* TODO: Removed plan to support libpcap 0.7 as just about every
+	  system has at least libpcap 0.8, and most have 0.9.
+
+	* arp-scan.c: changed display_packet() so it displays the source
+	  address from the frame header in parens if it is different from the
+	  ar$sha address.  E.g.
+          192.168.1.255 ff:ff:ff:ff:ff:ff (00:03:a0:88:eb:a8)   Broadcast
+
+2007-12-10 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Change most calls to strtol() to use the new
+          wrapper function Strtol() instead, because this checks for
+          errors.  Previously, a non-numeric value would be converted to
+          zero without any error, meaning something like "--snap=xxx"
+          would be silently accepted.  Now such invalid inputs results in
+          an error.
+
+	* arp-scan.c: Added new --vlan (-Q) option to support sending
+	  ARP packets with an 802.1Q VLAN tag.  Response packets with
+	  an 802.1Q tag are decoded and displayed irrespective of this
+	  option.
+
+2007-04-17 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.h: Reduced MAX_FRAME from 65536 to 2048 bytes.
+
+	* arp-scan.c: Add the optional padding in marshal_arp_pkt(), and
+	  avoid potential buffer overflow if padding is longer than the
+	  remaining buffer size.
+
+	* arp-scan.c: Changed display_packet() to take ARP structure, extra
+	  data and framing type as parameters passed from callback() to avoid
+	  having to call unmarshal_arp_pkt() twice.  This also means that
+	  we don't need to pass the raw frame to display_packet() now as it
+	  has the data in individual variables.
+
+	* arp-scan.c: Move padding addition to marshal_arp_pkt().
+
+2007-04-14 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.h, arp-scan.c: Changed MAXIP to MAX_FRAME and changed value
+	  to 65536 bytes.  This is the maximum allowable frame size, which is
+	  used to size read/write buffers.  This is much larger than any
+	  layer-2 frame.
+
+	* arp-scan.h: Changed PACKET_OVERHEAD to 18 (6+6+2 ... +4) and
+	  MINIMUM_FRAME_SIZE to 46.
+
+	* arp-scan.h: undefine SYSLOG, as we don't use this any more, and I
+	  doubt that anyone else needs it.  The syslog functionality may be
+	  removed in a future release.
+
+2007-04-13 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Added support for RFC 1042 LLC/SNAP framing with the
+	  new --llc (-L) option.
+
+2007-04-12 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Released arp-scan version 1.6.
+	  tarball arp-scan-1.6.tar.gz, size 319,566 bytes
+	  md5sum eb24303c6eb4d77c3abf23511efce642
+
+2007-04-10 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* mt19937ar.c: New file - Mersenne Twister random number generator.
+
+	* arp-scan.c: Changed random number implementation to use the mersenne
+	  twister functions from mt19937ar.c rather than random() from the C
+	  library.  This improves portability, as random() is not part of
+	  standard C.
+
+	* Updated ieee-oui.txt and ieee-iab.txt from the IEEE website
+	  using get-oui and get-iab Perl scripts.
+
+2007-04-08 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* utils.c: Removed ununsed function printable().
+
+	* arp-scan.c: Added /* NOTREACHED */ comments in appropriate places.
+	  Removed unneeded max_iter global variable.
+	  Added call to pcap_lib_version() in arp_scan_version().
+
+	* configure.ac: Changed check for pcap_datalink_val_to_name() to
+	  check for pcap_lib_version() instead.
+
+2007-04-06 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Added checks for strlcat and strlcpy, with
+	  replacement functions using the OpenBSD implementations if they are
+	  not present.
+
+	* strlcat.c, strlcpy.c: New source files from the OpenBSD source at
+	  http://www.openbsd.org/cgi-bin/cvsweb/src/lib/libc/string
+
+	* *.c: replaced most calls to strcat and strncat with strlcat, and
+	  calls to strcpy and strncpy with strlcpy.  Two calls to strncpy
+	  remain because the source strings are not null terminated.
+
+2007-04-05 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Check the return status of pcap_dispatch() against -1
+	  rather than < 0 to check for error because the use of pcap_breakloop
+	  results in a return status of -2, and this is not an error.  Even
+	  though we don't use pcap_breakloop, we should still behave correctly
+	  if it used in the future.
+
+	* arp-scan.c: Check return status of inet_pton() separately against
+          < 0, which indicates and error, and against == 0, which indicates
+	  that the string is not a valid address.  Previously we handled these
+	  together with the comparison <= 0.  Also return from add_host()
+	  immediately if the host lookup fails.
+
+2007-04-04 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-fingerprint: Check that the target host specification is not
+	  an IP network or range, and terminate with an error message if it
+	  is.  Some users have mistakenly tried to use arp-fingerprint against
+	  a network, and I want to give a better error message in these cases.
+
+	* arp-fingerprint: Remove the default "-N" from the arp-scan command
+	  line as it is valid to use a hostname.  Modified the associated
+	  manpage so it agrees with this change.
+
+2007-04-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Add ioctl to reduce the bufmod timeout to zero for
+	  Solaris (DLPI).  This prevents buffering, and ensures that packets
+	  are available immediately.  This allows arp-scan to work on
+	  Solaris (tested on Solaris/SPARC 2.9 with Libpcap 0.9.5).
+
+2007-03-29 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Change help output, so we display the default value for
+	  the --bandwidth option, and don't display it for the --interval
+	  option (as the latter will always be zero because we use bandwidth
+	  by default).  Updated arp-scan.1 manpage with the new output.
+
+2007-02-15 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* link-dlpi.c: Wrote link-level functions for DLPI.  Compiles on
+	  Solaris 9, but not fully tested.
+
+2007-01-26 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Updated ieee-oui.txt and ieee-iab.txt from the IEEE website
+	  using get-oui and get-iab Perl scripts.
+
+2006-07-26 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Released version 1.5.
+
+	  Tarball details:
+
+	  -rw-rw-r--  1 rsh nta 298917 2006-07-26 13:50 arp-scan-1.5.tar.gz
+	  85b0e04323ce3a423f60ab905a589856  arp-scan-1.5.tar.gz
+
+	* configure.ac: Incremented version number to 1.5.1 in preparation
+	  for post-1.5 changes.
+
+2006-07-24 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* ieee-oui.txt, ieee-iab.txt: Updated IEEE OUI and IAB listings from
+	  IEEE website using get-oui and get-iab Perl scripts.
+
+2006-07-22 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Increased version number to 1.4.5.
+
+	* README: Added installation instructions.
+
+2006-07-21 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* link-bpf.c: New file containing link-level sending functions
+	  for BPF as used by BSD OSes.
+
+	* link-packet-socket.c: Changed socket protocol from SOCK_DGRAM to
+	  SOCK_RAW, so the entire Ethernet frame including the header can
+          be controlled.
+
+	* arp-scan.c: Changed to build entire outgoing frame, rather than
+	  just the ARP payload.
+
+	* arp-scan.c: Modifications to support BPF link-layer.  This has been
+	  tested on FreeBSD 6.1, OpenBSD 3.9, NetBSD 3.0.1 and
+          Darwin 7.9.0 (MacOS 10.3.9).
+
+	* arp-scan.c: Changed operation of the --srcaddr option.  Now it
+	  sets the hardware address in the frame header of outgoing packets
+	  without altering the address of the outgoing interface.
+
+	* link-packet-socket.c, link-bpf.c: Removed set_hardware_address()
+	  function, as this is no longer needed with the new operation of
+	  the --srcaddr option.
+
+2006-07-11 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c: Removed unneeded gettimeofday() call in add_host().
+	  This increases the host addition rate considerably, so adding
+	  a class-A network (2^24 hosts) now takes 15 seconds as opposed
+	  to 80 seconds.
+
+2006-07-10 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.h, arp-scan.c: Removed unneeded element "n" from host
+	  entry structure.  This reduces the per-host memory usage from
+	  32 bytes per host to 28 bytes per host.
+
+	* mac-vendor.5: New manual page for the mac-vendor.txt file format.
+
+2006-07-03 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* link-packet-socket.c: New file containing all functions that
+	  use Linux packet socket link layer interface.  This moves all
+	  the packet-socket implementation dependent to this one file, which
+	  should make future porting to other operating systems easier.
+
+	* arp-scan.c, arp-scan.h: Modified to use link-layer functions in
+	  new link-packet-socket.c file.
+
+	* configure.ac: Increased version number to 1.4.2.
+
+2006-06-28 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* arp-scan.c, arp-scan.h: removed the unneeded ip_address union
+	  and replaced it with "struct in_addr".  As arp-scan is only
+	  applicable to IPv4, we don't need to use the union.  This
+	  change reduces the size of an address from 16 bytes to 4, and
+	  reduces the per-host memory usage from 44 bytes/host to 32.
+
+	* arp-fingerprint: Added Windows Vista Beta 2 fingerprint.
+
+2006-06-27 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* configure.ac: Increase version number to 1.4.1 in preparation
+	  for future changes.
+
+2006-06-26 Roy Hills <Roy.Hills@nta-monitor.com>
+
+	* Released version 1.4.
+	  This is the first stable version.  v1.3 was a beta, and v1.0,
+	  1.1 and 1.2 were NTA Monitor internal versions before it was
+	  released under GPL.

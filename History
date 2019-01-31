@@ -4545,3 +4545,7 @@
 45) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
+<b>7.9.x</b><br>
+1) add arp-scan v 1.9.5 (only 16Mb flash devices).<br>
+<br>
+<br>

@@ -1,0 +1,31 @@
+# Autoconf and automake generated files
+.deps/
+INSTALL
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+depcomp
+install-sh
+missing
+stamp-h1
+compile
+test-driver
+autom4te.cache
+# Compiler output files
+*.o
+arp-scan
+*.gcno
+*.gcda
+*.gcov
+# IEEE OUI and IAB backup files
+ieee-iab.txt.bak
+ieee-oui.txt.bak
+./filesystem
