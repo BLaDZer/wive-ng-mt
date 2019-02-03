@@ -376,8 +376,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* EXT_BUILD_CHANNEL_LIST */
 
 #ifdef DOT11K_RRM_SUPPORT
-			if (IS_RRM_ENABLE(pAd, apidx)
-				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
+			if (IS_RRM_ENABLE(pAd, apidx))
 			{
 				TmpLen2 = 0;
 				NdisZeroMemory(TmpFrame, 256);
@@ -690,8 +689,7 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* EXT_BUILD_CHANNEL_LIST */
 
 #ifdef DOT11K_RRM_SUPPORT
-                if (IS_RRM_ENABLE(pAd, apidx)
-                    && (pAd->CommonCfg.RegulatoryClass[0] != 0))
+                if (IS_RRM_ENABLE(pAd, apidx))
                 {
                     TmpLen2 = 0;
 		    NdisZeroMemory(TmpFrame, 256);

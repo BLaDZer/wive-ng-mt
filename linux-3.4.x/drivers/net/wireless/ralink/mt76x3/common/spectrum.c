@@ -2494,7 +2494,7 @@ VOID RguClass_BuildBcnChList(RTMP_ADAPTER *pAd, UCHAR *pBuf, ULONG *pBufLen)
 	for (loop = 0 ;loop < MAX_NUM_OF_REGULATORY_CLASS; loop++)
 	{
 		if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
-			break;
+			continue;
 
 		pRguClassRegion = GetRugClassRegion(
 							(RTMP_STRING *)pAd->CommonCfg.CountryCode,

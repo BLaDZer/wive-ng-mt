@@ -4549,5 +4549,6 @@
 1) add arp-scan v 1.9.5 (only 16Mb flash devices).<br>
 2) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
 3) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+4) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>

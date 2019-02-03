@@ -543,7 +543,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			for (loop=0; loop<MAX_NUM_OF_REGULATORY_CLASS; loop++)
 			{
 				if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
-					break;
+					continue;
 				InsertChannelRepIE(pAd, pOutBuffer+FrameLen, &FrameLen,
 									(RTMP_STRING *)pAd->CommonCfg.CountryCode,
 									pAd->CommonCfg.RegulatoryClass[loop], NULL);
@@ -693,8 +693,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			TmpLen2 += TmpLen;
 #endif /* EXT_BUILD_CHANNEL_LIST */
 #ifdef DOT11K_RRM_SUPPORT
-			if (IS_RRM_ENABLE(pAd, apidx)
-				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
+			if (IS_RRM_ENABLE(pAd, apidx))
 			{
 				TmpLen2 = 0;
 				NdisZeroMemory(TmpFrame, 256);

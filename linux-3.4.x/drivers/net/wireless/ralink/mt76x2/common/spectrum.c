@@ -2776,7 +2776,7 @@ VOID RguClass_BuildBcnChList(
 	for (loop = 0 ;loop < MAX_NUM_OF_REGULATORY_CLASS; loop++)
 	{
 		if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
-			break;
+			continue;
 
 		pRguClassRegion = GetRugClassRegion(
 							(PSTRING)pAd->CommonCfg.CountryCode,

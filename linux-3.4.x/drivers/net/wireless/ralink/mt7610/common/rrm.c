@@ -499,7 +499,7 @@ INT RRM_InfoDisplay_Proc(
 	for (loop = 0; loop < MAX_NUM_OF_REGULATORY_CLASS; loop++)
 	{
 		if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
-			break;
+			continue;
 
 		printk("%d ", pAd->CommonCfg.RegulatoryClass[loop]);
 	}
