@@ -2737,28 +2737,26 @@ static PDOT11_REGULATORY_INFORMATION GetRugClassRegion(
 			if (RugClass >= RU_REGULATORY_INFO_SIZE)
 				break;
 			pRugClass = &RURegulatoryInfo[RugClass];
-		}
-
-		if (strncmp(pCountryCode, "US", 2) == 0)
+		} else if (strncmp(pCountryCode, "US", 2) == 0)
 		{
 			if (RugClass >= USA_REGULATORY_INFO_SIZE)
 				break;
 			pRugClass = &USARegulatoryInfo[RugClass];
-		}
-
-		if (strncmp(pCountryCode, "EU", 2) == 0)
+		} else	if (strncmp(pCountryCode, "EU", 2) == 0)
 		{
 			if (RugClass >= EU_REGULATORY_INFO_SIZE)
 				break;
 			pRugClass = &EuropeRegulatoryInfo[RugClass];
-		}
-
-		if (strncmp(pCountryCode, "JP", 2) == 0)
+		} else if (strncmp(pCountryCode, "JP", 2) == 0)
 		{
 			if (RugClass >= JP_REGULATORY_INFO_SIZE)
 				break;
 			pRugClass = &JapanRegulatoryInfo[RugClass];
 
+		} else {
+			if (RugClass >= RU_REGULATORY_INFO_SIZE)
+				break;
+			pRugClass = &RURegulatoryInfo[RugClass];
 		}
 	} while (FALSE);
 
@@ -2784,9 +2782,12 @@ VOID RguClass_BuildBcnChList(
 							(PSTRING)pAd->CommonCfg.CountryCode,
 							pAd->CommonCfg.RegulatoryClass[loop]);
 
+		if (pRguClassRegion == NULL)
+			return;
+
 		pChList = &pRguClassRegion->ChannelSet;
 
-		if (pRguClassRegion == NULL)
+		if (pChList == NULL)
 			return;
 
 		MakeOutgoingFrame(pBuf + *pBufLen,		&TmpLen,

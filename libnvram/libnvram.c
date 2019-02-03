@@ -1377,11 +1377,16 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(RRMEnable);  	/* Enable Resource Radio Managment */
 	FPRINT_DAT(RegDomain);  	/* Global/Local >= mt7615 */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+#ifndef CONFIG_MT7615_AP_DBDC_MODE
 	if (!inic) {
 	    FPRINT_DAT(RegulatoryClass);
 	} else {
 	    fprintf(fp, "RegulatoryClass=%s\n", nvram_get(mode, "RegulatoryClassINIC"));
 	}
+#else
+	/* in DBDC mode use only 5GHz regclass limit */
+        fprintf(fp, "RegulatoryClass=%s\n", nvram_get(mode, "RegulatoryClassINIC"));
+#endif
 #else
 	FPRINT_DAT(RegulatoryClass);
 #endif
