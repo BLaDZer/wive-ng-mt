@@ -165,7 +165,8 @@ static int unsolicited_report_interval(struct in_device *in_dev)
 	return interval_jiffies;
 }
 
-static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im);
+static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im,
+			      gfp_t gfp);
 static void igmpv3_del_delrec(struct in_device *in_dev, struct ip_mc_list *im);
 static void igmpv3_clear_delrec(struct in_device *in_dev);
 static int sf_setstate(struct ip_mc_list *pmc);
@@ -1138,7 +1139,8 @@ static void ip_mc_filter_del(struct in_device *in_dev, __be32 addr)
 /*
  * deleted ip_mc_list manipulation
  */
-static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im)
+static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im,
+			      gfp_t gfp)
 {
 	struct ip_mc_list *pmc;
 
@@ -1148,7 +1150,7 @@ static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 	 * for deleted items allows change reports to use common code with
 	 * non-deleted or query-response MCA's.
 	 */
-	pmc = kzalloc(sizeof(*pmc), GFP_KERNEL);
+	pmc = kzalloc(sizeof(*pmc), gfp);
 	if (!pmc)
 		return;
 	spin_lock_bh(&im->lock);
@@ -1252,7 +1254,7 @@ static void igmpv3_clear_delrec(struct in_device *in_dev)
 }
 #endif
 
-static void igmp_group_dropped(struct ip_mc_list *im)
+static void __igmp_group_dropped(struct ip_mc_list *im, gfp_t gfp)
 {
 	struct in_device *in_dev = im->interface;
 #ifdef CONFIG_IP_MULTICAST
@@ -1282,11 +1284,16 @@ static void igmp_group_dropped(struct ip_mc_list *im)
 			return;
 		}
 		/* IGMPv3 */
-		igmpv3_add_delrec(in_dev, im);
+		igmpv3_add_delrec(in_dev, im, gfp);
 
 		igmp_ifc_event(in_dev);
 	}
 #endif
+}
+
+static void igmp_group_dropped(struct ip_mc_list *im)
+{
+	__igmp_group_dropped(im, GFP_KERNEL);
 }
 
 static void igmp_group_added(struct ip_mc_list *im)
@@ -1336,7 +1343,8 @@ static void igmp_group_added(struct ip_mc_list *im)
 /*
  *	A socket has joined a multicast group on device dev.
  */
-static void __ip_mc_inc_group(struct in_device *in_dev, __be32 addr, unsigned int mode)
+static void ____ip_mc_inc_group(struct in_device *in_dev, __be32 addr,
+				unsigned int mode, gfp_t gfp)
 {
 	struct ip_mc_list *im;
 
@@ -1350,7 +1358,7 @@ static void __ip_mc_inc_group(struct in_device *in_dev, __be32 addr, unsigned in
 		}
 	}
 
-	im = kzalloc(sizeof(*im), GFP_KERNEL);
+	im = kzalloc(sizeof(*im), gfp);
 	if (!im)
 		goto out;
 
@@ -1380,6 +1388,12 @@ static void __ip_mc_inc_group(struct in_device *in_dev, __be32 addr, unsigned in
 out:
 	return;
 }
+
+void __ip_mc_inc_group(struct in_device *in_dev, __be32 addr, gfp_t gfp)
+{
+	____ip_mc_inc_group(in_dev, addr, MCAST_EXCLUDE, gfp);
+}
+EXPORT_SYMBOL(__ip_mc_inc_group);
 
 void ip_mc_inc_group(struct in_device *in_dev, __be32 addr)
 {
@@ -1423,7 +1437,7 @@ EXPORT_SYMBOL(ip_mc_rejoin_groups);
  *	A socket has left a multicast group on device dev
  */
 
-void ip_mc_dec_group(struct in_device *in_dev, __be32 addr)
+void __ip_mc_dec_group(struct in_device *in_dev, __be32 addr, gfp_t gfp)
 {
 	struct ip_mc_list *i;
 	struct ip_mc_list __rcu **ip;
@@ -1437,7 +1451,7 @@ void ip_mc_dec_group(struct in_device *in_dev, __be32 addr)
 			if (--i->users == 0) {
 				*ip = i->next_rcu;
 				in_dev->mc_count--;
-				igmp_group_dropped(i);
+				__igmp_group_dropped(i, gfp);
 				ip_mc_clear_src(i);
 
 				if (!in_dev->dead)
@@ -1450,7 +1464,7 @@ void ip_mc_dec_group(struct in_device *in_dev, __be32 addr)
 		}
 	}
 }
-EXPORT_SYMBOL(ip_mc_dec_group);
+EXPORT_SYMBOL(__ip_mc_dec_group);
 
 /* Device changing type */
 

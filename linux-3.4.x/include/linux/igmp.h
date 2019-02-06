@@ -238,7 +238,13 @@ extern void ip_mc_up(struct in_device *);
 extern void ip_mc_down(struct in_device *);
 extern void ip_mc_unmap(struct in_device *);
 extern void ip_mc_remap(struct in_device *);
-extern void ip_mc_dec_group(struct in_device *in_dev, __be32 addr);
+extern void __ip_mc_dec_group(struct in_device *in_dev, __be32 addr, gfp_t gfp);
+static inline void ip_mc_dec_group(struct in_device *in_dev, __be32 addr)
+{
+	return __ip_mc_dec_group(in_dev, addr, GFP_KERNEL);
+}
+extern void __ip_mc_inc_group(struct in_device *in_dev, __be32 addr,
+			      gfp_t gfp);
 extern void ip_mc_inc_group(struct in_device *in_dev, __be32 addr);
 extern void ip_mc_rejoin_groups(struct in_device *in_dev);
 
