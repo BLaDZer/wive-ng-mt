@@ -1042,7 +1042,7 @@
 				if (form.PMFSHA256.selectedIndex < 0)
 					form.PMFSHA256.selectedIndex = 0;
 
-				if (form["PreAuth"+MBSSID] == '0')
+				if (form["PreAuth"+MBSSID].value == '0')
 					form.PreAuthentication[0].selected = true;
 				else
 					form.PreAuthentication[1].selected = true;

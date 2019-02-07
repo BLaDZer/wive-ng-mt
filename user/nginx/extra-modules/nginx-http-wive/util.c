@@ -1,6 +1,13 @@
 #include "util.h"
 #include "sessionid.h"
 
+void strcat_c(char *str, char c)
+{
+    for (;*str;str++);
+    *str++ = c;
+    *str++ = 0;
+}
+
 enum UserRole get_user_role(char* username)
 {
     if (username == NULL) return DENY;
@@ -225,7 +232,11 @@ int doSystem(char *fmt, ...)
 
     snprintf(buf2, sizeof(buf2)-1, "(%s) > /dev/console 2>&1", buf);
 
+#ifndef DEMO_MODE
     errcode = system(buf2);
+#else
+    errcode = 0;
+#endif
     syslog(LOG_INFO, "doSystem: %s (%i)", buf2, errcode);
 
     return errcode;

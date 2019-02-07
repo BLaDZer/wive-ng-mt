@@ -508,14 +508,17 @@ static char* repeatValueTimes(char* buf, char* value, int times)
 	for (i=0; i < times; i++)
 	{
 		if (i > 0)
-			sprintf(buf, "%s;%s", buf, value);
+		{
+			strcat(buf, ";");
+			strcat(buf, value);
+		}
 		else
-			sprintf(buf, "%s%s", buf, value);
+		{
+			strcat(buf, value);
+		}
 	}
 	return buf;
 }
-
-
 
 /* goform/wirelessBasic */
 
@@ -735,12 +738,14 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 				STFs(RT2860_NVRAM, ssid, "WirelessModeINIC", wirelessmodeac);
 #endif
 
-				sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hidden_ssids, ssid + '0') != NULL) ? "1" : "0");
-				sprintf(hidden_ssid, "%s%s", hidden_ssid, token);
-				sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssids, ssid + '0') != NULL) ? "1" : "0");
-				sprintf(noforwarding, "%s%s", noforwarding, token);
-				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssids, ssid + '0') != NULL) ? "1" : "0");
-				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
+				strcat(hidden_ssid, (strchr(hidden_ssids, ssid + '0') != NULL) ? "1" : "0");
+				strcat(hidden_ssid, token);
+
+				strcat(noforwarding, (strchr(isolated_ssids, ssid + '0') != NULL) ? "1" : "0");
+				strcat(noforwarding, token);
+
+				strcat(noforwardingmbcast, (strchr(mbcastisolated_ssids, ssid + '0') != NULL) ? "1" : "0");
+				strcat(noforwardingmbcast, token);
 
 				i++;
 			}
@@ -1274,12 +1279,14 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 ////////////////
 	void wirelessBasic_palna() {
 		char_t *dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E) || defined(CONFIG_RT_SECOND_IF_MT7610E)
 		char_t *dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
-		char_t *dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
+#endif
 
 		ngx_nvram_bufset(wp,"DyncVgaEnable", dyn_vga);
 
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+		char_t *dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
 		ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
 		ngx_nvram_bufset(wp,"VgaClamp", dyn_vga_clamp);
 #endif
@@ -1491,8 +1498,8 @@ static void getSecurity(webs_t* wp, char_t *path, char_t *query)
 			STR = ngx_nvram_get(wp, racat("SSID", i+1));
 			for (j = 0; j < strlen(STR); j++) {
 				if (STR[j] == '"' || STR[j] == '\\')
-					sprintf(str, "%s%c", str, '\\');
-				sprintf(str, "%s%c", str, STR[j]);
+					strcat(str, "\\");
+				strcat_c(str, STR[j]);
 			}
 			strcat(result, str);
 			strcat(result, "\", ");
@@ -1550,8 +1557,8 @@ static void getSecurity(webs_t* wp, char_t *path, char_t *query)
 			STR = ngx_nvram_get(wp, racat("WPAPSK", i + 1));
 			for (j = 0; j < strlen(STR); j++) {
 				if (STR[j] == '"' || STR[j] == '\\')
-					sprintf(str, "%s%c", str, '\\');
-				sprintf(str, "%s%c", str, STR[j]);
+					strcat(str, "\\");
+				strcat_c(str, STR[j]);
 			}
 			strcat(result, str);
 			strcat(result, "\", ");
@@ -1652,8 +1659,8 @@ static int getSSIDsList(webs_t *wp, char** params, int nparams)
 		SSID[0] = '\0';
 		for (j = 0; j < strlen(ssid); j++) {
 			if (ssid[j] == '"' || ssid[j] == '\\')
-				sprintf(SSID, "%s%c", SSID, '\\');
-			sprintf(SSID, "%s%c", SSID, ssid[j]);
+				strcat(SSID, "\\");
+			strcat_c(SSID, ssid[j]);
 		}
 		outWrite(T("{ \"ssid\":\"%s\" }%s"), SSID, (i + 1  == num_ssid) ? "" : ", ");
 	}
@@ -2096,8 +2103,8 @@ static void getScanAp(webs_t* wp, char_t *path, char_t *query)
 		ssid[0] = '\0';
 		for (j = 0; j < strlen(entries[i].ssid); j++) {
 			if (entries[i].ssid[j] == '"')
-				sprintf(ssid, "%s%c", ssid, '\\');
-			sprintf(ssid, "%s%c", ssid, entries[i].ssid[j]);
+				strcat(ssid, "\\");
+			strcat_c(ssid, entries[i].ssid[j]);
 		}
 		outWrite(T("{ "));
 		outWrite(T("\"channel\":\"%d\", "), (unsigned char) entries[i].chan);

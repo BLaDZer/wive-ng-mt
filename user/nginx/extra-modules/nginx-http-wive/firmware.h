@@ -28,6 +28,10 @@
 #include "../../../tools/mkimage/include/image.h"	/* For Uboot image header format */
 /* for calculate max image size */
 #include "../../../linux/drivers/mtd/ralink/ralink-flash.h"
+#else
+#include "stub/autoconf.h"  				/* kernel config stub */
+#include "stub/image.h"					/* For Uboot image header format */
+#include "stub/ralink-flash.h"
 #endif
 
 

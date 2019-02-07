@@ -1,10 +1,9 @@
 #!/bin/bash
 
 echo "==================CONFIGURE-NGINX=============================="
-APROOTDIR=`pwd`
 
-HBUILD=`uname -m`-pc-linux-gnu
-HTARGET=mipsel-linux
+ROOTDIR=`pwd`
+APROOTDIR=`pwd`
 
 # prefer use bash if multishell
 if [ -e /bin/bash ]; then
@@ -15,14 +14,11 @@ fi
 
 export SHELL
 
-CONFOPTS="--build=$HTARGET --crossbuild=$HTARGET"
-
-CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/libnvram,-ffunction-sections,-fdata-sections,-fvisibility=hidden,-Os"
-CONFOPTS="$CONFOPTS --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
-
-if [ -n "$CONFIG_RT2880_FLASH_16M$CONFIG_RT2880_FLASH_32M" ]; then
-    CONFOPTS="$CONFOPTS --with-debug"
-fi
+CONFOPTS=""
+#CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/,-I$ROOTDIR/libnvram"
+CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/"
+#CONFOPTS="$CONFOPTS --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
+CONFOPTS="$CONFOPTS --with-debug"
 
 CONFOPTS="$CONFOPTS --with-libatomic=NO"
 CONFOPTS="$CONFOPTS --without-http_rewrite_module --without-http_gzip_module --without-http_upstream_zone_module"
@@ -40,8 +36,10 @@ CONFOPTS="$CONFOPTS --http-fastcgi-temp-path=/tmp/fastcgi"
 CONFOPTS="$CONFOPTS --http-uwsgi-temp-path=/tmp/uwsgi"
 CONFOPTS="$CONFOPTS --http-scgi-temp-path=/tmp/scgi"
 
-CONFOPTS="$CONFOPTS --add-module=$APROOTDIR/extra-modules/nginx-http-wive"
-CONFOPTS="$CONFOPTS --add-module=$APROOTDIR/extra-modules/nginx-upload-module"
+CONFOPTS="$CONFOPTS --add-module=$ROOTDIR/user/nginx/extra-modules/nginx-http-wive"
+CONFOPTS="$CONFOPTS --add-module=$ROOTDIR/user/nginx/extra-modules/nginx-upload-module"
+
+#  --without-http_autoindex_module \
 
 CONFOPTS="$CONFOPTS \
   --with-http_stub_status_module \
@@ -72,11 +70,28 @@ CONFOPTS="$CONFOPTS \
 "
 
 # build with support ssl only if project configured and builded with openssl
-if [ -e ../../lib/shared/lib/libssl.so ]; then
-    CONFOPTS="$CONFOPTS --with-http_ssl_module"
+#if [ -e ../../lib/shared/lib/libssl.so ]; then
+CONFOPTS="$CONFOPTS --with-http_ssl_module"
+#fi
+
+cd $ROOTDIR/user/nginx
+touch extra-modules/nginx-http-wive/DEMO_MODE.flag
+cat > extra-modules/nginx-http-wive/external.h <<EOT
+#define DEMO_MODE
+#define EXTERNAL_BUILD
+EOT
+
+if [ `lscpu | grep -c 64-bit` -eq "0" ]; then
+\cp -f auto/os/linux32 auto/os/linux
+else
+\cp -f auto/os/linux64 auto/os/linux
 fi
 
-rm -f extra-modules/nginx-http-wive/DEMO_MODE.flag 2> /dev/null
-echo> extra-modules/nginx-http-wive/external.h
-\cp -f auto/os/linux64 auto/os/linux
+make clean
 ./configure $CONFOPTS
+make
+\cp -f objs/nginx /opt/nginx/nginx
+cd $ROOTDIR
+killall -9 nginx
+/opt/nginx/nginx
+

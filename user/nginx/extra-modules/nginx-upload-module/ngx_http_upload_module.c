@@ -2473,11 +2473,9 @@ static ngx_int_t /* {{{ ngx_http_upload_md5_variable */
 ngx_http_upload_md5_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v,  uintptr_t data)
 {
-    ngx_http_upload_ctx_t  *u;
-
-    u = ngx_http_get_module_ctx(r, ngx_http_upload_module);
-
 #ifdef NGX_HTTP_SSL
+    ngx_http_upload_ctx_t  *u = ngx_http_get_module_ctx(r, ngx_http_upload_module);
+
     if(u->sha1_ctx == NULL || u->partial_content) {
         v->not_found = 1;
         return NGX_OK;

@@ -1625,6 +1625,8 @@ static int getHosts(webs_t *wp, char** params, int nparams)
 
 	outWrite("\n]");
 	websDone(wp, 200);
+
+	return 0;
 }
 
 

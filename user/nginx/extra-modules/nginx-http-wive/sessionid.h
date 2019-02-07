@@ -9,6 +9,7 @@
 ngx_array_t* auth_sessions;
 ngx_pool_t* sessionid_pool;
 
+#ifndef DEMO_MODE
 typedef struct auth_session_t {
     char address[65];
     char sessionid[65];
@@ -16,6 +17,7 @@ typedef struct auth_session_t {
     enum UserRole role; // default is Deny
     time_t start_time;
 } auth_session_t;
+#endif
 
 int sessionid_init(ngx_pool_t* pool);
 auth_session_t* getSessionByAddress(char* address);

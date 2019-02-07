@@ -466,7 +466,7 @@ static int getLangDictionary(webs_t *wp, char** params, int nparams)
  */
 static int getPlatform(webs_t *wp, char** params, int nparams)
 {
-    return outWrite(T(getSystemPlatform()));
+    return outWrite("%s", T(getSystemPlatform()));
 }
 
 static int getStationBuilt(webs_t *wp, char** params, int nparams)

@@ -12,18 +12,19 @@
 #include <ngx_md5.h>
 
 #include <syslog.h>
-
 #include "sdk_version.h"
+
+#include "external.h"
+
 #include "config/autoconf.h"			//user config
 #include "user/busybox/include/autoconf.h"	//busybox config
 #ifndef EXTERNAL_BUILD
 #include <linux/autoconf.h>			//kernel config
+#else
+#include "stub/autoconf.h"			//kernel config stub
 #endif
 
 #define	T(s) 			s
-
-// comment out to build with native libs
-#include "external.h"
 
 #ifdef EXTERNAL_BUILD
 #include "stub/libnvram.h"
@@ -33,11 +34,13 @@
 #include <libwive.h>
 #endif
 
+#ifndef DEMO_MODE
 enum UserRole {
     DENY = 0,
     USER = 1,
     ADMIN = 2
 };
+#endif
 
 enum UserRole get_user_role(char* username);
 
@@ -88,11 +91,12 @@ enum ResponseSentAction {
     DO_RESTART_MISC = 4
 };
 
+#ifndef DEMO_MODE
 typedef struct keyval_t {
     char* key;
     char* val;
 } keyval_t;
-
+#endif
 
 typedef struct webs_t {
     ngx_http_request_t* request;
@@ -111,6 +115,8 @@ typedef struct asp_nvram_acl_t{
 } asp_nvram_acl_t;
 
 //char PASS_HASH_SALT[128];
+
+void strcat_c(char *str, char c);
 
 #ifdef NGX_HTTP_SSL
 void sha256(char *string, char outputBuffer[65]);

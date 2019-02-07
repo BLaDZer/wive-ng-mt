@@ -319,12 +319,18 @@
 					return false;
 				}
 
+				form.goaheadrestart.value = 0;
 				if (form.RemoteManagementPort.value == rmtManagementPort && form.RemoteManagementPortHTTPS.value == rmtManagementPortHTTPS && form.nginx_nolog.value == NVRAM_nginx_nolog) {
-					form.goaheadrestart.value = 0;
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				}
-				else
-					ajaxPostForm(null, form, 'timerReloader', _('message apply'), ajaxShowProgress)
+				else {
+					if (confirm(_("message reboot confirm"))) {
+						form.goaheadrestart.value = 1;
+						ajaxPostForm(null, form, 'timerReloader', _('message apply'), ajaxShowProgress)
+					} else {
+						ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+					}
+				}
 
 				return true;
 			}
@@ -410,7 +416,7 @@
 			}
 
 			function showRemoteManagementMenu() {
-				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'https_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'rmt_telnetd' ];
+				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'https_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'rmt_telnetd', 'http_rmt_log' ];
 				if (statusRemoteManagementMenu == 0) {
 					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 1;
@@ -1104,7 +1110,7 @@
 					<tr>
 						<td>
 							<input type="submit" class="normal" value="Apply"  id="miscApply"><input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form, 60);">
-							<input type="hidden" value="1" name="goaheadrestart">
+							<input type="hidden" value="0" name="goaheadrestart">
 							<input type="hidden" value="0" name="reset">
 						</td>
 					</tr>

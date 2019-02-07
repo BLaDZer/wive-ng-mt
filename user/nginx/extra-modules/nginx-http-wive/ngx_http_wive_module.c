@@ -419,6 +419,11 @@ static int check_auth(webs_t* wp)
 {
     ngx_http_wive_loc_conf_t  *lcf;
     lcf = ngx_http_get_module_loc_conf(wp->request, ngx_http_wive_module);
+
+#ifdef DEMO_MODE
+        nvram_set_session(NULL);
+#endif
+
     if (lcf != NULL && lcf->disable_auth == 1)
     {
         wp->auth_session = (auth_session_t*)ngx_pcalloc(wp->pool, sizeof(struct auth_session_t));
@@ -445,6 +450,7 @@ static int check_auth(webs_t* wp)
     ELOG_DEBUG(wp->log, 0, "??? Session count: %d \n", auth_sessions->nelts);
     struct auth_session_t* session = getSessionById(sessionid);
 
+
     if (session == NULL)
     {
         ELOG_DEBUG(wp->log, 0, "??? Session is NULL! \n");
@@ -456,6 +462,9 @@ static int check_auth(webs_t* wp)
         ELOG_DEBUG(wp->log, 0, "??? sessionid equals! \n");
         if (time(NULL) < (session->start_time + AUTH_SESSION_MAX_LENGTH))
         {
+#ifdef DEMO_MODE
+            nvram_set_session(session);
+#endif
             wp->auth_session = session;
             ELOG_DEBUG(wp->log, 0, "??? Got Session %d! \n", wp->auth_session->role);
             return 0;
@@ -658,7 +667,7 @@ static ngx_int_t ngx_http_asp_form_handler(ngx_http_request_t *r)
 //    size_t                     root;
 //    ngx_str_t                  path;
 //    u_char                    *last, *ptr;
-    ngx_int_t                   rc;
+//    ngx_int_t                   rc;
 
 
     lcf = ngx_http_get_module_loc_conf(r, ngx_http_wive_module);
@@ -677,7 +686,7 @@ static ngx_int_t ngx_http_asp_form_handler(ngx_http_request_t *r)
     r->headers_out.content_type_len = ctype.len;
     r->headers_out.status = 200;
 
-    rc = ngx_http_read_client_request_body(r, ngx_http_mymodule_body_handler);
+    /*rc = */ngx_http_read_client_request_body(r, ngx_http_mymodule_body_handler);
     return NGX_DONE;
 }
 
@@ -1108,23 +1117,11 @@ static ngx_int_t ngx_http_wive_init(ngx_conf_t *cf)
 //////////////////////////
 
     asp_parser_init(cf->pool);
-#ifdef EXTERNAL_BUILD
-    nvram_populate(cf->pool, "nvram.conf");
-#endif
-
 
     srand(time(NULL));
     sessionid_init(cf->pool);
 
     ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON); //Turn on power LED
-
-
-// DEPRECATED FILTERS
-//    ngx_http_next_body_filter = ngx_http_top_body_filter;
-//    ngx_http_top_body_filter = ngx_http_wive_body_filter;
-
-//    ngx_http_next_header_filter = ngx_http_top_header_filter;
-//    ngx_http_top_header_filter = ngx_http_wive_header_filter;
 
     return NGX_OK;
 }

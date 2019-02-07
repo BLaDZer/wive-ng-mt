@@ -3,6 +3,20 @@
 static int getProcessList(webs_t *wp, char** params, int nparams)
 {
     FUNCTION_TRACE(wp->log);
+    int i;
+
+#ifdef DEMO_MODE
+    for (i=0;i<nparams;i++)
+    {
+        if (strcmp(params[i], "cwmpd") == 0) {
+            int cwmpdEnabled = ngx_nvram_get_int(wp, "cwmpdEnabled", 0);
+            if (cwmpdEnabled != 0) outWrite("%s,", params[i]);
+        }
+        else
+        outWrite("%s,", params[i]);
+    }
+    return 0;
+#endif
 
     if (nparams < 1) return 0;
 
@@ -11,7 +25,6 @@ static int getProcessList(webs_t *wp, char** params, int nparams)
 
     while (curr != NULL)
     {
-        int i;
 
         if (curr->argc < 1)
         {
@@ -85,8 +98,8 @@ static int getDhcpCliList(webs_t *wp, char** params, int nparams)
 				    lease.hostname[j] == '\v' ||
 				    lease.hostname[j] == '\f' ||
 				    lease.hostname[j] == '\b')
-					sprintf(str, "%s%c", str, '\\');
-				sprintf(str, "%s%c", str, lease.hostname[j]);
+					strcat(str, "\\");
+				strcat_c(str, lease.hostname[j]);
 			}
 			outWrite(T("\"hostname\":\"%s\", "), str);
 			// MAC
@@ -743,8 +756,8 @@ static int getL2TPUserList(webs_t *wp, char** params, int nparams)
 			str[0] = '\0';
 			for (j = 0; j < strlen(pass); j++) {
 				if (pass[j] == '\\' || pass[j] == '\'')
-					sprintf(str, "%s%c", str, '\\');
-				sprintf(str, "%s%c", str, pass[j]);
+					strcat(str, "\\");
+				strcat_c(str, pass[j]);
 			}
 
 			outWrite(T("[ '%s', '%s' ]%s"), user, str, (i + 1 < count) ? ", " : " ");
@@ -856,8 +869,8 @@ static int getRadiusUserList(webs_t *wp, char** params, int nparams)
 			str[0] = '\0';
 			for (j = 0; j < strlen(pass); j++) {
 				if (pass[j] == '\\' || pass[j] == '\'')
-					sprintf(str, "%s%c", str, '\\');
-				sprintf(str, "%s%c", str, pass[j]);
+					strcat(str, "\\");
+				strcat_c(str, pass[j]);
 			}
 
 			outWrite(T("[ '%s', '%s' ]%s"), user, str, (i + 1 < count) ? ", " : " ");

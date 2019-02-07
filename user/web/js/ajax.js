@@ -635,7 +635,6 @@ var displayServiceStatus_interval;
 
 function getRunningServices(done) {
 	var xmlHttp = createXMLHttp();
-	var LAN_IP = '<% getLanIp(); %>';
 
 	if (xmlHttp) {
 		xmlHttp.onreadystatechange = function() {
@@ -655,6 +654,7 @@ function getRunningServices(done) {
 }
 
 function displayServiceStatusView(service, is_running) {
+	var LAN_IP = '<% getLanIp(); %>';
 	var row = document.getElementById(service[1]);
 	var tds = [];
 	for (var j = 0; j < row.childNodes.length; j++)
@@ -688,8 +688,6 @@ function displayServiceStatusView(service, is_running) {
 }
 
 function displayServiceStatus(services) {
-	var LAN_IP = '<% getLanIp(); %>';
-
 	getRunningServices(function(daemons) {
 		// Now display all services
 		for (var i = 0; i < services.length; i++) {

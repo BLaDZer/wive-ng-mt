@@ -122,6 +122,11 @@ auth_session_t* createAuthSession(char* address, char* username)
         {
             return NULL;
         }
+
+#ifdef DEMO_MODE
+        auth_session->nvram_keyval = NULL;
+#endif
+
     }
 
     unsigned char bts[65] = {0};
@@ -147,6 +152,14 @@ auth_session_t* createAuthSession(char* address, char* username)
 
     auth_session->role = role;
     auth_session->start_time = time(NULL);
+
+#ifdef DEMO_MODE
+    if (auth_session->nvram_keyval != NULL) {
+        ngx_array_destroy(auth_session->nvram_keyval);
+    }
+
+    auth_session->nvram_keyval = ngx_array_create(sessionid_pool, 16, sizeof(keyval_t));
+#endif
 
 //    saveSessions();
 

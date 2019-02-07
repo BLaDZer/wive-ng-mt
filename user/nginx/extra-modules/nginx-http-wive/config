@@ -1,6 +1,27 @@
 ngx_addon_name=ngx_http_wive_module
 HTTP_FILTER_MODULES="$HTTP_FILTER_MODULES ngx_http_wive_module"
 
+if [ -f "$ngx_addon_dir/DEMO_MODE.flag" ]; then
+NGX_ADDON_SRCS=" \
+    $NGX_ADDON_SRCS \
+    $ngx_addon_dir/stub/libwive.c \
+    $ngx_addon_dir/stub/libwive_ethernet.c \
+    $ngx_addon_dir/stub/libwive_gpio.c \
+    $ngx_addon_dir/stub/libwive_helpers.c \
+    $ngx_addon_dir/stub/libwive_network.c \
+    $ngx_addon_dir/stub/libwive_procps.c \
+    $ngx_addon_dir/stub/libwive_sysstat.c \
+    $ngx_addon_dir/stub/libwive_system.c \
+    $ngx_addon_dir/stub/libwive_wireless.c \
+    $ngx_addon_dir/stub/libnvram.c \
+"
+ngx_module_libs="--gc-sections -lcrypt -ldl"
+NGX_LD_OPT="$NGX_LD_OPT -lcrypt -ldl"
+else
+ngx_module_libs="--gc-sections -lcrypt -lnvram -lwive -ldl"
+NGX_LD_OPT="$NGX_LD_OPT -lcrypt -lnvram -lwive -ldl"
+fi
+
 NGX_ADDON_SRCS=" \
     $NGX_ADDON_SRCS \
     $ngx_addon_dir/ngx_http_wive_module.c \
@@ -23,10 +44,8 @@ NGX_ADDON_SRCS=" \
 
 #    $ngx_addon_dir/asp_mod_test.c \
 
-ngx_module_libs="--gc-sections -lcrypt -lnvram -lwive -ldl"
 
 if [ $HTTP_SSL = YES ]; then
     ngx_module_libs="$ngx_module_libs -lssl -lcrypto"
 fi
 
-NGX_LD_OPT="$NGX_LD_OPT -lcrypt -lnvram -lwive -ldl"

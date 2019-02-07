@@ -3,7 +3,7 @@
 # include global config
 . /etc/scripts/global.sh
 
-eval `nvram_buf_get 2860 RemoteManagementPort RemoteManagementPortHTTPS nginx_nolog`
+eval `nvram_buf_get 2860 RemoteManagementPort RemoteManagementPortHTTPS nginx_nolog nginx_autoindex`
 
 
 
@@ -101,6 +101,18 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             }
         }
 
+EOT
+
+if [ "$nginx_autoindex" == "1" ];then
+cat <<EOT >> $NGINX_CONFIG_FILE
+        location /media {
+            root   /;
+            autoindex on;
+        }
+EOT
+fi
+
+cat <<EOT >> $NGINX_CONFIG_FILE
         location /goform/ {
             asp_post_form;
         }

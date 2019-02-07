@@ -14,6 +14,7 @@ var lang_dictionary = {
 	'message upgrade'		: 'Upgrading firmware... Please do not turn off power or reboot your router.',
 	'message rwfs'			: 'Please wait while new RWFS are applied...',
 	'message reset confirm'		: 'Settings will be reset to the factory defaults. Continue?',
+	'message reboot confirm'	: 'Applying some settings will require rebooting the router. Reboot now?',
 
 	'button enable'			: 'Enable',
 	'button disable'		: 'Disable',

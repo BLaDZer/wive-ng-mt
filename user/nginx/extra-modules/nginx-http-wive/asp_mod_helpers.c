@@ -147,44 +147,6 @@ void websSetContentType(webs_t* wp, char* content_type)
 }
 
 
-
-/*
- * description: parse va and do system
- */
-/*int doSystem(char_t *fmt, ...)
-{
-    va_list vargs;
-    char_t *cmd = NULL;
-    int	rc = 0;
-
-    va_start(vargs, fmt);
-    if (fmtValloc(&cmd, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE) {
-        syslog(LOG_ERR, "lost data, buffer overflow , %s", __FUNCTION__);
-        va_end(vargs);
-        return -1;
-    }
-
-    if (cmd == NULL) {
-        syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
-        va_end(vargs);
-        return -1;
-    }
-
-    va_end(vargs);
-
-    rc = system(cmd);
-    bfree(B_L, cmd);
-
-    //
-    // The system command itself failed
-    //
-    if (rc == -1)
-        syslog(LOG_ERR, "error system() call , %s", __FUNCTION__);
-
-    return rc;
-}
-*/
-
 char_t 	*websGetVar(webs_t* wp, char_t *var, char_t *def)
 {
     if (wp->args == NULL) return def; // not populated

@@ -337,6 +337,7 @@ static int getPortStatus(webs_t *wp, char** params, int nparams)
 #if defined(CONFIG_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port;
+        int first = 1;
 
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
 	for (port = 4; port > 3; port--)
@@ -345,16 +346,16 @@ static int getPortStatus(webs_t *wp, char** params, int nparams)
 #endif
 	{
 		struct port_status pst;
-		char buf[256];
 
 		portstatus(&pst, port);
 
-		/* create string in new buffer and write to web (this more safe of direct write) */
-		snprintf(buf, sizeof(buf), ("{ \"port\": \"%d\", \"link\": \"%d\", \"speed\": \"%d\", \"duplex\": \"%s\" }"), pst.portnum, pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H");
 #ifndef CONFIG_RTESW_SWITCH_ONEPORT
-		snprintf(buf, sizeof(buf), ("%s%s"), buf, (pst.portnum == 0) ? "" : ", ");
+		if (first != 1) {
+			outWrite(", ");
+		}
 #endif
-		outWrite(T("%s"), buf);
+		outWrite("{ \"port\": \"%d\", \"link\": \"%d\", \"speed\": \"%d\", \"duplex\": \"%s\" }", pst.portnum, pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H");
+                first = 0;
 	}
 #endif
 #endif
