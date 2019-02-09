@@ -210,7 +210,7 @@ static VOID ApCliAssocTimeoutExt(
 	pAd = pRepeaterCliEntry->pAd;
 	ifIndex = (64 + (16*pRepeaterCliEntry->MatchApCliIdx) + pRepeaterCliEntry->MatchLinkIdx);
 
-	DBGPRINT(RT_DEBUG_ERROR, (" (%s) ifIndex = %d, CliIdx = %d !!!\n",
+	DBGPRINT(RT_DEBUG_TRACE, (" (%s) ifIndex = %d, CliIdx = %d !!!\n",
 					__FUNCTION__, pRepeaterCliEntry->MatchApCliIdx, pRepeaterCliEntry->MatchLinkIdx));
 
 	MlmeEnqueue(pAd, APCLI_ASSOC_STATE_MACHINE, APCLI_MT2_ASSOC_TIMEOUT, 0, NULL, ifIndex);

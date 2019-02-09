@@ -38,6 +38,11 @@ start() {
 	sysctl -wq net.ipv6.conf.default.forwarding=0
     fi
 
+    # powersave
+    if [ "$CONFIG_RALINK_CPUSLEEP" = "y" ]; then
+	echo 1 > /sys/devices/system/cpu/sched_smt_power_savings
+    fi
+
 }
 
 stop() {

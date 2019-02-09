@@ -1,3 +1,5 @@
+comment "DEVFREQ Governors"
+
 menuconfig PM_DEVFREQ
 	bool "Generic Dynamic Voltage and Frequency Scaling (DVFS) support"
 	help
@@ -26,8 +28,6 @@ menuconfig PM_DEVFREQ
 	  functions defined in devfreq.h.
 
 if PM_DEVFREQ
-
-comment "DEVFREQ Governors"
 
 config DEVFREQ_GOV_SIMPLE_ONDEMAND
 	bool "Simple Ondemand"
