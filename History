@@ -4552,11 +4552,12 @@
 4) webui: fix xupnpd status.<br>
 5) webui: fix preauth mode change.<br>
 6) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
-7) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
-8) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
-9) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
-10) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-11) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-12) kernel: ralink_wifi: more flex channel list announce configure.<br>
+7) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
+8) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
+9) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
+10) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
+11) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+12) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+13) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
