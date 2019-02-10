@@ -283,7 +283,7 @@ check_all_LDADD = \
 DISTCHECK_CONFIGURE_FLAGS = \
   --with-systemdsystemunitdir=$$dc_install_base/$(systemdsystemunitdir)
 
-if HAVE_SYSTEMD
-systemdsystemunit_DATA = radvd.service
-endif
+#if HAVE_SYSTEMD
+#systemdsystemunit_DATA = radvd.service
+#endif
 

@@ -237,9 +237,7 @@ AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemdsystemunitdir" != "xno"])
 
 AM_CONFIG_HEADER(config.h)
 AC_OUTPUT(
-	Makefile \
-	radvd.service \
-	redhat/radvd.spec\
+	Makefile
 )
 
 cat << EOF
