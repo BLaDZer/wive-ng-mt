@@ -733,6 +733,7 @@ relay_traffic( int ssockfd, int dsockfd, struct server_ctx* ctx,
 
     while( (0 == rc) && !(quit = must_quit()) ) {
     	char* pdata = data;
+	nrcv = nsent = 0;
 
         if( g_uopt.mcast_refresh > 0 ) {
             check_mcast_refresh( ssockfd, &rfr_tm, mreq );
