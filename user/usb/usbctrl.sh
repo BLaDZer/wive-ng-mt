@@ -45,6 +45,7 @@ modload() {
     if [ ! -d /sys/module/$1 ]; then
 	$LOG "Try load $@"
 	modprobe -q $@
+	modloaded="$@"
     fi
 }
 
@@ -158,16 +159,41 @@ case $TYPE in
     224/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be bluetooth, but now not support"
 	;;
+    239/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be Mobile Composite Device Bus"
+	if [ "${idVendor}" = "1376" ]; then
+	    $LOG "Yota device WLTU modem Mobile Composite Device Bus."
+	    modload rndis_host
+	fi
+	;;
     255/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem, try drivers load"
-	[ "$idVendor" = "12d1" ] && probe_huawei_cdc
+
+	modloaded=""
+	if [ "${idVendor}" = "12d1" ]; then
+	    $LOG "Huaway device may be CDC modem."
+	    probe_huawei_cdc
+	fi
+
+	if [ "${idVendor}" = "1286" ]; then
+	    $LOG "Yota device WLTU modem."
+	    modload rndis_host
+	fi
+
 	if [ "${idVendor}" = "0af0" ]; then
+	    $LOG "HSO modem device."
 	    modload hso
-	elif [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then
+	fi
+
+	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then
 	    modload usbserial vendor=0x${idVendor} product=0x${idProduct}
-	else
+	fi
+
+	# if neede driver not load - try all (compat with temp unknown)
+	if [ "modloaded" = "" ]; then
 	    $LOG "Unknown or not serial modem module ${idVendor}:${idProduct}, try load all builded drivers"
-	    mod="usbserial option pl2303 qmi_wwan qcserial"
+	    mod="cdc_ether cdc_mbim cdc_ncm dm9601 huawei_cdc_ncm qmi_wwan rndis_host rndis_host sierra_net usbnet cdc-acm cdc-wdm"
+	    mod="$mod option pl2303 qcserial usb_wwan usbserial"
 	    for module in $mod; do
 		modload $module
 	    done
@@ -177,6 +203,10 @@ case $TYPE in
         # dm9601 usb1.1 adapters
         if [ "${idVendor}" = "07aa" ] || [ "${idVendor}" = "0a46" ] || [ "${idVendor}" = "0a47" ] || [ "${idVendor}" = "0fe6" ]; then
             MODALIAS="dm9601"
+        fi
+        # yota wltu modems
+        if [ "${idVendor}" = "1286" ] || [ "${idVendor}" = "1376" ]; then
+            MODALIAS="rndis_host"
         fi
         $LOG "${ACTION} device ${idVendor}:${idProduct} type ${TYPE} interface ${INTERFACE}"
         modload $MODALIAS

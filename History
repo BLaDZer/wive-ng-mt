@@ -4554,14 +4554,16 @@
 6) webui: fix rescan in apcli mode.<br>
 7) udpxy: fix zero length UDP packets.<br>
 8) radvd: sync with git (2.17 commit e8648d1b).<br>
-9) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
-10) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
-11) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
-12) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
-13) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
-14) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
-15) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-16) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-17) kernel: ralink_wifi: more flex channel list announce configure.<br>
+9) init.d: usb: extend detect unknown modems.<br>
+10) init.d: usb: add support yota device WLTU modems.<br>
+11) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
+12) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
+13) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
+14) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
+15) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
+16) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
+17) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+18) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+19) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
