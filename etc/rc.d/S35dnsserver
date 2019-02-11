@@ -73,7 +73,7 @@ gen_hosts() {
 }
 
 gen_sec() {
-    if [ "$dns_sec" = "1" ]; then
+    if [ "$dns_sec" = "1" ] && [ -e /etc/trust-anchors.conf ]; then
 	echo "conf-file=/etc/trust-anchors.conf" > /etc/dnsmasq.d/sec.conf
 	echo "dnssec" >> /etc/dnsmasq.d/sec.conf
     fi
