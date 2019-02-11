@@ -157,7 +157,7 @@ static int modemShowStatus(webs_t *wp, char** params, int nparams)
 				// Read all ifaces and check match
 				while ((fgets(line, sizeof(line), fd)) != NULL)
 				{
-					if(strstr(line,"modem") || strstr(line,"wwan0"))
+					if(strstr(line,"modem") || strstr(line,"wwan0") || strstr(line,"weth0"))
 					{
 						status++; // Status is set to 'connected'
 						break; // Do not search more

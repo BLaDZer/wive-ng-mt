@@ -4552,19 +4552,20 @@
 4) webui: fix xupnpd status.<br>
 5) webui: fix preauth mode change.<br>
 6) webui: fix rescan in apcli mode.<br>
-7) udpxy: fix zero length UDP packets.<br>
-8) radvd: sync with git (2.17 commit e8648d1b).<br>
-9) init.d: usb: extend detect unknown modems.<br>
-10) init.d: usb: add support yota device WLTU modems.<br>
-11) init.d: fix dhcpd restart in some cases.<br>
-12) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
-13) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
-14) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
-15) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
-16) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
-17) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
-18) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-19) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-20) kernel: ralink_wifi: more flex channel list announce configure.<br>
+7) webui: fix modem connect status for weth mode.<br>
+8) udpxy: fix zero length UDP packets.<br>
+9) radvd: sync with git (2.17 commit e8648d1b).<br>
+10) init.d: usb: extend detect unknown modems.<br>
+11) init.d: usb: add support yota device WLTU modems.<br>
+12) init.d: fix dhcpd restart in some cases.<br>
+13) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
+14) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
+15) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
+16) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
+17) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
+18) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
+19) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+20) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+21) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
