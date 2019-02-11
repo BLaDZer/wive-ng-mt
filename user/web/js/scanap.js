@@ -389,6 +389,9 @@ function showGraph(svg, scanApFreq)
 // Scan AP
 function scanAp(f, cli, rescan)
 {
+	if (rescan === undefined) {
+		rescan = true;
+	}
 	rescan = rescan ? "1" : "0";
 
 	if (f == "apcli") {
