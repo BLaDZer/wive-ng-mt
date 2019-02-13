@@ -238,11 +238,11 @@ if (RT_FIRST_IF_MT7603E || RT_SECOND_IF_MT7603E)
 endif
 
 # 7615 support all bands in one
-if (RT_FIRST_IF_MT7615E || RT_SECOND_IF_MT7615E)
-    menu "AP MODE MediaTek MT7615E PCIe Wireless Driver"
-    source "drivers/net/wireless/ralink/mt7615_ap/Kconfig"
-    endmenu
-endif
+#if (RT_FIRST_IF_MT7615E || RT_SECOND_IF_MT7615E)
+#    menu "AP MODE MediaTek MT7615E PCIe Wireless Driver"
+#    source "drivers/net/wireless/ralink/mt7615_ap/Kconfig"
+#    endmenu
+#endif
 
 endmenu
 
