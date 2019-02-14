@@ -4567,8 +4567,9 @@
 19) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
 20) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
 21) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
-22) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-23) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-24) kernel: ralink_wifi: more flex channel list announce configure.<br>
+22) kernel: net: tun: forbid iface creation with rtnl ops.<br>
+23) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+24) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+25) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
