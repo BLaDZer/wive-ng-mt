@@ -944,8 +944,7 @@ static void tun_setup(struct net_device *dev)
  */
 static int tun_validate(struct nlattr *tb[], struct nlattr *data[])
 {
-	NL_SET_ERR_MSG(extack,
-		       "tun/tap creation via rtnetlink is not supported.");
+	pr_err("tun/tap creation via rtnetlink is not supported.");
 	return -EOPNOTSUPP;
 }
 
