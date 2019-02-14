@@ -44,4 +44,7 @@
  */
 #define USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL	0x00000080
 
+/* Hub needs extra delay after resetting its port. */
+#define USB_QUIRK_HUB_SLOW_RESET		BIT(14)
+
 #endif /* __LINUX_USB_QUIRKS_H */
