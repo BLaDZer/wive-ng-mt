@@ -4564,15 +4564,16 @@
 16) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
 17) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
 18) kernel: usb: wait for extra delay time after USB_PORT_FEAT_RESET for quirky hub.<br>
-19) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
-20) kernel: net: xfrm: fix bucket count reported to userspace.<br>
-21) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
-22) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
-23) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
-24) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
-25) kernel: net: tun: forbid iface creation with rtnl ops.<br>
-26) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-27) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-28) kernel: ralink_wifi: more flex channel list announce configure.<br>
+19) kernel: usb: xhci: prevent bus suspend if a port connect change or polling state is detected.<br>
+20) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
+21) kernel: net: xfrm: fix bucket count reported to userspace.<br>
+22) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
+23) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
+24) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
+25) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
+26) kernel: net: tun: forbid iface creation with rtnl ops.<br>
+27) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+28) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+29) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
