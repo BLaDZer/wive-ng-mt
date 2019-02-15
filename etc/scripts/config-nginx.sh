@@ -36,7 +36,8 @@ http {
 
     sendfile        off;
 
-    keepalive_timeout  65;
+    keepalive_timeout  120;
+    keepalive_requests 300;
 
 #    error_log /var/log/nginx-debug.log;
 #    access_log syslog:server=unix:/dev/log,facility=local7,tag=nginx,severity=info,nohostname;
@@ -76,8 +77,8 @@ fi
 
 cat <<EOT >> $NGINX_CONFIG_FILE
         server_name  localhost;
-        keepalive_timeout   70;
-
+        keepalive_timeout   120;
+	keepalive_requests 300;
 
         location / {
             root   /tmp/web;
