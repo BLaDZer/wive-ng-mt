@@ -54,7 +54,6 @@
 				var wan_mtu	= +form.wan_mtu.value;
 
 				if (c_type == "STATIC") {
-					form.wStaticDnsEnable.disabled = false;
 					if (!validateIP(form.staticIp, true)) {
 						form.staticIp.focus();
 						return false;
@@ -87,19 +86,18 @@
 							return false;
 						}
 					}
-					else if (c_type == "ZERO")
-						form.wStaticDnsEnable.checked = true;
 				}
-				if (form.wStaticDnsEnable.checked) {
+				if (form.wStaticDnsProfile.value != "auto") {
 					if (!validateIP(form.staticPriDns, true)) {
 						form.staticPriDns.focus();
 						return false;
 					}
-					if (form.staticSecDns.value != '')
+					if (form.staticSecDns.value != '') {
 						if (!validateIP(form.staticSecDns, true)) {
 								form.staticSecDns.focus();
 								return false;
 						}
+					}
 				}
 				if (!validateNum(form.wan_mtu.value)) {
 					alert(_("inet invalid mtu"));
@@ -134,19 +132,10 @@
 			function connectionTypeSwitch(form) {
 				var conn_type = form.connectionType.value;
 				displayElement('staticDHCP', conn_type == 'STATIC');
-				displayElement(['dhcpReqIPRow', 'dhcpVendorRow'], conn_type == 'DHCP');
-				displayElement('staticDNSAssignRow', conn_type != 'ZERO');
+				displayElement(['dns_profile_auto', 'dhcpReqIPRow', 'dhcpVendorRow'], conn_type == 'DHCP');
 
-				if (conn_type == 'STATIC') {
-					form.wStaticDnsEnable.checked = true;
-					form.wStaticDnsEnable.disabled = true;
-				}
-				else if (conn_type == 'ZERO') {
-					form.wStaticDnsEnable.checked = true;
-				}
-				else {
-					form.wStaticDnsEnable.disabled = false;
-					form.wStaticDnsEnable.checked = NVRAM_wan_static_dns == 'on';
+				if ((conn_type == 'STATIC' || conn_type == 'ZERO') && form.wStaticDnsProfile.value == "auto") {
+					form.wStaticDnsProfile.value = "manual";
 				}
 
 				dnsSwitchClick(form);
@@ -166,10 +155,9 @@
 			}
 			
 			function dnsSwitchClick(form) {
-				displayElement('staticDNSprofile',			form.wStaticDnsEnable.checked);
-				displayElement(['priDNSrow', 'secDNSrow'],	form.wStaticDnsEnable.checked && form.wStaticDnsProfile.value == 'manual');
-				displayElement('staticDNSyandexProfile',	form.wStaticDnsEnable.checked && form.wStaticDnsProfile.value == 'yandex');
-				displayElement('staticDNSadguardProfile',	form.wStaticDnsEnable.checked && form.wStaticDnsProfile.value == 'adguard');
+				displayElement(['priDNSrow', 'secDNSrow'],	form.wStaticDnsProfile.value == 'manual');
+				displayElement('staticDNSyandexProfile',	form.wStaticDnsProfile.value == 'yandex');
+				displayElement('staticDNSadguardProfile',	form.wStaticDnsProfile.value == 'adguard');
 				document.getElementById('wStaticDnsProfile_learne').innerHTML = '';
 				switch (form.wStaticDnsProfile.value) {
 					case 'google':
@@ -308,15 +296,12 @@
 								</td>
 							</tr>
 
-							<tr id="staticDNSAssignRow">
-								<td class="head" data-tr="wan static dns">Assign static DNS Server</td>
-								<td><input name="wStaticDnsEnable" type="checkbox" onClick="dnsSwitchClick(this.form);" class="auth-disable-user"></td>
-							</tr>
 							<tr id="staticDNSprofile">
 								<td class="head" data-tr="inet dns profile">DNS Profile</td>
 								<td><div style="float: left">
 									<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 										<option data-tr="inet dns profile manual"  value="manual">Manual</option>
+										<option data-tr="inet dns profile dhcp"    value="auto" id="dns_profile_auto">Auto (DHCP)</option>
 										<option data-tr="inet dns profile google"  value="google">Google DNS</option>
 										<option data-tr="inet dns profile yandex"  value="yandex">Yandex DNS</option>
 										<option data-tr="inet dns profile sky"     value="sky">Sky DNS</option>

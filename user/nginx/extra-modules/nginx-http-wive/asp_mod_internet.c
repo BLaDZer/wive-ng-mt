@@ -1003,7 +1003,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
 
 	char_t *wan_mtu;
-	char_t *st_en, *pd, *sd, *st_pr, *st_pr_ya, *st_pr_ag;
+	char_t *pd, *sd, *st_pr, *st_pr_ya, *st_pr_ag;
 
 	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
 
@@ -1076,7 +1076,6 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 		}
 
 		// Primary/Seconfary DNS set
-		st_en = websGetVar(wp, T("wStaticDnsEnable"), T("off"));
 		st_pr = websGetVar(wp, T("wStaticDnsProfile"), T("manual"));
 		st_pr_ya = websGetVar(wp, T("wStaticDnsYandexProfile"), T("basic"));
 		st_pr_ag = websGetVar(wp, T("wStaticDnsAdguardProfile"), T("default"));
@@ -1085,13 +1084,17 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 
 
 		nvram_init(RT2860_NVRAM);
-		ngx_nvram_bufset(wp, "wan_static_dns", st_en);
+		ngx_nvram_bufset(wp, "wan_static_dns_profile", st_pr);
 
-		if (!strcmp(st_en, "on"))
+		if (strcmp(st_pr, "auto") == 0)
 		{
+			ngx_nvram_bufset(wp, "wan_static_dns", "off");
+		}
+		else
+		{
+			ngx_nvram_bufset(wp, "wan_static_dns", "on");
 			ngx_nvram_bufset(wp, "wan_primary_dns", pd);
 			ngx_nvram_bufset(wp, "wan_secondary_dns", sd);
-			ngx_nvram_bufset(wp, "wan_static_dns_profile", st_pr);
 			ngx_nvram_bufset(wp, "wan_static_dns_profile_yandex", st_pr_ya);
 			ngx_nvram_bufset(wp, "wan_static_dns_profile_adguard", st_pr_ag);
 		}

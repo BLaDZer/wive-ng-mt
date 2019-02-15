@@ -545,6 +545,14 @@ static void setOpMode(webs_t* wp, char_t *path, char_t *query)
 	if (strncmp(mode, old_mode, 2))
 	{
 		ngx_nvram_bufset(wp, "OperationMode", mode);
+
+		/* do not allow dns from dhcp in ap-bridge mode */
+		char* dns_profile = ngx_nvram_get(wp, "wan_static_dns_profile");
+		if (!strncmp(mode, "0", 2) && !strcmp(dns_profile, "auto")) {
+			ngx_nvram_bufset(wp, "wan_static_dns_profile", "manual");
+			ngx_nvram_bufset(wp, "wan_static_dns", "on");
+		}
+
 		/* from or to ap client mode */
 		if (!strncmp(mode, "3", 2))
 			ngx_nvram_bufset(wp, "ApCliEnable", "1");

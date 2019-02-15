@@ -108,11 +108,12 @@ function CheckValue(form)
 function selectModemType(form)
 {
 	var gsm_on = form.modem_type.value == '0';
+	var cdma_on = form.modem_type.value == '1';
 	var ncm_on = form.modem_type.value == '2';
 
 	// Display mode-dependent elements
-	displayElement( 'modem_dialn_row', (gsm_on || ncm_on));
-	displayElement( 'modem_apn_row', (gsm_on || ncm_on));
+	displayElement( ['modem_dialn_row','modem_apn_row'], gsm_on);
+	displayElement( ['modem_user_row', 'modem_pass_row', 'modem_port_row', 'modem_speed_row', 'modem_mtu_row', 'modem_additional_table'], !ncm_on);
 
 	form.modem_apn.disabled = !(gsm_on || ncm_on);
 }
@@ -291,7 +292,7 @@ function showModemStatus()
             <td><input name="modem_apn" class="mid" size="25" maxlength="60" type="text"></td>
           </tr>
         </table>
-        <table class="form">
+        <table class="form" id="modem_additional_table">
           <tr>
             <td class="title" colspan="2">Additional options
               </th>

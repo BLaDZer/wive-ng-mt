@@ -63,6 +63,10 @@
 				form.wStaticDnsYandexProfile.value		= NVRAM_wan_static_dns_profile_yandex;
 				form.wStaticDnsAdguardProfile.value		= NVRAM_wan_static_dns_profile_adguard;
 
+				if (NVRAM_wan_static_dns_profile == "auto") {
+					form.wStaticDnsProfile.value = "manual";
+				}
+
 				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile', 'staticDNSadguardProfile' ], NVRAM_OperationMode == '0' );
 
 				dnsSwitchClick(form);

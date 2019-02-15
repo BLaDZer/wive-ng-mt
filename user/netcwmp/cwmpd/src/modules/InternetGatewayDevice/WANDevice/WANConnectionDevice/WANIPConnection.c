@@ -20,19 +20,11 @@ int cpe_get_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, char ** valu
 {
     DM_TRACE_GET();
 
+    char pr_dns[40] = {0};
+    char sc_dns[40] = {0};
 
-    char* pr_dns = cwmp_nvram_pool_get(pool, "wan_primary_dns");
-    char* sc_dns = cwmp_nvram_pool_get(pool, "wan_secondary_dns");
-
-    if (pr_dns == NULL)
-    {
-        pr_dns = "";
-    }
-
-    if (sc_dns == NULL)
-    {
-        sc_dns = "";
-    }
+    getDNSAddressStr(1, &pr_dns);
+    getDNSAddressStr(2, &sc_dns);
 
     *value = pool_palloc(pool, strlen(pr_dns)+strlen(sc_dns)+1);
 
