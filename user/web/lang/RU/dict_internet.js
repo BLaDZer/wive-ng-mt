@@ -12,6 +12,8 @@ var internet_dictionary = {
 	'inet invalid mac'			: 'Введен некорректный MAC адрес',
 	'inet auto'				: 'Автоматически',
 	'inet custom'				: 'Вручную',
+	'inet invalid ip'			: 'Введён некорректный IP адрес',
+
 	'inet hostname wrong'			: 'Введите корректное имя хоста',
 	'inet lan wan same'			: 'LAN IP адрес идентичен WAN адресу',
 	'inet lan gw same'			: 'LAN IP адрес идентичен адресу шлюза',

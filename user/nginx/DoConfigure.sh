@@ -5,6 +5,7 @@ APROOTDIR=`pwd`
 
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
+CFLAGS="$CFLAGS -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE"
 
 # prefer use bash if multishell
 if [ -e /bin/bash ]; then
@@ -13,7 +14,7 @@ else
     SHELL="/bin/sh"
 fi
 
-export SHELL
+export SHELL CFLAGS
 
 CONFOPTS="--build=$HTARGET --crossbuild=$HTARGET"
 
@@ -78,5 +79,4 @@ fi
 
 rm -f extra-modules/nginx-http-wive/DEMO_MODE.flag 2> /dev/null
 echo> extra-modules/nginx-http-wive/external.h
-\cp -f auto/os/linux64 auto/os/linux
 ./configure $CONFOPTS

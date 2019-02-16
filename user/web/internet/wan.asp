@@ -30,8 +30,12 @@
 				form.staticSecDns.value				= NVRAM_wan_secondary_dns;
 				form.wanMac.value				= NVRAM_WAN_MAC_ADDR;
 
+				if (NVRAM_wan_static_dns != "on") {
+					form.wStaticDnsProfile.value = (NVRAM_wanConnectionMode == "DHCP")?"auto":"manual";
+				}
+
 				displayElement(document.getElementById("natRowDisplay"), NVRAM_OperationMode != "0");
-				form.natEnabled.checked 			= (NVRAM_natEnabled == '1');
+				form.natEnabled.value				= (NVRAM_natEnabled == '1')?"on":"off";
 				form.connectionType.value 			= NVRAM_wanConnectionMode;
 
 				form.wan_mtu.value = NVRAM_wan_manual_mtu;
@@ -92,10 +96,22 @@
 						form.staticPriDns.focus();
 						return false;
 					}
+					if (form.staticPriDns.value == "0.0.0.0") {
+						alert(_("inet invalid ip"));
+						form.staticPriDns.focus();
+						return false;
+					}
+
 					if (form.staticSecDns.value != '') {
 						if (!validateIP(form.staticSecDns, true)) {
 								form.staticSecDns.focus();
 								return false;
+						}
+
+						if (form.staticSecDns.value == "0.0.0.0") {
+							alert(_("inet invalid ip"));
+							form.staticSecDns.focus();
+							return false;
 						}
 					}
 				}
@@ -270,14 +286,6 @@
 								<td class="title" colspan="2" data-tr="wan additional options">Additional Options</td>
 							</tr>
 
-							<tr id="dhcpReqIPRow" class="auth-hide-user">
-								<td class="head" data-tr="wan request from dhcp">Request IP from DHCP (optional)</td>
-								<td><input name="dhcpReqIP" class="mid"></td>
-							</tr>
-							<tr id="dhcpVendorRow" class="auth-hide-user">
-								<td class="head" data-tr="wan dhcp vendor class">Vendor class identifier (optional)</td>
-								<td><input name="dhcpVendorClass" class="mid"></td>
-							</tr>
 							<tr class="auth-hide-user">
 								<td class="head" data-tr="wan mtu">WAN MTU</td>
 								<td><input name="wan_mtu" type="text" class="half" style="display:none;">
@@ -300,8 +308,8 @@
 								<td class="head" data-tr="inet dns profile">DNS Profile</td>
 								<td><div style="float: left">
 									<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
-										<option data-tr="inet dns profile manual"  value="manual">Manual</option>
 										<option data-tr="inet dns profile dhcp"    value="auto" id="dns_profile_auto">Auto (DHCP)</option>
+										<option data-tr="inet dns profile manual"  value="manual">Manual</option>
 										<option data-tr="inet dns profile google"  value="google">Google DNS</option>
 										<option data-tr="inet dns profile yandex"  value="yandex">Yandex DNS</option>
 										<option data-tr="inet dns profile sky"     value="sky">Sky DNS</option>
@@ -341,7 +349,20 @@
 							</tr>
 							<tr id="natRowDisplay">
 								<td class="head" data-tr="wan nat enabled">Enable NAT</td>
-								<td><input name="natEnabled" type="checkbox" class="auth-disable-user"></td>
+								<td><select name="natEnabled" class="mid auth-disable-user">
+									<option value="on" data-tr="inet auto">Auto</option>
+									<option value="off" data-tr="button disable">Disable</option>
+								</select></td>
+							</tr>
+
+
+							<tr id="dhcpReqIPRow" class="auth-hide-user">
+								<td class="head" data-tr="wan request from dhcp">Request IP from DHCP (optional)</td>
+								<td><input name="dhcpReqIP" class="mid"></td>
+							</tr>
+							<tr id="dhcpVendorRow" class="auth-hide-user">
+								<td class="head" data-tr="wan dhcp vendor class">Vendor class identifier (optional)</td>
+								<td><input name="dhcpVendorClass" class="mid"></td>
 							</tr>
 						</tbody>
 					</table>

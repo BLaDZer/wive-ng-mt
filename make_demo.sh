@@ -4,6 +4,7 @@ echo "==================CONFIGURE-NGINX=============================="
 
 ROOTDIR=`pwd`
 APROOTDIR=`pwd`
+CFLAGS="$CFLAGS -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE"
 
 # prefer use bash if multishell
 if [ -e /bin/bash ]; then
@@ -12,7 +13,7 @@ else
     SHELL="/bin/sh"
 fi
 
-export SHELL
+export SHELL CFLAGS
 
 CONFOPTS=""
 #CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/,-I$ROOTDIR/libnvram"
@@ -80,12 +81,6 @@ cat > extra-modules/nginx-http-wive/external.h <<EOT
 #define DEMO_MODE
 #define EXTERNAL_BUILD
 EOT
-
-if [ `lscpu | grep -c 64-bit` -eq "0" ]; then
-\cp -f auto/os/linux32 auto/os/linux
-else
-\cp -f auto/os/linux64 auto/os/linux
-fi
 
 make clean
 ./configure $CONFOPTS

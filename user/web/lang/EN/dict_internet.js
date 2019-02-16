@@ -15,6 +15,7 @@ var internet_dictionary = {
 	'inet password'			: 'Password',
 	'inet pass2'			: 'Verify Password',
 	'inet hostname'			: 'Hostname',
+	'inet invalid ip'		: 'You have entered invalid IP address',
 
 	'wan title'			: 'Wide Area Network (WAN) Settings',
 	'wan introduction'		: 'You can choose connection type suitable for your environment. Also, you can configure parameters according to the selected connection type.',
