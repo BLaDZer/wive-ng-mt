@@ -230,7 +230,7 @@ function showModemStatus()
             <td><select name="modem_type" onChange="selectModemType(this.form);" class="mid">
                 <option value="0">PPP LTE/WCDMA/UMTS/GPRS</option>
                 <option value="1">PPP CDMA/EVDO</option>
-                <option value="2">ETH/NCM LTE/WCDMA/UMTS/GPRS</option>
+                <option value="2">ETH/RNDIS/NCM LTE</option>
               </select></td>
           </tr>
           <tr id="modem_port_row" onMouseOver="showHint('modem_port')" onMouseOut="hideHint('modem_port')">
