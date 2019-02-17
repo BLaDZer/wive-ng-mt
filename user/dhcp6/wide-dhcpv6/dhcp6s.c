@@ -601,7 +601,7 @@ process_signals()
 		return;
 	}
 
-	if ((sig_flags & SIGF_TERM) || (sig_flags & SIGF_KILL)) {
+	if ((sig_flags & SIGF_TERM)) {
 	    unlink(pid_file);
 	    server6_stop();
 	}
