@@ -252,16 +252,22 @@ dhcpradvdstop() {
     pid=`pidof radvd`
     if [ "$pid" != "" ]; then
 	$LOG  "Stop radvd."
-	killall -q radvd
-	killall -q -SIGKILL radvd
+	# terminate radvd daemon
+	while killall -q radvd; do
+	    usleep 500000
+	    killall -q -SIGKILL radvd
+	done
 	# force remove pid file if process killed
 	rm -f /var/run/radvd.pid
     fi
     pid=`pidof dhcp6s`
     if [ "$pid" != "" ]; then
 	$LOG  "Stop dhcp6s."
-	killall -q dhcp6s
-	killall -q -SIGKILL dhcp6s
+	# terminate dhcp6s daemon
+	while killall -q dhcp6s; do
+	    usleep 500000
+	    killall -q -SIGKILL dhcp6s
+	done
 	# force remove pid file if process killed
 	rm -f /var/run/dhcp6s.pid
     fi
