@@ -219,6 +219,8 @@ dhcpradvdreconf() {
 		killall -q -SIGHUP radvd
 	    else
 		$LOG "Starting radvd"
+		# force remove pid file if process not exists
+		rm -f /var/run/radvd.pid
 		radvd -C /etc/radvd.conf --debug=0 --logmethod=$logto &
 	    fi
 	fi
@@ -238,6 +240,8 @@ dhcpradvdreconf() {
 		killall -q -SIGHUP dhcp6s
 	    else
 		$LOG "Starting dhcp6s"
+		# force remove pid file if process not exists
+		rm -f /var/run/dhcp6s.pid
 		dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
 	    fi
     	fi
@@ -250,6 +254,7 @@ dhcpradvdstop() {
 	$LOG  "Stop radvd."
 	killall -q radvd
 	killall -q -SIGKILL radvd
+	# force remove pid file if process killed
 	rm -f /var/run/radvd.pid
     fi
     pid=`pidof dhcp6s`
@@ -257,6 +262,7 @@ dhcpradvdstop() {
 	$LOG  "Stop dhcp6s."
 	killall -q dhcp6s
 	killall -q -SIGKILL dhcp6s
+	# force remove pid file if process killed
 	rm -f /var/run/dhcp6s.pid
     fi
 }
