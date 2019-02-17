@@ -343,7 +343,6 @@ main(argc, argv)
 	}
 
 	server6_init();
-
 	server6_mainloop();
 	exit(0);
 }
@@ -597,13 +596,14 @@ server6_init()
 static void
 process_signals()
 {
-	if ((sig_flags & SIGF_TERM)) {
-		unlink(pid_file);
-		server6_stop();
-	}
-
 	if ((sig_flags & SIGF_HUP)) {
 		server6_reload();
+		return;
+	}
+
+	if ((sig_flags & SIGF_TERM) || (sig_flags & SIGF_KILL)) {
+	    unlink(pid_file);
+	    server6_stop();
 	}
 }
 
@@ -615,7 +615,7 @@ server6_mainloop()
 	fd_set r;
 	int maxsock;
 
-	
+
 	while (1) {
 		if (sig_flags)
 			process_signals();
