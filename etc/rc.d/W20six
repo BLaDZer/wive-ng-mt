@@ -250,12 +250,14 @@ dhcpradvdstop() {
 	$LOG  "Stop radvd."
 	killall -q radvd
 	killall -q -SIGKILL radvd
+	rm -f /var/run/radvd.pid
     fi
     pid=`pidof dhcp6s`
     if [ "$pid" != "" ]; then
 	$LOG  "Stop dhcp6s."
 	killall -q dhcp6s
 	killall -q -SIGKILL dhcp6s
+	rm -f /var/run/dhcp6s.pid
     fi
 }
 
