@@ -4559,29 +4559,30 @@
 11) udpxy: fix zero length UDP packets.<br>
 12) radvd: sync with git (2.17 commit e8648d1b).<br>
 13) cwmpd: fix get curent dns records.<br>
-14) init.d: usb: extend detect unknown modems.<br>
-15) init.d: usb: add support yota device WLTU modems.<br>
-16) init.d: fix dhcpd restart in some cases.<br>
-17) init.d: fix vpn over modem connection use.<br>
-18) init.d: fix do not use dns stubs in pure pppoe mode.<br>
-19) init.d: tune nginx keepalives work.<br>
-20) init.d: force remove pid files of radvd and dhpc6s after sigkill.<br>
-21) kenrel: genirq: fix race on spurious interrupt detection.<br>
-22) kernel: ext2: fix potential use after free.<br>
-23) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
-24) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
-25) kernel: usb: wait for extra delay time after USB_PORT_FEAT_RESET for quirky hub.<br>
-26) kernel: usb: xhci: prevent bus suspend if a port connect change or polling state is detected.<br>
-27) kernel: usb: xhci: don't prevent USB2 bus suspend in state check intended for USB3 only.<br>
-28) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
-29) kernel: net: xfrm: fix bucket count reported to userspace.<br>
-30) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
-31) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
-32) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
-33) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
-34) kernel: net: tun: forbid iface creation with rtnl ops.<br>
-35) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-36) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-37) kernel: ralink_wifi: more flex channel list announce configure.<br>
+14) wide-dhcp: properly zeroize hmacmd5 context.<br>
+15) init.d: usb: extend detect unknown modems.<br>
+16) init.d: usb: add support yota device WLTU modems.<br>
+17) init.d: fix dhcpd restart in some cases.<br>
+18) init.d: fix vpn over modem connection use.<br>
+19) init.d: fix do not use dns stubs in pure pppoe mode.<br>
+20) init.d: tune nginx keepalives work.<br>
+21) init.d: force remove pid files of radvd and dhpc6s after sigkill.<br>
+22) kenrel: genirq: fix race on spurious interrupt detection.<br>
+23) kernel: ext2: fix potential use after free.<br>
+24) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
+25) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
+26) kernel: usb: wait for extra delay time after USB_PORT_FEAT_RESET for quirky hub.<br>
+27) kernel: usb: xhci: prevent bus suspend if a port connect change or polling state is detected.<br>
+28) kernel: usb: xhci: don't prevent USB2 bus suspend in state check intended for USB3 only.<br>
+29) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
+30) kernel: net: xfrm: fix bucket count reported to userspace.<br>
+31) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
+32) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
+33) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
+34) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
+35) kernel: net: tun: forbid iface creation with rtnl ops.<br>
+36) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+37) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+38) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
