@@ -755,7 +755,7 @@ make_msgcontrol(mh, ctlbuf, buflen, pktinfo, hlim)
 		cm->cmsg_len = CMSG_LEN(sizeof (hlim));
 		cm->cmsg_level = IPPROTO_IPV6;
 		cm->cmsg_type = IPV6_HOPLIMIT;
-		*(int *)CMSG_DATA((struct cmsghdr *)cm) = hlim;
+		memcpy(CMSG_DATA((struct cmsghdr *)cm), &hlim, sizeof (hlim));
 
 		cm = CMSG_NXTHDR(mh, cm); /* just in case */
 	}
