@@ -142,7 +142,11 @@ case $TYPE in
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be hub, but now not support"
 	;;
     10/*)
-	$LOG "${ACTION} ${idVendor}:${idProduct} may be CDC data device, but now not support"
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be CDC_ETHER/RNDIS data device."
+	if [ "${idVendor}" = "19d2" ]; then
+	    $LOG "ZTE MF825/MF831 RNDIS mode modem."
+	fi
+	modload rndis_host
 	;;
     11/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be Smart Card device, but now not support"
@@ -163,8 +167,8 @@ case $TYPE in
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be Mobile Composite Device Bus"
 	if [ "${idVendor}" = "1376" ]; then
 	    $LOG "Yota device WLTU modem Mobile Composite Device Bus."
-	    modload rndis_host
 	fi
+        modload rndis_host
 	;;
     255/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem, try drivers load"
