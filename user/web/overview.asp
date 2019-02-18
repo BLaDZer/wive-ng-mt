@@ -42,7 +42,7 @@
 			<tr>
 				<td>
 					<h1>Wive-NG-MT - opensource firmware to make your life better.</h1>
-					<p id="ovIntroduction" />
+					<p id="ovIntroduction"></p>
 					<!-- ----------------- Langauge Settings ----------------- -->
 					<form method="post" name="Lang" action="/goform/setSysLang">
 						<blockquote>

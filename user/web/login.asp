@@ -9,7 +9,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<script>
+			var IS_DEMO = '<% isDemoMode(); %>' == '1';
+			if (IS_DEMO) {
+				(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+				m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+				(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+			}
+		</script>
 
+		<script>
 			function setCookie(name, value, options) {
 				options = options || {};
 				var expires = options.expires;
@@ -180,5 +188,44 @@ input {
 						</table>
 					</form>
 	</div>
+	<div id="demoDesc" align="center" style="width: 530px; margin:0 auto; text-align:center; padding-top:10px;"></div>
+	<div id="demoMetrics" style="padding-top: 20px;" align="center"></div>
+
+<script>
+if (IS_DEMO) {
+            document.getElementById("demoDesc").innerHTML = "<b>Демо интерфейс Wive-NG router firmware</b><br>" +
+                "Для входа используйте пару логин/пароль Admin/Admin.<br><br>" +
+                "Внимание, часть функционала в DEMO UI может работать некорректно или данные могут быть неполными.<br><br>" +
+                "Это нормально и вызвано ограничениями самого DEMO UI.";
+
+            var mdiv = document.getElementById("demoMetrics");
+
+            ym(52425745, "init", {
+                id:52425745,
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true
+            });
+
+            var sc = document.createElement('script');
+            sc.setAttribute("type", "text/javascript");
+            sc.setAttribute("src", "//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=320&t=tt&d=12kkhpNxOgKWIOeodW82VIL4G8HWYKYchWbiS6x_j0E");
+            sc.setAttribute("id", "clustrmaps");
+            mdiv.appendChild(sc);
+
+            var div = document.createElement('div');
+            div.innerHTML = "<br><a href='//www.liveinternet.ru/click' "+
+            "target=_blank><img src='//counter.yadro.ru/hit?t26.11;r"+
+            escape(document.referrer)+((typeof(screen)=="undefined")?"":
+            ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+            ";h"+escape(document.title.substring(0,150))+";"+Math.random()+
+            "' alt='' title='LiveInternet: показано число посетителей за"+
+            " сегодня' "+
+            "border='0' width='88' height='15'><\/a>";
+            mdiv.appendChild(div);
+}
+</script>
+
 	</body>
 </html>
