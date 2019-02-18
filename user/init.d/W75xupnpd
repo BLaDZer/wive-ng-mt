@@ -88,8 +88,11 @@ fi
 stop() {
     if [ -e /var/run/xupnpd.pid ]; then
 	$LOG "Stop xupnpd."
-	killall -q xupnpd
-	killall -q -SIGKILL xupnpd
+        # terminate xupnpd daemon
+        while killall -q xupnpd; do
+            usleep 500000
+            killall -q -SIGKILL xupnpd
+        done
 	rm -f /var/run/xupnpd.pid
     fi
 }

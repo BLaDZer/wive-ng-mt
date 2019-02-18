@@ -128,8 +128,11 @@ stop() {
     pid=`pidof radiusd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping  radius roaming daemon"
-	killall -q radiusd
-	killall -q -SIGKILL radiusd
+        # terminate radiusd daemon
+        while killall -q radiusd; do
+            usleep 500000
+            killall -q -SIGKILL radiusd
+        done
     fi
 }
 

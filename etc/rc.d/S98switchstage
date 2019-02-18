@@ -66,8 +66,11 @@ stop() {
     pid=`pidof nginx`
     if [ "$pid" != "" ]; then
 	$LOG "Stop nginx"
-	killall -q nginx
-	killall -q -SIGKILL nginx
+	# terminate nginx daemon
+	while killall -q nginx; do
+	    usleep 500000
+	    killall -q -SIGKILL nginx
+	done
     fi
 }
 

@@ -35,9 +35,11 @@ start() {
 	igmp_is_start=`pidof igmpproxy`
 	if [ "$igmp_is_start" != "" ]; then
 	    $LOG "Stopping IGMPPROXY"
-	    killall -q igmpproxy
-	    killall -q -SIGKILL igmpproxy
-	    usleep 500000
+    	    # terminate igmpproxy daemon
+    	    while killall -q igmpproxy; do
+        	usleep 500000
+        	killall -q -SIGKILL igmpproxy
+    	    done
 	fi
 
         $LOG "Starting IGMPPROXY"
@@ -120,8 +122,11 @@ stop() {
     pid=`pidof igmpproxy`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping IGMPPROXY"
-	killall -q igmpproxy
-	killall -q -SIGKILL igmpproxy
+	# terminate igmpproxy daemon
+	while killall -q igmpproxy; do
+	    usleep 500000
+	    killall -q -SIGKILL igmpproxy
+	done
     fi
 }
 

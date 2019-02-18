@@ -27,8 +27,11 @@ stop() {
     pid=`pidof arpwatch`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping SNMPD"
-	killall -q arpwatch
-	killall -q -SIGKILL arpwatch
+        # terminate arpwatch daemon
+        while killall -q arpwatch; do
+            usleep 500000
+            killall -q -SIGKILL arpwatch
+        done
     fi
 }
 

@@ -143,8 +143,11 @@ get_param() {
 stop() {
     if [ -e /var/run/udhcpd.pid ]; then
 	$LOG "Stop dhcpserver "
-	killall -q udhcpd
-	killall -q -SIGKILL udhcpd
+        # terminate udhcpd daemon
+        while killall -q udhcpd; do
+            usleep 500000
+            killall -q -SIGKILL udhcpd
+        done
     fi
 }
 

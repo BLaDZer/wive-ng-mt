@@ -39,8 +39,11 @@ stop() {
     pid=`pidof inadyn`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping DynDns"
-	killall -q inadyn
-	killall -q -SIGKILL inadyn
+        # terminate inadyn daemon
+        while killall -q inadyn; do
+            usleep 500000
+            killall -q -SIGKILL inadyn
+        done
     fi
 }
 

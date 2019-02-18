@@ -32,10 +32,16 @@ get_param() {
 stop() {
     if [ -e /var/run/klogd.pid ] || [ -e /var/run/syslogd.pid ]; then
 	$LOG "Stop syslog and klog"
-	killall -q klogd
-	killall -q -SIGKILL klogd
-	killall -q syslogd
-	killall -q -SIGKILL syslogd
+        # terminate klogd daemon
+        while killall -q klogd; do
+            usleep 500000
+            killall -q -SIGKILL klogd
+        done
+        # terminate syslogd daemon
+        while killall -q syslogd; do
+            usleep 500000
+            killall -q -SIGKILL syslogd
+        done
 	rm -f /var/log/messages > /dev/null 2>&1
     fi
 }

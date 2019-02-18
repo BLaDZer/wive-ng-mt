@@ -41,8 +41,11 @@ get_param() {
 stop() {
     if [ -e /var/run/inetd.pid ]; then
 	$LOG "Stopping inetd"
-	killall -q inetd
-	killall -q -SIGKILL inetd
+        # terminate inetd daemon
+        while killall -q inetd; do
+            usleep 500000
+            killall -q -SIGKILL inetd
+        done
     fi
 }
 

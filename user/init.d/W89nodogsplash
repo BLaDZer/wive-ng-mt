@@ -42,8 +42,11 @@ stop() {
     pid=`pidof nodogsplash`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping Nodogsplash"
-	killall -q nodogsplash
-	killall -q -SIGKILL nodogsplash
+        # terminate nodogsplash daemon
+        while killall -q nodogsplash; do
+            usleep 500000
+            killall -q -SIGKILL nodogsplash
+        done
     fi
 }
 

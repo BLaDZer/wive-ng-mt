@@ -150,8 +150,11 @@ stop() {
     pid=`pidof wsdd2`
     if [ "$pid" != "" ]; then
 	$LOG "Stop wsdd2."
-	killall -q wsdd2
-	killall -q -SIGKILL wsdd2
+        # terminate wsdd2 daemon
+        while killall -q wsdd2; do
+            usleep 500000
+            killall -q -SIGKILL wsdd2
+        done
     fi
 
 }

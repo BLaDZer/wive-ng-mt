@@ -53,14 +53,20 @@ stop() {
     pid=`pidof zebra`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping ZEBRA"
-	killall -q zebra
-	killall -q -SIGKILL zebra
+        # terminate zebra daemon
+        while killall -q zebra; do
+            usleep 500000
+            killall -q -SIGKILL zebra
+        done
     fi
     pid=`pidof ripd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping RIPD"
-	killall -q ripd
-	killall -q -SIGKILL ripd
+        # terminate ripd daemon
+        while killall -q ripd; do
+            usleep 500000
+            killall -q -SIGKILL ripd
+        done
     fi
 }
 

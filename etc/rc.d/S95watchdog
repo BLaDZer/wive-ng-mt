@@ -25,8 +25,11 @@ get_param() {
 stop() {
     if [ -e /var/run/watchdog.pid ]; then
 	$LOG "Stop watchdog"
-	killall -q watchdog
-	killall -q -SIGKILL watchdog
+        # terminate watchdog daemon
+        while killall -q watchdog; do
+            usleep 500000
+            killall -q -SIGKILL watchdog
+        done
 	rm -f /var/run/watchdog.pid
 	rmmod ralink_wdt > /dev/null 2>&1
     fi

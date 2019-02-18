@@ -78,8 +78,11 @@ stop() {
     pid=`pidof mdev`
     if [ "$pid" != "" ]; then
 	$LOG "Stop mdev."
-	killall -q mdev
-	killall -q -SIGKILL mdev
+        # terminate mdev daemon
+        while killall -q mdev; do
+            usleep 500000
+            killall -q -SIGKILL mdev
+        done
     fi
 }
 

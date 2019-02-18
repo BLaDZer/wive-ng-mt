@@ -23,9 +23,11 @@ start() {
 	pid=`pidof udpxy`
 	if [ "$pid" != "" ]; then
 	    $LOG "UDPXY stop"
-	    killall -q udpxy
-	    killall -q -SIGKILL udpxy
-	    usleep 500000
+    	    # terminate udpxy daemon
+	    while killall -q udpxy; do
+        	usleep 500000
+        	killall -q -SIGKILL udpxy
+    	    done
 	fi
 
 	export UDPXY_RCV_TMOUT=10
@@ -46,8 +48,11 @@ stop() {
     pid=`pidof udpxy`
     if [ "$pid" != "" ]; then
 	$LOG "UDPXY stop"
-	killall -q udpxy
-	killall -q -SIGKILL udpxy
+        # terminate udpxy daemon
+        while killall -q udpxy; do
+            usleep 500000
+            killall -q -SIGKILL udpxy
+        done
     fi
 }
 

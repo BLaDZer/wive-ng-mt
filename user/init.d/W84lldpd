@@ -30,14 +30,20 @@ stop() {
     pid=`pidof lldpd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping LLDPD"
-	killall -q lldpd
-	killall -q -SIGKILL lldpd
+        # terminate lldpd daemon
+        while killall -q lldpd; do
+            usleep 500000
+            killall -q -SIGKILL lldpd
+        done
     fi
     pid=`pidof lldpcli`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping LLDPD cli"
-	killall -q lldpcli
-	killall -q -SIGKILL lldpcli
+        # terminate lldpcli daemon
+        while killall -q lldpcli; do
+            usleep 500000
+            killall -q -SIGKILL lldpcli
+        done
     fi
     rm -f /var/run/lldpd.socket
 }

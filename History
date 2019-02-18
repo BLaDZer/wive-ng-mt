@@ -4568,22 +4568,23 @@
 20) init.d: fix do not use dns stubs in pure pppoe mode.<br>
 21) init.d: tune nginx keepalives work.<br>
 22) init.d: force remove pid files of radvd and dhpc6s after sigkill.<br>
-23) kenrel: genirq: fix race on spurious interrupt detection.<br>
-24) kernel: ext2: fix potential use after free.<br>
-25) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
-26) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
-27) kernel: usb: wait for extra delay time after USB_PORT_FEAT_RESET for quirky hub.<br>
-28) kernel: usb: xhci: prevent bus suspend if a port connect change or polling state is detected.<br>
-29) kernel: usb: xhci: don't prevent USB2 bus suspend in state check intended for USB3 only.<br>
-30) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
-31) kernel: net: xfrm: fix bucket count reported to userspace.<br>
-32) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
-33) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
-34) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
-35) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
-36) kernel: net: tun: forbid iface creation with rtnl ops.<br>
-37) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
-38) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
-39) kernel: ralink_wifi: more flex channel list announce configure.<br>
+23) init.d: more safe terminate procedure for some services (avoid races in init).<br>
+24) kenrel: genirq: fix race on spurious interrupt detection.<br>
+25) kernel: ext2: fix potential use after free.<br>
+26) kernel: tty: handle problem if line discipline does not have receive_buf.<br>
+27) kernel: tty/n_hdlc: fix __might_sleep warning.<br>
+28) kernel: usb: wait for extra delay time after USB_PORT_FEAT_RESET for quirky hub.<br>
+29) kernel: usb: xhci: prevent bus suspend if a port connect change or polling state is detected.<br>
+30) kernel: usb: xhci: don't prevent USB2 bus suspend in state check intended for USB3 only.<br>
+31) kernel: net: bridge: join all-snoopers multicast address (RFC4541, section 2.1.1.a compat).<br>
+32) kernel: net: xfrm: fix bucket count reported to userspace.<br>
+33) kernel: net: ipv4/igmp: init group mode as INCLUDE when join source group (RFC3376 5.1).<br>
+34) kernel: net: ipv4/igmp: fix ip_mc_{dec,inc}_group allocation context.<br>
+35) kernel: net: ipv6: consider sk_bound_dev_if when binding a socket to an address.<br>
+36) kernel: net: tun: consistently configure generic netdev params via rtnetlink.<br>
+37) kernel: net: tun: forbid iface creation with rtnl ops.<br>
+38) kernel: ralink_wifi: mt7615: rework channel list anounce (RFC say announce full range or diff subbans all freq, not only central channel).<br>
+39) kernel: ralink_wifi: fix potentional null pointer dereference in exChannelBuild logic.<br>
+40) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>

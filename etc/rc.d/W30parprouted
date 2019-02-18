@@ -30,8 +30,11 @@ stop() {
 	$LOG "Stopping parprouted"
 	sysctl -wq net.ipv4.conf.$wan_if.proxy_arp=0
 	sysctl -wq net.ipv4.conf.$lan_if.proxy_arp=0
-	killall -q parprouted
-	killall -q -SIGKILL parprouted
+        # terminate parprouted daemon
+        while killall -q parprouted; do
+            usleep 500000
+            killall -q -SIGKILL parprouted
+        done
     fi
 }
 

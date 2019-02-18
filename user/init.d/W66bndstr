@@ -24,8 +24,11 @@ start() {
 		pid=`pidof bndstrg`
 		if [ "$pid" != "" ]; then
 		    $LOG "Stopping bandsteering daemon"
-		    killall -q bndstrg
-		    killall -q -SIGKILL bndstrg
+    		    # terminate bndstrg daemon
+    		    while killall -q bndstrg; do
+        		usleep 500000
+        		killall -q -SIGKILL bndstrg
+    		    done
 		fi
 
 		$LOG "Starting bandsteering daemon"
@@ -50,8 +53,11 @@ stop() {
     pid=`pidof bndstrg`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping bandsteering daemon"
-	killall -q bndstrg
-	killall -q -SIGKILL bndstrg
+        # terminate bndstrg daemon
+        while killall -q bndstrg; do
+            usleep 500000
+            killall -q -SIGKILL bndstrg
+        done
     fi
 }
 

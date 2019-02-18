@@ -29,8 +29,11 @@ get_param() {
 stop() {
     if [ "`pidof cdp-send`" ]; then
 	$LOG "Stopping CDP-SEND"
-	killall -q cdp-send
-	killall -q -SIGKILL cdp-send
+        # terminate cdp-send daemon
+        while killall -q cdp-send; do
+            usleep 500000
+            killall -q -SIGKILL cdp-send
+        done
     fi
 }
 

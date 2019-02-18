@@ -19,8 +19,11 @@ start() {
 stop() {
     if [ -e /var/run/crond.pid ]; then
 	$LOG "Stopping crontab"
-	killall -q crond
-	killall -q -SIGKILL crond
+        # terminate crond daemon
+        while killall -q crond; do
+            usleep 500000
+            killall -q -SIGKILL crond
+        done
     fi
 }
 

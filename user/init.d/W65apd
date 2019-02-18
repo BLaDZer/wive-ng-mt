@@ -30,14 +30,20 @@ stop() {
     pid=`pidof rt2860apd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping  apd radius daemon"
-	killall -q rt2860apd
-	killall -q -SIGKILL rt2860apd
+        # terminate rt2860apd daemon
+        while killall -q rt2860apd; do
+            usleep 500000
+            killall -q -SIGKILL rt2860apd
+        done
     fi
     pid=`pidof rtinicapd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping  apd radius daemon"
-	killall -q rtinicapd
-	killall -q -SIGKILL rtinicapd
+        # terminate inadyn daemon
+        while killall -q rtinicapd; do
+            usleep 500000
+            killall -q -SIGKILL rtinicapd
+        done
     fi
 }
 

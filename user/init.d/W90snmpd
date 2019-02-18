@@ -26,8 +26,11 @@ stop() {
     pid=`pidof snmpd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping SNMPD"
-	killall -q snmpd
-	killall -q -SIGKILL snmpd
+        # terminate snmpd daemon
+        while killall -q snmpd; do
+            usleep 500000
+            killall -q -SIGKILL snmpd
+        done
     fi
 }
 

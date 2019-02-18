@@ -44,8 +44,11 @@ ntp_start() {
 stop() {
     if [ -e /var/run/ntpd.pid ]; then
 	$LOG "Stopping NTPD"
-	killall -q ntpd
-	killall -q -SIGKILL ntpd
+        # terminate ntpd daemon
+        while killall -q ntpd; do
+            usleep 500000
+            killall -q -SIGKILL ntpd
+        done
     fi
 }
 

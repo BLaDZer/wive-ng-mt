@@ -40,8 +40,11 @@ stop() {
     pid=`pidof cwmpd`
     if [ "$pid" != "" ]; then
 	$LOG "Stopping CWMPD"
-	killall -q cwmpd
-	killall -q -SIGKILL cwmpd
+        # terminate cwmpd daemon
+        while killall -q cwmpd; do
+            usleep 500000
+            killall -q -SIGKILL cwmpd
+        done
     fi
 }
 
