@@ -293,7 +293,6 @@ parameter_fetch_t service_misc_flags[] =
 #ifdef CONFIG_USER_XUPNPD
 	{ ("xupnpdEnbl"),		"xupnpd",		0, ("0")  },
 #endif
-	{ ("dnspEnbl"),		"dnsPEnabled",		0, ("0")  },
 	{ ("rmtHTTP"),			"RemoteManagement",	0, ("0")  },
 	{ ("RemoteManagementPort"),	"RemoteManagementPort",	0, ("80") },
 	{ ("RemoteManagementPortHTTPS"),	"RemoteManagementPortHTTPS",	0, ("443") },

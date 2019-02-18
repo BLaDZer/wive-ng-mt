@@ -6,6 +6,7 @@ var MAX_STA_NUM                                                      = parseInt(
 
 var SDK_VERSION                                                      = '<% getSdkVersion(); %>';
 var PLATFORM                                                         = '<% getPlatform(); %>';
+var IS_DEMO                                                          = '<% isDemoMode(); %>' == '1';
 
 var AUTH_USERNAME                                                    = '<% getAuthUsername(); %>';
 var AUTH_ROLE                                                        = parseInt('<% getAuthRole(); %>') || 0;

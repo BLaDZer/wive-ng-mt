@@ -188,8 +188,8 @@
 
 				displayServiceStatus(
 					[
-						[ NVRAM_UDPXYMode,		'udpxy',		'udpxy',		NVRAM_UDPXYPort + '/status/',		'udpxy.sourceforge.net' ],
-						[ NVRAM_xupnpd,			'xupnpd',		'xupnpd',		'4044/',				'xupnpd.org/' ],
+						[ NVRAM_UDPXYMode,		'udpxy',		'udpxy',		IS_DEMO ? null : NVRAM_UDPXYPort + '/status/',		'udpxy.sourceforge.net' ],
+						[ NVRAM_xupnpd,			'xupnpd',		'xupnpd',		IS_DEMO ? null : '4044/',				'xupnpd.org/' ],
 						[ NVRAM_CrondEnable,		'crond',		'crond',		null,					'crontab.org/' ],
 						[ NVRAM_snmpd,			'snmpd',		'snmpd',		null,					'www.net-snmp.org/docs/man/snmpd.html' ],
 						[ NVRAM_igmpEnabled,		'igmpProxy',		'igmpproxy',		null,					'sourceforge.net/projects/igmpproxy' ],

@@ -1,5 +1,14 @@
 #include "asp_mod_utils.h"
 
+static int isDemoMode(webs_t *wp, char** params, int nparams)
+{
+#if defined(DEMO_MODE)
+	return outWrite(T("1"));
+#else
+	return outWrite(T("0"));
+#endif
+}
+
 
 static int _getCfgGeneral(webs_t *wp, char* key, char** out)
 {
@@ -994,6 +1003,8 @@ static void form_ping(webs_t* wp, char_t *path, char_t *query)
  */
 void asp_mod_utils_init()
 {
+        aspDefineFunc("isDemoMode", isDemoMode, EVERYONE);
+
         aspDefineFunc("getCfgGeneral", getCfgGeneral, EVERYONE);
         aspDefineFunc("getAuthUsername", getAuthUsername, EVERYONE);
         aspDefineFunc("getAuthRole", getAuthRole, EVERYONE);

@@ -13,13 +13,20 @@
 <script src="/lang/<% getLangDictionary(); %>/dict_tree.js"></script>
 <script type="text/javascript" src="/js/nvram.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
+<script type="text/javascript">
+if (IS_DEMO) {
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+}
+</script>
 </head>
-<body bgcolor="#FFFFFF" onLoad="initValue();">
+<body bgcolor="#FFFFFF" onLoad="initValues();">
 <script language="JavaScript" type="text/javascript">
 
 var isFimwareUpload = 0;
 
-function initValue()
+function initValues()
 {
 	var e = document.getElementById("openall");
 	if (e!=null)
@@ -35,6 +42,9 @@ function setUnderFirmwareUpload(flag){
 
 function go(zz) {
 	top.view.location=zz;
+	if (IS_DEMO) {
+		ym(52425745, "hit", "/"+zz);
+	}
 }
 
 function redirect(zz) {
@@ -190,7 +200,38 @@ a.add(905, 900, _("treeapp reboot"),                       "javascript:go('reboo
 a.add(1000,   0, _("treeapp logout"),                      "javascript:redirect('logout.asp');");
 
 document.write(a);
+</script>
 
+<div id="demoMetrics" style="padding-left: 17px; padding-top: 9px;"></div>
+<script>
+if (IS_DEMO) {
+            var mdiv = document.getElementById("demoMetrics");
+
+            ym(52425745, "init", {
+                id:52425745,
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true
+            });
+
+            var sc = document.createElement('script');
+            sc.setAttribute("type", "text/javascript");
+            sc.setAttribute("src", "//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=227&t=tt&d=12kkhpNxOgKWIOeodW82VIL4G8HWYKYchWbiS6x_j0E");
+            sc.setAttribute("id", "clustrmaps");
+            mdiv.appendChild(sc);
+
+            var div = document.createElement('div');
+            div.innerHTML = "<a href='//www.liveinternet.ru/click' "+
+            "target=_blank><img src='//counter.yadro.ru/hit?t26.11;r"+
+            escape(document.referrer)+((typeof(screen)=="undefined")?"":
+            ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+            ";h"+escape(document.title.substring(0,150))+";"+Math.random()+
+            "' alt='' title='LiveInternet: показано число посетителей за"+
+            " сегодня' "+
+            "border='0' width='88' height='15'><\/a>";
+            mdiv.appendChild(div);
+}
 </script>
 </body>
 </html>
