@@ -16,9 +16,7 @@ fi
 export SHELL CFLAGS
 
 CONFOPTS=""
-#CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/,-I$ROOTDIR/libnvram"
 CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/"
-#CONFOPTS="$CONFOPTS --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
 CONFOPTS="$CONFOPTS --with-debug"
 
 CONFOPTS="$CONFOPTS --with-libatomic=NO"
@@ -39,8 +37,6 @@ CONFOPTS="$CONFOPTS --http-scgi-temp-path=/tmp/scgi"
 
 CONFOPTS="$CONFOPTS --add-module=$ROOTDIR/user/nginx/extra-modules/nginx-http-wive"
 CONFOPTS="$CONFOPTS --add-module=$ROOTDIR/user/nginx/extra-modules/nginx-upload-module"
-
-#  --without-http_autoindex_module \
 
 CONFOPTS="$CONFOPTS \
   --with-http_stub_status_module \
@@ -70,24 +66,14 @@ CONFOPTS="$CONFOPTS \
   --without-http_grpc_module \
 "
 
-# build with support ssl only if project configured and builded with openssl
-#if [ -e ../../lib/shared/lib/libssl.so ]; then
 CONFOPTS="$CONFOPTS --with-http_ssl_module"
-#fi
 
 cd $ROOTDIR/user/nginx
 touch extra-modules/nginx-http-wive/DEMO_MODE.flag
 cat > extra-modules/nginx-http-wive/external.h <<EOT
-#define DEMO_MODE
-#define EXTERNAL_BUILD
 EOT
 
 make clean
 ./configure $CONFOPTS
 make
-cp -f objs/nginx /opt/nginx/nginx
-
 cd $ROOTDIR
-
-killall -9 nginx
-/opt/nginx/nginx
