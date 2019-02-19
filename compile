@@ -91,6 +91,13 @@ case "$MODE" in
 	    # celling one port AP release
 	    DEVNAME="SNR-CPE-AP1-MT"
 	    ;;
+	####################################
+	# DEMO TARGET
+	####################################
+	"DEMO")
+	    # 4t4r sample
+	    DEVNAME="Wi-CAT-ME4-5GHZ-MT"
+	    ;;
 	*)
 	    echo "Not supported (unknown) mode or mode not set."
 	    exit 1
@@ -161,7 +168,7 @@ elif [ "$MODE" = "MT7621-MT7615-2T2R-16M-USB-IPA" ]; then
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ]; then
+elif [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ] || [ "$MODE" = "DEMO" ] ; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7615N-16M-USB				$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
@@ -257,6 +264,12 @@ fi
 if [ "$DOS2UNIX" = "YES" ] ; then
 echo ---------------------------------DOS2UNIX--------------------------------
     find -type f -exec dos2unix {} \;
+fi
+
+if [ "$MODE" = "DEMO" ] ; then
+echo -------------------------------MAKE DEMOUI-------------------------------
+    ./make_demo.sh
+    exit 0
 fi
 
 echo ---------------------------------MAKE-ALL--------------------------------
