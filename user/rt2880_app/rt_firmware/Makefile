@@ -45,9 +45,7 @@ endif
 # external PCI-E 7610 WiFi module (ALWAYS EXTPA/LNA CONFIG FOR THIS MODULE)
 ###################################################################################################################################################
 ifdef CONFIG_RT_SECOND_IF_MT7610E
-ifeq ($(MODEL_NAME),SNR-CPE-MD1.2-5GHZ-MT)
-	$(ROMFSINST) -S eeproms-defaults/MT7610E-V10-FEMSKY85717-EXTPALNA.bin				/etc/Wireless/MT7610E-V10-FEM.bin
-else ifeq ($(MODEL_NAME),SNR-CPE-ME1-5GHZ-MT)
+ifeq ($(MODEL_NAME),SNR-CPE-ME1-5GHZ-MT)
 	$(ROMFSINST) -S eeproms-defaults/MT7610E-V10-FEMSKYSE5003L-EXTPALNA.bin				/etc/Wireless/MT7610E-V10-FEM.bin
 else
 	$(ROMFSINST) -S eeproms-defaults/MT7610E-V10-FEM-EXTPALNA.bin					/etc/Wireless/MT7610E-V10-FEM.bin
