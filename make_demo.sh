@@ -85,8 +85,9 @@ EOT
 make clean
 ./configure $CONFOPTS
 make
-\cp -f objs/nginx /opt/nginx/nginx
+cp -f objs/nginx /opt/nginx/nginx
+
 cd $ROOTDIR
+
 killall -9 nginx
 /opt/nginx/nginx
-
