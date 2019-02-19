@@ -6,7 +6,7 @@
  Conditions of commercial use non GPL (or other not viral license) components are discussed individually.
  For a more detailed discussion please mail me.
  News and changes in Russian: http://wive-ng.sf.net
- Bug report please send to support[at]nag.ru or sfstudio[at]mail.ru
+ Bug report please send to support[at]wi-cat.ru
 */
 #include "utils.h"
 

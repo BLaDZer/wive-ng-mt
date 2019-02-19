@@ -18,11 +18,11 @@
 
 #define			systmStringSize		(2 * MAXHOSTNAMELEN)
 
-#define PRIVATENUM		40418							/* NAG Ltd */
-#define PRIVATENUMDEVID		5							/* SNR-CPE-W4N-MT */
-#define DEVDESCRIPTION          "SNR-CPE-W4N-MT"					/* SNR-CPE-W4N-MT */
-#define CONTACTEMAIL		"support@nag.ru"					/* NAG Ltd */
-#define LOCATION		"620016 Russia. Ekaterinburg. Predelnaya St. 57/2"	/* NAG Ltd */
+#define PRIVATENUM		40418
+#define PRIVATENUMDEVID		5
+#define DEVDESCRIPTION          "Wive-NG-MT"
+#define CONTACTEMAIL		"support@wi-cat.ru"
+#define LOCATION		"620110 Russia. Ekaterinburg"
 
 static	CCharType	systmDescrText[systmStringSize];		//*****Change to HOSTANME + version
 static	CCharType	systmHostName[(MAXHOSTNAMELEN + 1)];
