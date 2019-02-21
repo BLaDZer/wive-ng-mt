@@ -92,7 +92,7 @@ var admin_dictionary = {
 	'syslog enabled'			: 'Система логирования',
 	'syslog kernel'				: 'Уровень ядра',
 	'syslog remote ip'			: 'IP удалённой системы логирования',
-	'syslog level'				: 'Степень специфичности логирования:',
+	'syslog level'				: 'Степень детализации логирования:',
 	'syslog system log'			: 'Системный лог',
 	'syslog not support'			: 'Не поддерживается.\n(Busybox->\n  System Logging Utilitie ->\n    syslogd\n    Circular Buffer\n    logread',
 	'syslog invalid ip dns'			: 'Неверный адрес сервера логов'
