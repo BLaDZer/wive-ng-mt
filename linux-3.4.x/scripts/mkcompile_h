@@ -58,26 +58,16 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
 
 ( echo /\* This file is auto generated, version $VERSION \*/
   if [ -n "$CONFIG_FLAGS" ] ; then echo "/* $CONFIG_FLAGS */"; fi
-  
-  echo \#define UTS_MACHINE \"$ARCH\"
 
+  cat ../sdk_version.h
+
+  echo \#define UTS_MACHINE \"$ARCH\"
   echo \#define UTS_VERSION \"`echo $UTS_VERSION | $UTS_TRUNCATE`\"
 
   echo \#define LINUX_COMPILE_TIME \"`date +%T`\"
-  echo \#define LINUX_COMPILE_BY \"sfstudio_at_mail.ru\"
-  echo \#define LINUX_COMPILE_HOST \"wive-ng.sf.net\"
-
-  domain=`dnsdomainname 2> /dev/null`
-  if [ -z "$domain" ]; then
-    domain=`domainname 2> /dev/null`
-  fi
-
-  if [ -n "$domain" ]; then
-    echo \#define LINUX_COMPILE_DOMAIN \"`echo $domain | $UTS_TRUNCATE`\"
-  else
-    echo \#define LINUX_COMPILE_DOMAIN
-  fi
-
+  echo \#define LINUX_COMPILE_BY $VERSIONSTR
+  echo \#define LINUX_COMPILE_HOST \"$REALNAME\"
+  echo \#define LINUX_COMPILE_DOMAIN \"wi-cat.ru\"
   echo \#define LINUX_COMPILER \"`$CC -v 2>&1 | tail -n 1`\"
 ) > .tmpcompile
 
