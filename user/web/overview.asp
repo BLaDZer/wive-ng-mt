@@ -63,6 +63,7 @@
 								<a href="/adm/status.asp" id="ovStatus">Status</a><br />
 								<a href="/adm/management.asp" id="ovManagement">Management</a><br />
 								<div id="ovAbout"><hr /><br />
+								<img src="graphics/wi-cat-logo.jpg" height="100" border="0" align="right" hspace="0" vspace="20">
 								WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.
 								<br />
 								Conditions of commercial use non GPL (or other not viral license) components are discussed individually.
