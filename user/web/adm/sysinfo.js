@@ -1,8 +1,5 @@
-document.getElementById('statusSDKversion_value').innerHTML		= '<% getSdkVersion(); %>';
-document.getElementById('statusSysDateTime_value').innerHTML	= '<% getSysDateTime(); %>';
-document.getElementById('statusSysUpTime_value').innerHTML		= getUptime();
-document.getElementById('statusSysPlatform_value').innerHTML	= '<% getPlatform(); %>';
-document.getElementById('statusOpMode_value').innerHTML			= getOpMode();
+document.getElementById('statusSDKversion_value').innerHTML		= '<% getSdkVersion();%> / ' + getOpMode() + ' / <% getPlatform(); %>';
+document.getElementById('statusSysDateTime_value').innerHTML	= '<% getSysDateTime(); %> / '+getUptime();
 
 document.getElementById('statusConnectedType_value').innerHTML	= getConnectionType();
 document.getElementById('statusINTIPAddr_value').innerHTML		= '<% getIntIp(); %>';
@@ -22,8 +19,7 @@ document.getElementById('statusLANMAC_value').innerHTML			= '<% getLanMac(); %>'
 var mem_total	= '<% getMemTotalASP(); %>';
 var mem_free	= '<% getMemLeftASP(); %>';
 
-document.getElementById('statisticMMTotal_value').innerHTML		= +mem_total + _("statistic memory kib");
-document.getElementById('statisticMMLeft_value').innerHTML		= +mem_free + _("statistic memory kib") + ' (' + (+mem_free / (+mem_total / 100)).toFixed(0) + '%)';
+document.getElementById('statisticMMTotal_value').innerHTML		= +mem_free + _("statistic memory kib") + ' (' + (+mem_free / (+mem_total / 100)).toFixed(0) + '%) / ' +mem_total + _("statistic memory kib");
 document.getElementById('statisticCpuUse_value').innerHTML		= '<% getCpuUsageASP(); %>';
 
 displayElement('statusINTIPAddr_tr',	document.getElementById('statusINTIPAddr_value').innerHTML != document.getElementById('statusWANIPAddr_value').innerHTML);

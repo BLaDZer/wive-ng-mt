@@ -34,9 +34,6 @@
 				_TR("statusSysInfo",		"status system information");
 				_TR("statusSDKversion",		"status sdk version");
 				_TR("statusSysDateTime",	"status system date time");
-				_TR("statusSysUpTime",		"status system up time");
-				_TR("statusSysPlatform",	"status system platform");
-				_TR("statusOpMode",			"status system op mode");
 
 				_TR("statusInternetConfig",	"status internet config");
 				_TR("statusConnectedType",	"status connect type");
@@ -57,7 +54,6 @@
 
 				_TR("statisticMMCPU",		"statistic memory and cpu");
 				_TR("statisticMMTotal",		"statistic memory total");
-				_TR("statisticMMLeft",		"statistic memory left");
 				_TR("statisticCpuUse",		"statistic cpu usage");
 
 				_TR("statisticWANLAN",		"statistic wanlan");
@@ -154,18 +150,6 @@
 								<td class="head" id="statusSysDateTime">System Time</td>
 								<td id="statusSysDateTime_value"></td>
 							</tr>
-							<tr>
-								<td class="head" id="statusSysUpTime">System Uptime</td>
-								<td id="statusSysUpTime_value"></td>
-							</tr>
-							<tr>
-								<td class="head" id="statusSysPlatform">System Platform</td>
-								<td id="statusSysPlatform_value"></td>
-							</tr>
-							<tr>
-								<td class="head" id="statusOpMode">Operation Mode</td>
-								<td id="statusOpMode_value"></td>
-							</tr>
 							<!-- ==============  MEMORY and CPU  =============== -->
 							<tr>
 								<td class="title" colspan="2" id="statisticMMCPU">Memory and CPU</td>
@@ -173,10 +157,6 @@
 							<tr>
 								<td class="head" id="statisticMMTotal">Memory total</td>
 								<td id="statisticMMTotal_value"></td>
-							</tr>
-							<tr>
-								<td class="head" id="statisticMMLeft">Memory left</td>
-								<td id="statisticMMLeft_value"></td>
 							</tr>
 							<tr>
 								<td class="head" id="statisticCpuUse">CPU usage</td>
