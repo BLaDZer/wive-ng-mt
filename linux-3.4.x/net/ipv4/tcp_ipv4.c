@@ -421,18 +421,16 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 		if (sock_owned_by_user(sk))
 			break;
 
+		skb = tcp_write_queue_head(sk);
+		if (!skb)
+			break;
+
 		icsk->icsk_backoff--;
 		inet_csk(sk)->icsk_rto = (tp->srtt ? __tcp_set_rto(tp) :
 			TCP_TIMEOUT_INIT) << icsk->icsk_backoff;
 		tcp_bound_rto(sk);
 
-		skb = tcp_write_queue_head(sk);
-
-		if (skb)
-		    remaining = icsk->icsk_rto - min(icsk->icsk_rto,tcp_time_stamp - TCP_SKB_CB(skb)->when);
-		else
-		    remaining = icsk->icsk_rto - icsk->icsk_rto;
-
+		remaining = icsk->icsk_rto - min(icsk->icsk_rto,tcp_time_stamp - TCP_SKB_CB(skb)->when);
 		if (remaining) {
 			inet_csk_reset_xmit_timer(sk, ICSK_TIME_RETRANS,
 						  remaining, TCP_RTO_MAX);
