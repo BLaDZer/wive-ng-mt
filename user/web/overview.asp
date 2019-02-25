@@ -182,6 +182,9 @@
 							</tr>
 						</tbody>
 					</table>						
+					<!-- =================  SOFT NETORK  ================= -->
+					<div id="ethernetStatus"></div>
+					<div id="statisticSWStats"></div>
 					<table class="form" >
 						<col style="width: 40%;" />
 						<col style="width: 60%;" />
@@ -248,10 +251,6 @@
 							</tr>
 						</tbody>
 					</table>
-					<!-- =================  SOFT NETORK  ================= -->
-					<div id="ethernetStatus"></div>
-					<div id="statisticSWStats"></div>
-					<div class="whitespace"></div>
 					<hr>
 					<div style="display:none;" id="fastpath_warning"></div>	
 				</td>
