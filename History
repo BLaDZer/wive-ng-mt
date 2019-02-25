@@ -4590,8 +4590,9 @@
 <br>
 <b>8.0.0</b><br>
 1) build_system: add DemoUI target.<br>
-2) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
-3) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
-4) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
+2) radvd: sync with git (2.18rc1 commit (0e59908c).<br>
+3) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
+4) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
+5) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
 <br>
 <br>
