@@ -73,7 +73,7 @@ var admin_dictionary = {
 	'status system up time sec5_0'		: 'секунд',
 	'status internal ipv6 address'		: 'Внутренний IPv6 адрес',
 	'status external ipv6 address'		: 'Внешний IPv6 адрес',
-	'statistic warning'			: 'Для корректнектного сбора статистики нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор.',
+	'statistic warning'			: 'Для корректнектного сбора статистики необходимо выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор.',
 	'statistic memory and cpu'		: 'Состояние Памяти и Процессора',
 	'statistic memory total'		: 'Всего памяти',
 	'statistic memory left'			: 'Свободно памяти',
