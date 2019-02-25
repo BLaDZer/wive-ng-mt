@@ -82,10 +82,12 @@
 
 				lang.value = NVRAM_Language;
 
-				showWarning();
-				displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
+				var IS_DEMO = '<% isDemoMode(); %>' == '1';
+				if (!IS_DEMO) {
+				    showWarning();
+				    displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
+				}
 
-				showWarning();
 				initTranslation();
 				reloadStat();
 				function reloadStat() {
