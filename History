@@ -4591,5 +4591,6 @@
 <b>8.0.0</b><br>
 1) build_system: add DemoUI target.<br>
 2) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
+3) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
 <br>
 <br>
