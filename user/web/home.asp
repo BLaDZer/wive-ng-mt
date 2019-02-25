@@ -19,7 +19,7 @@
 			}, 10000);
 		</script>
 	</head>
-	<frameset id="homeFrameset" rows="70,1*" cols="*" border="0" framespacing="0" frameborder="NO">
+	<frameset id="homeFrameset" rows="59,1*" cols="*" border="0" framespacing="0" frameborder="NO">
 		<frame src="title.htm" name="title" frameborder="NO" scrolling="NO" marginwidth="0" marginheight="0">
 		<frameset id="homeMenuFrameset" cols="245,1*">
 			<frame src="treeapp.asp" name="menu" marginwidth="0" marginheight="0" scrolling="AUTO" frameborder="NO" >
