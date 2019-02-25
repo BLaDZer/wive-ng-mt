@@ -4592,5 +4592,6 @@
 1) build_system: add DemoUI target.<br>
 2) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
 3) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
+4) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
 <br>
 <br>
