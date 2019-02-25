@@ -175,7 +175,6 @@ if (BUILD_USB == "1")
 
 a.add(900,   0, _("treeapp administration"),        "javascript:a.oo(900);");
 a.add(901, 900, _("treeapp management"),            "javascript:go('adm/management.asp');");
-a.add(902, 900, _("treeapp status"),                "javascript:go('adm/status.asp');");
 
 if (AUTH_ROLE == 2)
 {
