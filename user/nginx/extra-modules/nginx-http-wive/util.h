@@ -18,7 +18,7 @@
 
 #include "config/autoconf.h"			//user config
 #include "user/busybox/include/autoconf.h"	//busybox config
-#ifndef EXTERNAL_BUILD
+#ifndef DEMO_MODE
 #include <linux/autoconf.h>			//kernel config
 #else
 #include "stub/autoconf.h"			//kernel config stub
@@ -26,7 +26,7 @@
 
 #define	T(s) 			s
 
-#ifdef EXTERNAL_BUILD
+#ifdef DEMO_MODE
 #include "stub/libnvram.h"
 #include "stub/libwive.h"
 #else

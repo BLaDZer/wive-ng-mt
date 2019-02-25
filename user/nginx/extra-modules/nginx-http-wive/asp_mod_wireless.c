@@ -2080,6 +2080,28 @@ static void getScanAp(webs_t* wp, char_t *path, char_t *query)
 	char *inic = websGetVar(wp, T("inic"), T("0"));
 	char *rescan = websGetVar(wp, T("rescan"), T("1"));
 
+        websSetContentType(wp, "text/plain");
+
+#ifdef DEMO_MODE
+	if (CHK_IF_DIGIT(inic, 0)) {
+		if (CHK_IF_DIGIT(rescan, 1)) {
+			sleep(1);
+		}
+
+		FILE* f = fopen("aplist24.dat", "rt");
+		if (f) {
+			char buf[1024] = {0};
+			while (fgets(buf, sizeof(buf), f)) {
+				outWrite("%s", buf);
+			}
+			fclose(f);
+
+			websDone(wp, 200);
+			return;
+		}
+	}
+#endif
+
 	if (CHK_IF_DIGIT(inic, 1)) {
 		iface = getWlanRadioModuleName(2);
 	}
@@ -2094,8 +2116,6 @@ static void getScanAp(webs_t* wp, char_t *path, char_t *query)
 	else {
 		entries = getWlanAPScanResult(iface, &ent_count);
 	}
-
-        websSetContentType(wp, "text/plain");
 
 	outWrite(T("{ \"wireless\": [ "));
 	for (i = 0; i < ent_count; i++)

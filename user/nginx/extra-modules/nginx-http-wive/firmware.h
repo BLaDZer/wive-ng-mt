@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <linux/reboot.h>
 
-#ifndef EXTERNAL_BUILD
+#ifndef DEMO_MODE
 #include <linux/autoconf.h>  				/* kernel config		*/
 #include "../../../tools/mkimage/include/image.h"	/* For Uboot image header format */
 /* for calculate max image size */
