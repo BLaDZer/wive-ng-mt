@@ -96,16 +96,15 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues()">
-		<div id="warning"></div>
 		<table class="body">
 			<tr>
 				<td>
-					<h1>Wive-NG-MT - opensource firmware to make your life better.</h1>
 					<p id="ovIntroduction"></p>
 					<!-- ----------------- Langauge Settings ----------------- -->
 					<form method="post" name="Lang" action="/goform/setSysLang">
 						<blockquote>
 							<fieldset>
+								<h1>Wive-NG-MT - opensource firmware to make your life better.</h1>
 								<legend id="ovSelectLang">Select Language</legend>
 								<select class="half" name="langSelection" id="langSelection">
 									<!-- added by initValue -->
@@ -113,13 +112,8 @@
 								&nbsp;&nbsp;
 								<input type="hidden" name="submit-url" value="/overview.asp" >
 								<input type="submit" class="half" value="Apply" id="ovLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500)">
-							</fieldset>
-						</blockquote>
-					</form>
-					<blockquote>
-						<fieldset>
+								<div id="warning"></div>
 							<p>
-								<a href="/adm/management.asp" id="ovManagement">Management</a><br />
 								<div id="ovAbout"><hr /><br />
 								<a href="https://wi-cat.ru" target="_blank"><img src="graphics/wi-cat-logo.jpg" height="100" border="0" align="right" hspace="0" vspace="10"></a>
 								WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.
@@ -132,14 +126,15 @@
 								<br />Bug report of Wive-NG software problem please to <a href="https://wi-cat.ru/forums" target="_blank">forum</a><br />
 								</div>
 							</p>
-		<hr>
+							</fieldset>
+						</blockquote>
+					</form>
+					<blockquote>
+						<fieldset>
 		<div id="warning"></div>
 		<table class="body">
 			<tr>
 				<td>
-					<p id="statusIntroduction">Let's take a look at the status.</p>
-					<div style="display:none;" id="fastpath_warning"></div>	
-					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<table class="form" >
 						<col style="width: 40%;" />
@@ -257,6 +252,8 @@
 					<div id="ethernetStatus"></div>
 					<div id="statisticSWStats"></div>
 					<div class="whitespace"></div>
+					<hr>
+					<div style="display:none;" id="fastpath_warning"></div>	
 				</td>
 			</tr>
 		</table>
