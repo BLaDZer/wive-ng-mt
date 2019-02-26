@@ -102,16 +102,13 @@ function showInterfaces() {
 		var data = JSON.parse('<% getAllNICStatisticASP(); %>');
 	} catch (e) { return; }
 
-	html += '<table class="form">';
+	html += '<table style="width: 100%;">';
 	html +=	'	<col style="width: 40%;" />';
 	html += '	<col style="width: 15%;" />';
 	html += '	<col style="width: 15%;" />';
 	html += '	<col style="width: 15%;" />';
 	html += '	<col style="width: 15%;" />';
 	html += '	<tbody>';
-	html += '		<tr>';
-	html += '			<td class="title" colspan="5">' + _("statistic all interface") + '</td>';
-	html += '		</tr>';
 	html += '		<tr>';
 	html += '			<th>' + _("statistic interface name") + '</th>';
 	html += '			<th>' + _("statistic rx pkt") + '</th>';

@@ -22,18 +22,18 @@
 			NVRAM_sip_port	= (NVRAM_sip_port == '1') ? (NVRAM_wan_port == '0') ? 2 : +NVRAM_wan_port - 2 : -1;
 
 			function initTranslation() {
-				_TR("ovSelectLang",		"overview select language");
 				_TR("ovLangApply",		"button apply");
 				_TR("ovStatus",			"overview status");
 				_TR("ovStatistic",		"overview statistics");
 				_TR("ovManagement",		"overview management");
 				_TR("statusTitle",			"status title");
 				_TR("statusIntroduction",	"status introduction");
-				_TR("fastpath_warning",		"statistic warning");
 
 				_TR("statusSysInfo",		"status system information");
 				_TR("statusSDKversion",		"status sdk version");
 				_TR("statusSysDateTime",	"status system date time");
+
+				_TR("statusPortHead",		"ethernet port status head");
 
 				_TR("statusInternetConfig",	"status internet config");
 				_TR("statusConnectedType",	"status connect type");
@@ -52,7 +52,6 @@
 				_TR("statusLANNetmask",		"status local netmask");
 				_TR("statusLANMAC",			"status mac");
 
-				_TR("statisticMMCPU",		"statistic memory and cpu");
 				_TR("statisticMMTotal",		"statistic memory total");
 				_TR("statisticCpuUse",		"statistic cpu usage");
 
@@ -65,6 +64,8 @@
 				_TR("statisticLANRxBytes",	"statistic lan rx bytes");
 				_TR("statisticLANTxPkt",	"statistic lan tx pkt");
 				_TR("statisticLANTxBytes",	"statistic lan tx bytes");
+				
+				init_translation_model();
 			}
 
 			function initValues() {
@@ -78,7 +79,6 @@
 
 				lang.value = NVRAM_Language;
 
-				var IS_DEMO = '<% isDemoMode(); %>' == '1';
 				if (!IS_DEMO) {
 				    showWarning();
 				    displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
@@ -90,69 +90,74 @@
 					ajaxLoadScript('/adm/sysinfo.js');
 					setTimeout(reloadStat, 10000);
 				}
+				showMenu("tableInternet", 0);
+				showMenu("tableLAN", 0);
 			}
 		</script>
+		<style>
+			#ovInfo {
+				margin-bottom: 13px;
+				border: 1px solid #c7c7c7;
+				padding: 10px 8px 30px 14px;
+			}
+			
+			#ethernetStatus {
+			    padding: 0;
+			    border: 0;
+			}
+			
+			#statisticSWStats {
+			    padding: 0;
+			    border: 0;
+			}
+		</style>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues()">
+		<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 		<table class="body">
 			<tr>
 				<td>
-					<p id="ovIntroduction"></p>
-					<!-- ----------------- Langauge Settings ----------------- -->
-					<form method="post" name="Lang" action="/goform/setSysLang">
-						<blockquote>
-							<fieldset>
-								<h1>Wive-NG-MT - opensource firmware to make your life better.</h1>
-								<legend id="ovSelectLang">Select Language</legend>
-								<select class="half" name="langSelection" id="langSelection">
-									<!-- added by initValue -->
-								</select>
-								&nbsp;&nbsp;
-								<input type="hidden" name="submit-url" value="/overview.asp" >
-								<input type="submit" class="half" value="Apply" id="ovLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500)">
-								<div id="warning"></div>
-							<p>
-								<div id="ovAbout"><hr /><br />
-								<a href="https://wi-cat.ru" target="_blank"><img src="graphics/wi-cat-logo.jpg" height="100" border="0" align="right" hspace="0" vspace="10"></a>
-								WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.
-								<br />
-								Conditions of commercial use non GPL (or other not viral license) components are discussed individually.
-								<br /><br />
-								News and changes in Russian:<br />
-								<a href="https://wi-cat.ru" target="_blank">wi-cat.ru - Wireless Comprehensive Advanced Technology.</a><br />
-								<a href="http://wive-ng.sf.net" target="_blank">wive-ng.ru - development opensource routers firmware.</a><br />
-								<br />Bug report of Wive-NG software problem please to <a href="https://wi-cat.ru/forums" target="_blank">forum</a><br />
-								</div>
-							</p>
-							</fieldset>
-						</blockquote>
+					<div id="warning"></div>
+					<!-- ================= Langauge Settings ================= -->
+					<form method="post" name="Lang" action="/goform/setSysLang" id="ovInfo">
+						<h1>Wive-NG-MT - opensource firmware to make your life better.</h1>
+						<select class="half" name="langSelection" id="langSelection">
+							<!-- added by initValue -->
+						</select>
+						&nbsp;&nbsp;
+						<input type="hidden" name="submit-url" value="/overview.asp" >
+						<input type="submit" class="half" value="Apply" id="ovLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500)">
+						<div id="ovAbout">
+							<hr /><br />
+							<a href="https://wi-cat.ru" target="_blank"><img src="graphics/wi-cat-logo.jpg" height="100" style="float:right; padding: 10px 0; border: 0;" alt="Logo"></a>
+							WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.<br />
+							Conditions of commercial use non GPL (or other not viral license) components are discussed individually.<br />
+							<br />
+							News and changes in Russian:<br />
+							<a href="https://wi-cat.ru" target="_blank">wi-cat.ru - Wireless Comprehensive Advanced Technology.</a><br />
+							<a href="http://wive-ng.sf.net" target="_blank">wive-ng.ru - development opensource routers firmware.</a><br />
+							<br />
+							Bug report of Wive-NG software problem please to <a href="https://wi-cat.ru/forums" target="_blank">forum</a><br />
+						</div>
 					</form>
-					<blockquote>
-						<fieldset>
-		<div id="warning"></div>
-		<table class="body">
-			<tr>
-				<td>
-					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<table class="form" >
+
+					<table class="form showHideMenu" id="tableSysInfo">
 						<col style="width: 40%;" />
 						<col style="width: 60%;" />
-						<tbody>
+						<thead onclick="switchShowMenu(this);">
 							<!-- ================= System Info ================= -->
 							<tr>
 								<td class="title" colspan="2" id="statusSysInfo">System Info</td>
 							</tr>
+						</thead>
+						<tbody>
 							<tr>
 								<td class="head" id="statusSDKversion">Firmware Version</td>
-								<td id="statusSDKversion_value"></td>
+								<td id="statusSDKversion_value" class="wordwrap"></td>
 							</tr>
 							<tr>
 								<td class="head" id="statusSysDateTime">System Time</td>
 								<td id="statusSysDateTime_value"></td>
-							</tr>
-							<!-- ==============  MEMORY and CPU  =============== -->
-							<tr>
-								<td class="title" colspan="2" id="statisticMMCPU">Memory and CPU</td>
 							</tr>
 							<tr>
 								<td class="head" id="statisticMMTotal">Memory total</td>
@@ -163,18 +168,44 @@
 								<td id="statisticCpuUse_value"></td>
 							</tr>
 						</tbody>
-					</table>						
+						
+					</table>
 					<!-- =================  SOFT NETORK  ================= -->
-					<div id="ethernetStatus"></div>
-					<div id="statisticSWStats"></div>
-					<table class="form" >
+					<table class="form showHideMenu" id="tablePhyPort" >
+						<thead onclick="switchShowMenu(this);">
+							<tr>
+								<td class="title" id="statusPortHead">Port Status</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td id="ethernetStatus"></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<table class="form showHideMenu" id="tableSWStats">
+						<thead onclick="switchShowMenu(this);">
+							<tr>
+								<td class="title" data-tr="statistic all interface"></td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td id="statisticSWStats"></td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="form showHideMenu" id="tableInternet">
 						<col style="width: 40%;" />
 						<col style="width: 60%;" />
-						<tbody>
+						<thead onclick="switchShowMenu(this);">
 							<!-- ================= Internet Configurations ================= -->
 							<tr>
 								<td class="title" colspan="2" id="statusInternetConfig">Internet Configuration</td>
 							</tr>
+						</thead>
+						<tbody>
 							<tr id="statusConnectedType_tr">
 								<td class="head" id="statusConnectedType">Connection Mode</td>
 								<td id="statusConnectedType_value"></td>
@@ -215,10 +246,19 @@
 								<td class="head" id="statusWANMAC">MAC Address</td>
 								<td id="statusWANMAC_value"></td>
 							</tr>
+						</tbody>
+					</table>
+
+					<table class="form showHideMenu" id="tableLAN">
+						<col style="width: 40%;" />
+						<col style="width: 60%;" />
+						<thead onclick="switchShowMenu(this);">
 							<!-- ================= Local Network ================= -->
 							<tr id="statusLocalNet_tr">
 								<td class="title" colspan="2" id="statusLocalNet">Local Network</td>
 							</tr>
+						</thead>
+						<tbody>
 							<tr id="statusLANIPAddr_tr">
 								<td class="head" id="statusLANIPAddr">Local IP Address</td>
 								<td id="statusLANIPAddr_value"></td>
@@ -233,13 +273,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<hr>
-					<div style="display:none;" id="fastpath_warning"></div>	
-				</td>
-			</tr>
-		</table>
-						</fieldset>
-					</blockquote>
+					<div style="display:none;" id="fastpath_warning"><hr><span data-tr="statistic warning"></span></div>
 				</td>
 			</tr>
 		</table>

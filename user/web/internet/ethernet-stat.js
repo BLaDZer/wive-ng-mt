@@ -59,15 +59,12 @@ var portStatus	= JSON.parse('<% getPortStatus(); %>');
 var portCount	= JSON.parse('<% getHWStatistic(); %>');
 var i;
 var html =	'' +
-			'<table class="form">' +
+			'<table style="width: 100%;">' +
 			'	<col style="width: 40%;" />';
 for (i = ETHER_FIRST_PORT; i < ETHER_FIRST_PORT + ETHER_PORTS; i++)
 	html +=	'	<col style="width: ' + ((100 - 40) / ETHER_PORTS).toFixed(0) + '%;  text-align: center;" />';
 
 html	+=	'	<tbody>' +
-			'		<tr>' +
-			'			<td class="title" colspan="' + 6 + '">' + _("ethernet port status head") + '</td>' +
-			'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port status") + '</td>';
 if (ETHER_PORTS == 2) {

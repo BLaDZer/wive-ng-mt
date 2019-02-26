@@ -1472,12 +1472,7 @@
 				init_translation_model();
 				showWarning();
 
-				// Minimize all menus
-				var menus = document.getElementsByClassName('showHideMenu');
-				for (var i=0;i<menus.length;i++) {
-					showMenu(menus[i],0);
-				}
-
+				hideAllMenus();
 				updateVisibility(form);
 			}
 
@@ -2117,59 +2112,6 @@
 			function wmodeChangeAC(form) {
 				form.ac_bw.selectedIndex = form.ac_bw.options.length-1;
 				updateVisibility(form);
-			}
-
-			function showMenu(elem, show){
-				if (typeof elem == "string" && document.getElementById(elem) !== undefined) elem = document.getElementById(elem);
-				if (elem.tagName == "THEAD" || elem.tagName == "TBODY") elem = elem.parentNode;
-				if (elem.tagName != "TABLE") return false;
-
-				var table_head = elem.tHead;
-				var table_body = elem.tBodies[0];
-
-				if (table_head === undefined || table_body === undefined) return false;
-
-				if (show === undefined || show != 0)
-				{
-					if (table_body.style.removeProperty === undefined)
-					{
-						table_body.style.removeAttribute('display'); // IE<9
-					}
-					else
-					{
-						table_body.style.removeProperty('display');
-					}
-					elem.setAttribute('minimized', '0');
-				}
-				else
-				{
-					table_body.style.display = "none";
-					elem.setAttribute('minimized', '1');
-				}
-
-				return true;
-			}
-
-			function switchShowMenu(elem){
-				if (typeof elem == "string" && document.getElementById(elem) !== undefined) elem = document.getElementById(elem);
-				if (elem.tagName == "THEAD" || elem.tagName == "TBODY") elem = elem.parentNode;
-				if (elem.tagName != "TABLE") return false;
-
-				var table_head = elem.tHead;
-				var table_body = elem.tBodies[0];
-
-				if (table_head === undefined || table_body === undefined) return false;
-
-				if (table_body.style.display == "none")
-				{
-					showMenu(elem, 1);
-				}
-				else
-				{
-					showMenu(elem, 0);
-				}
-
-				return true;
 			}
 
 			function mbssid_select_update(form) {

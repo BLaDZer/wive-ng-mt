@@ -31,6 +31,7 @@
 				_TR("ethernetFirstLANport",		"ethernet lan port");
 				_TR("ethernetNearToWAN", 		"ethernet lan port near");
 				_TR("ethernetDistantFromWAN",	"ethernet lan port distant");
+				_TR("statusPortHead",		"ethernet port status head");
 				if (ETHER_PORTS == 3) {
 					_TR("ethernetPort1Mode",		"ethernet port 1 mode");
 					_TR("ethernetPort2Mode",		"ethernet port 2 mode");
@@ -188,7 +189,20 @@
 					<hr>
 					<form name="setEthernetPort" method="POST" action="/goform/setEthernetPort">
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-						<div id="ethernetStatus"></div>
+						<table class="form" >
+							<col style="width: 40%;" />
+							<col style="width: 60%;" />
+							<thead>
+								<tr>
+									<td class="title" colspan="2" id="statusPortHead">Port Status</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td id="ethernetStatus" colspan="2"></td>
+								</tr>
+							</tbody>
+						</table>
 						<table class="form">
 							<col style="width: 40%;" />
 							<col style="width: 60%;" />

@@ -72,7 +72,6 @@ var admin_dictionary = {
 	'status internal ipv6 address'				: 'Internal IPv6 Address',
 	'status external ipv6 address'				: 'External IPv6 Address',
 	'statistic warning'					: 'CAUTION! Hardware NAT enabled. Traffic counters on interfaces not present real traffic. For some technical and software reasons there is no guarantee that gathered statistics for interfaces in \'Hardware NAT offload mode\' mode is correct now. To get correct statistics you need to shut down \'Hardware NAT offload mode\' option on MISC Services configuration page.',
-	'statistic memory and cpu'				: 'Memory and CPU status',
 	'statistic memory total'				: 'Memory left / total',
 	'statistic memory kib'					: ' KiB',
 	'statistic cpu usage'					: 'CPU usage',

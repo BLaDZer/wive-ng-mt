@@ -71,9 +71,11 @@ CONFOPTS="$CONFOPTS --with-http_ssl_module"
 cd $ROOTDIR/user/nginx
 touch extra-modules/nginx-http-wive/DEMO_MODE.flag
 cat > extra-modules/nginx-http-wive/external.h <<EOT
+#define DEMO_MODE
 EOT
 
 make clean
 ./configure $CONFOPTS
 make
+./scripts/history.sh > ./history.html
 cd $ROOTDIR
