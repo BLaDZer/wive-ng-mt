@@ -77,5 +77,4 @@ EOT
 make clean
 ./configure $CONFOPTS
 make
-./scripts/history.sh > ./history.html
 cd $ROOTDIR
