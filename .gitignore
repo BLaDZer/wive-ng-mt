@@ -377,10 +377,9 @@ fulldump
 /user/ethtool/Makefile
 /user/ethtool/Makefile.in
 /user/ethtool/configure
-/user/nginx/History
-/user/nginx/history.html
 /user/nginx/extra-modules/nginx-http-wive/stub/autoconf.h
 /user/nginx/extra-modules/nginx-http-wive/external.h
+/user/web/history.html
 /user/samba36/source3/Makefile
 /user/samba36/source3/configure
 /user/haveged/Makefile
