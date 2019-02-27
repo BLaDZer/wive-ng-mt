@@ -4588,7 +4588,7 @@
 40) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
-<b>8.0.0</b><br>
+<b>8.0.2</b><br>
 1) build_system: add DemoUI target.<br>
 2) radvd: update to 2.18 version.<br>
 3) dropbear: update to 2018.76 version (git commit 2707b602).<br>
