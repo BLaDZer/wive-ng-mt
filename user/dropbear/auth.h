@@ -37,9 +37,9 @@ void recv_msg_userauth_request(void);
 void send_msg_userauth_failure(int partial, int incrfail);
 void send_msg_userauth_success(void);
 void send_msg_userauth_banner(const buffer *msg);
-void svr_auth_password(void);
-void svr_auth_pubkey(void);
-void svr_auth_pam(void);
+void svr_auth_password(int valid_user);
+void svr_auth_pubkey(int valid_user);
+void svr_auth_pam(int valid_user);
 
 #if DROPBEAR_SVR_PUBKEY_OPTIONS_BUILT
 int svr_pubkey_allows_agentfwd(void);
@@ -113,6 +113,8 @@ struct AuthState {
 							   logged. */
 	unsigned int checkusername_failed;  /* Server only, set if checkusername
 	                                has already failed */
+	struct timespec auth_starttime; /* Server only, time of receiving current 
+									SSH_MSG_USERAUTH_REQUEST */
 
 	/* These are only used for the server */
 	uid_t pw_uid;

@@ -179,7 +179,7 @@ static void main_noinetd() {
 	/* incoming connection select loop */
 	for(;;) {
 
-		FD_ZERO(&fds);
+		DROPBEAR_FD_ZERO(&fds);
 		
 		/* listening sockets */
 		for (i = 0; i < listensockcount; i++) {

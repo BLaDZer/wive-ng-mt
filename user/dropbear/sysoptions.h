@@ -225,7 +225,7 @@ If you test it please contact the Dropbear author */
 #define DROPBEAR_ZLIB_MEM_LEVEL 8
 
 #if (DROPBEAR_SVR_PASSWORD_AUTH) && (DROPBEAR_SVR_PAM_AUTH)
-#error "You can't turn on PASSWORD and PAM auth both at once. Fix it in options.h"
+#error "You can't turn on PASSWORD and PAM auth both at once. Fix it in localoptions.h"
 #endif
 
 /* PAM requires ./configure --enable-pam */
@@ -313,5 +313,18 @@ If you test it please contact the Dropbear author */
  * is further compatibility testing */
 #define DROPBEAR_SERVER_TCP_FAST_OPEN 0
 #define DROPBEAR_CLIENT_TCP_FAST_OPEN 0
+
+#define DROPBEAR_TRACKING_MALLOC (DROPBEAR_FUZZ)
+
+/* Used to work around Memory Sanitizer false positives */
+#if defined(__has_feature)
+#  if __has_feature(memory_sanitizer)
+#    define DROPBEAR_MSAN 1
+#  endif
+#endif
+#ifndef DROPBEAR_MSAN 
+#define DROPBEAR_MSAN 0
+#endif
+
 
 /* no include guard for this file */

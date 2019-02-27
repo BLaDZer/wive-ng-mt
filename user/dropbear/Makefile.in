@@ -41,6 +41,7 @@ COMMONOBJS=dbutil.o buffer.o dbhelpers.o \
 		queue.o \
 		atomicio.o compat.o fake-rfc2553.o \
 		ltc_prng.o ecc.o ecdsa.o crypto_desc.o \
+		dbmalloc.o \
 		gensignkey.o gendss.o genrsa.o
 
 SVROBJS=@CRYPTLIB@ svr-kex.o svr-auth.o sshpty.o \
@@ -64,11 +65,25 @@ CONVERTOBJS=dropbearconvert.o keyimport.o
 
 SCPOBJS=scp.o progressmeter.o atomicio.o scpmisc.o compat.o
 
+ifeq (@DROPBEAR_FUZZ@, 1)
+	allobjs = $(COMMONOBJS) fuzz-common.o  fuzz-wrapfd.o $(CLISVROBJS) $(CLIOBJS) $(SVROBJS) @CRYPTLIB@
+	allobjs:=$(subst svr-main.o, ,$(allobjs))
+	allobjs:=$(subst cli-main.o, ,$(allobjs))
+	allobjs:=$(sort $(allobjs))
+
+	dropbearobjs=$(allobjs) svr-main.o
+	dbclientobjs=$(allobjs) cli-main.o
+	dropbearkeyobjs=$(allobjs) $(KEYOBJS)
+	dropbearconvertobjs=$(allobjs) $(CONVERTOBJS)
+	# CXX only set when fuzzing
+	CXX=@CXX@
+else
 dropbearobjs=$(COMMONOBJS) $(CLISVROBJS) $(SVROBJS)
 dbclientobjs=$(COMMONOBJS) $(CLISVROBJS) $(CLIOBJS)
 dropbearkeyobjs=$(COMMONOBJS) $(KEYOBJS)
 dropbearconvertobjs=$(COMMONOBJS) $(CONVERTOBJS)
 scpobjs=$(SCPOBJS)
+endif
 
 VPATH=@srcdir@
 srcdir=@srcdir@
@@ -185,7 +200,7 @@ dbclient: $(HEADERS) $(LIBTOM_DEPS) Makefile
 	$(CC) $(LDFLAGS) -o $@$(EXEEXT) $($@objs) $(LIBTOM_LIBS) $(LIBS)
 
 dropbearkey dropbearconvert: $(HEADERS) $(LIBTOM_DEPS) Makefile
-	$(CC) $(LDFLAGS) -o $@$(EXEEXT) $($@objs) $(LIBTOM_LIBS)
+	$(CC) $(LDFLAGS) -o $@$(EXEEXT) $($@objs) $(LIBTOM_LIBS) $(LIBS)
 
 # scp doesn't use the libs so is special.
 scp: $(SCPOBJS)  $(HEADERS) Makefile
