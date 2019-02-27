@@ -4590,9 +4590,9 @@
 <br>
 <b>8.0.0</b><br>
 1) build_system: add DemoUI target.<br>
-2) radvd: sync with git (2.18rc1 commit 0e59908c).<br>
-3) libopenssl: up to 1.0.2r version.<br>
-4) dropbear: update to 2018.76 version (git commit 2707b602).<br>
+2) radvd: update to 2.18 version.<br>
+3) dropbear: update to 2018.76 version (git commit 2707b602).<br>
+4) libopenssl: up to 1.0.2r version.<br>
 5) webui: rework status show.<br>
 6) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
 7) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
