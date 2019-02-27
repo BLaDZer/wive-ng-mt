@@ -1,7 +1,9 @@
 #!/bin/sh
 
+# Wive-NG generator history script
+
 # define
-HISTORY="./History"
+HISTORY="$ROOTDIR/History"
 
 # HTTP header
 #echo "Content-type: text/html"

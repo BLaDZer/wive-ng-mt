@@ -139,6 +139,9 @@ echo "VERSIONPKG = \"$VERSIONPKG\""				>> $ROOTDIR/version
 echo "VERSIONSTR = \"$DEVNAME-$VERSIONPKG\""			>> $ROOTDIR/version
 echo ""								>> $ROOTDIR/version
 
+# generate history file
+./history.sh > $ROOTDIR/user/web/history.html
+
 #for clear all binary
 if [ "$FULLREBUILD" = "YES" ] ; then
 echo -------------------------------FULL-CLEAR-------------------------------

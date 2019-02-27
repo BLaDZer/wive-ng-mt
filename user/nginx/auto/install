@@ -227,9 +227,6 @@ romfs:
 	\$(ROMFSINST) -S conf/uwsgi_params /etc/nginx/uwsgi_params
 #web
 	mkdir -p \$(ROMFSDIR)\$(WEB_DIRECTORY)
-	cp \$(ROOTDIR)/History ./History
-	./scripts/history.sh >  ./history.html
-	\$(ROMFSINST) -S ./history.html \$(WEB_DIRECTORY)/history.html
 	\$(ROMFSINST) -S ../web \$(WEB_DIRECTORY)
 ifndef CONFIG_MT76X2_STA_MODULE
 ifndef CONFIG_MT76X2_STA
