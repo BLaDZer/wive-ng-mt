@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Wive-NG rwfsupdate script
+
 echo "Unpack user RWFS part"				> /dev/console 2>&1
 bzcat $1  | tar xf - -C / || exit 1			> /dev/console 2>&1
 echo "RWFS LOAD OK!!!! $1" > /etc/rwfsloadbyuser

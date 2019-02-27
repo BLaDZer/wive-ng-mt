@@ -231,7 +231,6 @@ romfs:
 	./scripts/history.sh >  ./history.html
 	\$(ROMFSINST) -S ./history.html \$(WEB_DIRECTORY)/history.html
 	\$(ROMFSINST) -S ../web \$(WEB_DIRECTORY)
-	\$(ROMFSINST) -S scripts/unpackrwfs.sh /etc/scripts/unpackrwfs.sh
 ifndef CONFIG_MT76X2_STA_MODULE
 ifndef CONFIG_MT76X2_STA
 	rm -rf \$(ROMFSDIR)\$(WEB_DIRECTORY)/station
