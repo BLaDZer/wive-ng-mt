@@ -46,7 +46,7 @@ static_conf() {
     # add routes configured in web
     if [ -e /etc/routes_replace ]; then
 	$LOG "Add user routes."
-	/etc/routes_replace replace "$phys_lan_if" "$wan_if"
+	/etc/routes_replace replace "$lan_if" "$wan_if"
     fi
     # Add route to multicast subnet
     if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
