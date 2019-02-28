@@ -1,10 +1,25 @@
 #include "libwive.h"
 
+static unsigned long rx_count[] = {0,0,0,0,0,0,0,0};
+static unsigned long tx_count[] = {0,0,0,0,0,0,0,0};
+
+
 int portscounts(struct port_counts *st)
 {
+
     for (int i=0;i<6;i++) {
-        st->rx_count[i] = rand();
-        st->tx_count[i] = rand();
+        if (rx_count[i] < 1) {
+            rx_count[i] = 1218 + rand()%7919;
+            tx_count[i] = 1218 + rand()%7919;
+        }
+        else
+        {
+            rx_count[i] += rand()%23;
+            tx_count[i] += rand()%23;
+        }
+
+        st->rx_count[i] = rx_count[i]*849;
+        st->tx_count[i] = tx_count[i]*847;
     }
 
     return 0;
@@ -12,8 +27,9 @@ int portscounts(struct port_counts *st)
 
 struct nic_counts* nicscounts(int *elem_count)
 {
+
 	int res_arr_capacity = 8;
-	char* ifaces[] = { "br0", "eth0", "eth1", "eth2", "eth3", "eth4", "ra0", "rai0" };
+	char* ifaces[] = { "eth0", "eth1", "eth2", "eth3", "eth4", "br0", "ra0", "rai0" };
 
 	(*elem_count) = res_arr_capacity;
 	struct nic_counts* pst = calloc(res_arr_capacity,sizeof(struct nic_counts));
@@ -26,15 +42,25 @@ struct nic_counts* nicscounts(int *elem_count)
 
 	for (int i=0;i< res_arr_capacity;i++)
 	{
+		if (rx_count[i] < 1) {
+			rx_count[i] = 1218 + rand()%7919;
+			tx_count[i] = 1218 + rand()%7919;
+		}
+		else
+		{
+			rx_count[i] += rand()%23;
+			tx_count[i] += rand()%23;
+		}
+
 		struct nic_counts* nc = &pst[i];
 		nc->is_available = 1;
 		strcpy(nc->ifname, ifaces[i]);
-		nc->rx_packets = rand() % 104729;
+		nc->rx_packets = rx_count[i];
 		nc->rx_bytes = nc->rx_packets * 849;
 		nc->rx_errs = nc->rx_drops = nc->rx_fifo = nc->rx_frame = nc->rx_multi = 0;
 		nc->tx_errs = nc->tx_drops = nc->tx_fifo = nc->tx_colls = nc->tx_carrier = 0;
 
-		nc->tx_packets = rand() % 104729;
+		nc->tx_packets = tx_count[i];
 		nc->tx_bytes = nc->tx_packets * 847;
 	}
 

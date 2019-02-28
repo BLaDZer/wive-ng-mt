@@ -186,11 +186,13 @@
 #define MODE_VHT		4
 
 // BW
-#define BW_20       0
-#define BW_40       1
-#define BW_80       2
-#define BW_160      3
-#define BW_10       4
+#define BW_20                   0
+#define BW_40                   1
+#define BW_80                   2
+#define BW_160                  3
+#define BW_10                   4
+#define BW_5                    5
+#define BW_8080	                6
 
 // SHORTGI
 #define GI_400      1 // only support in HT mode
@@ -529,14 +531,14 @@ typedef struct _NDIS_802_11_PASSPHRASE
 /* MIMO Tx parameter, ShortGI, MCS, STBC, etc.  these are fields in TXWI. Don't change this definition!!! */
 typedef union _MACHTTRANSMIT_SETTING {
 	struct  {
-		unsigned short MCS:6; 
+		unsigned short MCS:6;		/* MCS */
 		unsigned short ldpc:1;
-		unsigned short BW:2;
+		unsigned short BW:2;		/* channel bandwidth 20MHz/40/80 MHz */
 		unsigned short ShortGI:1;
-		unsigned short STBC:1;
+		unsigned short STBC:1;		/* only support in HT/VHT mode with MCS0~7 */
 		unsigned short eTxBF:1;
 		unsigned short iTxBF:1;
-		unsigned short MODE:3;
+		unsigned short MODE:3;		/* Use definition MODE_xxx. */
 	} field;
 	unsigned short      word;
 } MACHTTRANSMIT_SETTING, *PMACHTTRANSMIT_SETTING;
