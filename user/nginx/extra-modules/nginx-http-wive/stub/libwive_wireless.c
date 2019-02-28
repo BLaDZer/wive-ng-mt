@@ -112,7 +112,9 @@ int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
         entry->RxBytes = RxBytes[i];
         entry->ConnectedTime = 1+time(NULL)-connectTime[i];
         entry->TxRate.field.MODE = MODE_HTMIX;
-        entry->TxRate.field.STBC = 1;
+	entry->TxRate.field.ShortGI = 1;
+	entry->TxRate.field.BW = BW_40;
+        entry->TxRate.field.STBC = 0;
         entry->LastRxRate = 1000;
     }
     
@@ -121,12 +123,12 @@ int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
 
 int getMCS(MACHTTRANSMIT_SETTING HTSetting)
 {
-    return 4;
+    return 15;
 }
 
 int getWlanRate(MACHTTRANSMIT_SETTING HTSetting)
 {
-    return 39;
+    return 300;
 }
 
 int wlanDisconnectAllStations(const char *if_name)
