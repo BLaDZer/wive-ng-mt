@@ -22,15 +22,15 @@ case "$MODE" in
 	####################################
 	"MT7621-MT7615-4T4R-16M-USB")
 	    # 4t4r sample
-	    DEVNAME="SNR-CPE-ME4-5GHZ-MT"
+	    DEVNAME="Wi-CAT-FLIGHT-5GHZ-MT"
 	    ;;
 	"MT7621-MT7615-2T2R-16M-USB")
 	    # DBDC release
-	    DEVNAME="SNR-CPE-ME2-5GHZ-MT"
+	    DEVNAME="Wi-CAT-TWO-5GHZ-MT"
 	    ;;
 	"MT7621-MT7615-2T2R-16M-USB-IPA")
 	    # DBDC sample
-	    DEVNAME="SNR-CPE-ME2-5GHZ-MT-IPA"
+	    DEVNAME="Wi-CAT-TWO-5GHZ-MT-IPA"
 	    ;;
 	####################################
 	# dual band 7621A + 7603NE + 7612NE

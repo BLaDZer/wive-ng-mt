@@ -45,7 +45,7 @@ endif
 # external PCI-E 7610 WiFi module (ALWAYS EXTPA/LNA CONFIG FOR THIS MODULE)
 ###################################################################################################################################################
 ifdef CONFIG_RT_SECOND_IF_MT7610E
-ifeq ($(MODEL_NAME),SNR-CPE-ME1-5GHZ-MT)
+ifdef CONFIG_RALINK_MT7621
 	$(ROMFSINST) -S eeproms-defaults/MT7610E-V10-FEMSKYSE5003L-EXTPALNA.bin				/etc/Wireless/MT7610E-V10-FEM.bin
 else
 	$(ROMFSINST) -S eeproms-defaults/MT7610E-V10-FEM-EXTPALNA.bin					/etc/Wireless/MT7610E-V10-FEM.bin
@@ -122,7 +122,9 @@ endif
 ###################################################################################################################################################
 ifdef CONFIG_RT_SECOND_IF_MT7610E
 ifdef CONFIG_RALINK_MT7621
+# replace defaults and backup calibs for 7603+7610
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7603_MT7610_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
+	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
 else
 ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_INTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-4L_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
@@ -133,26 +135,8 @@ else ifeq ($(CONFIG_RT_FIRST_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 endif
 endif
 # REPLACE DEFAULTS AND CALIBS FOR SUBMODELS
-ifeq ($(MODEL_NAME),SNR-CPE-CG1-5GHZ-MT)
-# replace defaults for 7603+7610 sample
-	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
-endif
-ifeq ($(MODEL_NAME),SNR-CPE-ME1-5GHZ-MT)
-# replace defaults for 7603+7610 sample
-	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
-endif
 ifeq ($(MODEL_NAME),SNR-CPE-MD1.1-5GHZ-MT)
 # replace defaults for white horizontal 7610 MD1.1
-	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
-	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-3A_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
-endif
-ifeq ($(MODEL_NAME),SNR-CPE-MD1.2-5GHZ-MT)
-# replace defaults for new horizontal 7610 MD1.2
-	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
-	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-4A_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
-endif
-ifeq ($(MODEL_NAME),SNR-CPE-MD1-5GHZ-MULTI-USB-MT)
-# replace defaults for black horizontal 7610 not production sample
 	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
 endif
 endif
