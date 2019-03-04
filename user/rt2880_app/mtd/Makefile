@@ -20,6 +20,7 @@ $(EXEC): $(EXEC).c
 romfs:
 	$(ROMFSINST) -S /bin/mtd_write
 	$(ROMFSINST) -S /bin/butcheck
+	$(ROMFSINST) -S /bin/fs
 
 clean:
 	-rm -f $(EXEC) *.elf *.gdb *.o

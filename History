@@ -4595,8 +4595,9 @@
 4) libopenssl: up to 1.0.2r version.<br>
 5) webui: rework status show.<br>
 6) init.d: fix apply user routes over LAN in some case.<br>
-7) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
-8) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
-9) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
+7) init.d: fix fs script install.<br>
+8) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
+9) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
+10) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
 <br>
 <br>
