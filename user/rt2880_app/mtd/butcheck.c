@@ -96,12 +96,12 @@ static void gpio_wait(void) {
 		    if (presstime_reset > loaddeftime) {
 			if (presstime_reset < (FULLRESETTIME + loaddeftime)) {
 			    printf("butcheck_reset: fs_nvram_reset - load nvram default and restore original rwfs...");
-    			    system("fs nvramreset && fs restore");
+    			    system("/bin/fs nvramreset && /bin/fs restore");
 	    		    sleep(2);
 			    reboot(RB_AUTOBOOT);
 	    		} else {
 			    printf("butcheck_reset: fs_nvram_fullreset - load nvram default and restore original rwfs...");
-    			    system("fs fullreset");
+    			    system("/bin/fs fullreset");
 	    		    sleep(2);
 			    reboot(RB_AUTOBOOT);
 	    		}
