@@ -24,8 +24,9 @@ get_param()
     blocklists="http://cdn.raletag.gq/rueasyhosts.txt"
     # GLOBAL BLOCK LISTS
     blocklists="$blocklists http://winhelp2002.mvps.org/hosts.txt"
-    blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
     blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
+    # https temp disable busybox wget not correct parse https now
+    #blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
     # skip some counters - prevent break sites view and allow small analitycs
     unblocklist="liveinternet.ru|counter.yadro.ru|^yadro.ru|top100.ru|mc.yandex.ru|metrika|openstat.net"
     unblocklist="$unblocklist|google-analytics.com|googletagmanager.com|^stats.g.doubleclick.net|clustrmaps.com"
