@@ -4597,8 +4597,9 @@
 6) init.d: adblock: remove https list (busybox wget not full correct use https may be trash in output).<br>
 7) init.d: fix apply user routes over LAN in some case.<br>
 8) init.d: fix fs script install.<br>
-9) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
-10) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
-11) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
+9) init.d: fix dnsmasq reconf.<br>
+10) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
+11) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
+12) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
 <br>
 <br>

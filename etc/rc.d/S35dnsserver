@@ -13,11 +13,13 @@ LOG="logger -t dnsserver"
 start() {
     get_param
     gen_hosts
-    gen_diff_dns
-    gen_sec
     if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
 	# create dir for extended configs
 	mkdir -p /etc/dnsmasq.d
+	# generate alternative dns config
+	gen_diff_dns
+	# generate dnssec config
+	gen_sec
 	# userdnsblock generate
 	userblockstart
 	$LOG "Starting DNSMASQ"
@@ -76,6 +78,8 @@ gen_sec() {
     if [ "$dns_sec" = "1" ] && [ -e /etc/trust-anchors.conf ]; then
 	echo "conf-file=/etc/trust-anchors.conf" > /etc/dnsmasq.d/sec.conf
 	echo "dnssec" >> /etc/dnsmasq.d/sec.conf
+    else
+	rm -f /etc/dnsmasq.d/sec.conf
     fi
 }
 
@@ -85,6 +89,8 @@ gen_diff_dns() {
 	for srv in $dns_diffsrv ; do
 	    echo "server=$srv" >> /etc/dnsmasq.d/diffsrv.conf
 	done
+    else
+	rm -f /etc/dnsmasq.d/diffsrv.conf
     fi
 }
 
@@ -95,8 +101,8 @@ get_param() {
     fname="/etc/resolv.conf"
     hname="/etc/hosts"
 
-    cachesize="512"
-    forwardmax="384"
+    cachesize="1024"
+    forwardmax="512"
 }
 
 reload() {
