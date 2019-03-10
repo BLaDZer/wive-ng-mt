@@ -41,13 +41,6 @@ endif
 #always install radio firmware
 ra_dir_y			    += rt_firmware
 
-# always last
-ifdef CONFIG_MT7615_AP
-ra_dir_$(CONFIG_RALINKAPP_ATED)     += ated_ext
-else
-ra_dir_$(CONFIG_RALINKAPP_ATED)     += ated
-endif
-
 all romfs:
 	for i in $(ra_dir_y) ; do make -C $$i $@ || exit $?; done
 

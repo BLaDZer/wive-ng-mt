@@ -1,22 +1,13 @@
 -include $(LINUX_CONFIG)
 
 # sync with drivers (mt7615 and later support 16mbssid with radius)
-ifdef CONFIG_MT7615_AP
-CFLAGS += -DMAX_MBSSID_NUM=16
-else
 CFLAGS += -DMAX_MBSSID_NUM=8
-endif
 
 # If you want to support multiple radius server for multiple bssid, add following line
 CFLAGS += -DMULTIPLE_RADIUS
 
 # allways enable for compat
 CFLAGS += -DRADIUS_MAC_ACL_SUPPORT
-
-# If you want to support accounting add following line, and ieee802_11_auth.o in OBJS
-ifdef CONFIG_MT7615_AP_RADIUS_ACCOUNTING_SUPPORT
-CFLAGS += -DRADIUS_ACCOUNTING_SUPPORT
-endif
 
 # If you want to support passpoint release 2 feature
 # CFLAGS +=  -DHOTSPOT_R2

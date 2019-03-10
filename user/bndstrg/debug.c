@@ -14,11 +14,7 @@
     	debug.c
 */
 
-#ifdef LEGACYMODE
-#include "bndstrg_legacy.h"
-#else
 #include "bndstrg.h"
-#endif
 
 void hex_dump(char *str, unsigned char *pSrcBufVA, unsigned int SrcBufLen)
 {

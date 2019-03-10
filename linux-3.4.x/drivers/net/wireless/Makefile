@@ -63,10 +63,6 @@ obj-$(CONFIG_BRCMFMAC)	+= brcm80211/
 obj-$(CONFIG_BRCMSMAC)	+= brcm80211/
 
 obj-$(CONFIG_MT7610_AP)         += ralink/mt7610_ap/
-
 obj-$(CONFIG_MT76X2_AP)         += ralink/mt76x2_ap/
 obj-$(CONFIG_MT76X2_STA)        += ralink/mt76x2_sta/
-
 obj-$(CONFIG_MT76X3_AP)		+= ralink/mt76x3_ap/
-
-#obj-$(CONFIG_MT7615_AP)		+= ralink/mt7615_ap/

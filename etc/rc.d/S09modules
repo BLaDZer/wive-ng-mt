@@ -97,9 +97,6 @@ load_wireless_modules() {
 	if [ "$CONFIG_MT76X3_AP" != "" ]; then
     	    modprobe -q mt76x3_ap
 	fi
-	if [ "$CONFIG_MT7615_AP" != "" ]; then
-    	    modprobe -q mt7615_ap
-	fi
     fi
 }
 
@@ -217,15 +214,11 @@ stop() {
 	$LOG "Unload hw_nat module."
 	rmmod hw_nat > /dev/null 2>&1
     fi
-    # 7615 driver register vif on module load, for full reconfigure allways need full reload modules
-    if [ "$CONFIG_MT7615_AP_WDS" != "" ] || [ "$CONFIG_MT7615_AP_MBSS" != "" ]; then
-	wifi_unload
-    fi
 }
 
 wifi_unload() {
     $LOG "Unload wireless modules."
-    mod="mt76x2_ap mt76x3_ap mt7615_ap mt7610_ap mt76x2_sta"
+    mod="mt76x2_ap mt76x3_ap mt7610_ap mt76x2_sta"
     for module in $mod
     do
 	if [ -d /sys/module/$module ]; then

@@ -23,13 +23,13 @@ struct dl_list {
 	struct dl_list *prev;
 };
 
-static inline void dl_list_init(struct dl_list *list)
+static void dl_list_init(struct dl_list *list)
 {
 	list->next = list;
 	list->prev = list;
 }
 
-static inline void dl_list_add(struct dl_list *list, struct dl_list *item)
+static void dl_list_add(struct dl_list *list, struct dl_list *item)
 {
 	item->next = list->next;
 	item->prev = list;
@@ -37,12 +37,12 @@ static inline void dl_list_add(struct dl_list *list, struct dl_list *item)
 	list->next = item;
 }
 
-static inline void dl_list_add_tail(struct dl_list *list, struct dl_list *item)
+static void dl_list_add_tail(struct dl_list *list, struct dl_list *item)
 {
 	dl_list_add(list->prev, item);
 }
 
-static inline void dl_list_del(struct dl_list *item)
+static void dl_list_del(struct dl_list *item)
 {
 	item->next->prev = item->prev;
 	item->prev->next = item->next;
@@ -50,12 +50,13 @@ static inline void dl_list_del(struct dl_list *item)
 	item->prev = NULL;
 }
 
-static inline int dl_list_empty(struct dl_list *list)
+static int dl_list_empty(struct dl_list *list)
 {
 	return list->next == list;
 }
 
-static inline unsigned int dl_list_len(struct dl_list *list)
+#if 0
+static unsigned int dl_list_len(struct dl_list *list)
 {
 	struct dl_list *item;
 	int count = 0;
@@ -63,6 +64,7 @@ static inline unsigned int dl_list_len(struct dl_list *list)
 		count++;
 	return count;
 }
+#endif
 
 #ifndef offsetof
 #define offsetof(type, member) ((long) &((type *) 0)->member)

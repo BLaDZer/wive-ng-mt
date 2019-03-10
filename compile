@@ -18,35 +18,6 @@ export LC_ALL=POSIX
 MODE="$1"
 case "$MODE" in
 	####################################
-	# dual band 7621A + 2x7615N
-	####################################
-	"MT7621-MT7615-4T4R-16M-USB")
-	    # 4t4r sample
-	    DEVNAME="Wi-CAT-FLIGHT-5GHZ-MT"
-	    ;;
-	"MT7621-MT7615-2T2R-16M-USB")
-	    # DBDC release
-	    DEVNAME="Wi-CAT-TWO-5GHZ-MT"
-	    ;;
-	"MT7621-MT7615-2T2R-16M-USB-IPA")
-	    # DBDC sample
-	    DEVNAME="Wi-CAT-TWO-5GHZ-MT-IPA"
-	    ;;
-	####################################
-	# dual band 7621A + 7603NE + 7612NE
-	####################################
-	"MT7621-MT7603-MT7612-2T2R-16M-USB")
-	    # metal sample
-	    DEVNAME="SNR-CPE-ME3-5GHZ-MT"
-	    ;;
-	####################################
-	# dual band 7621A + 7602NE + 7612NE
-	####################################
-	"MT7621-MT7602-MT7612-2T2R-16M-USB")
-	    # metal sample
-	    DEVNAME="SNR-CPE-ME2-5GHZ-MT"
-	    ;;
-	####################################
 	# dual band 7621A + 7603NE + 7610NE
 	####################################
 	"MT7621-MT7603-MT7610-1T1R-16M-USB")
@@ -98,11 +69,6 @@ case "$MODE" in
 	    echo "Not supported (unknown) mode or mode not set."
 	    exit 1
 esac
-
-#-------FABRICMODE---------#
-if [ "$2" = "YES" ]; then
-    FMODE="YES"
-fi
 
 #-------OLDCMODE---------#
 # current drivers config path
@@ -157,33 +123,8 @@ fi
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
-if [ "$MODE" = "MT7621-MT7615-2T2R-16M-USB" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7615DN-16M-USB				$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7615-2T2R-16M-USB-IPA" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7615DN-16M-USB-IPA				$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7615N-16M-USB				$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB" ] || [ "$MODE" = "DEMO" ]; then
+if [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB" ] || [ "$MODE" = "DEMO" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB			$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7602-MT7612-2T2R-16M-USB" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7602-MT7612-2T2R-16M-USB			$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7603-MT7612-2T2R-16M-USB" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7612-2T2R-16M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
@@ -216,46 +157,6 @@ if [ "$DEVNAME" = "SNR-CPE-WI2-MT" ]; then
 elif [ "$DEVNAME" = "SNR-CPE-AP1-MT" ]; then
     echo "Reconfigure apps for intergated APx devices"
     sed 's/# CONFIG_RTESW_SWITCH_ONEPORT is not set/CONFIG_RTESW_SWITCH_ONEPORT=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
-    mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
-fi
-
-#####################################################DIFF-MODES###########################################################################
-# build with ATE fabric only
-if [ "$FMODE" = "YES" ]; then
-    echo "BUILD FABRIC MODE"
-
-    echo "Copy ATE code to tree"
-    mkdir -p $ROOTDIR/user/rt2880_app/ated
-    cp -rf /mnt/svalka/linux/ate/ated/* $ROOTDIR/user/rt2880_app/ated
-    mkdir -p $ROOTDIR/user/rt2880_app/ated_ext
-    cp -rf /mnt/svalka/linux/ate/ated_ext/* $ROOTDIR/user/rt2880_app/ated_ext
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt7610/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x2/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x3/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7615/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt7615/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7615/ate
-
-    echo "Reconfigure kernel"
-    sed 's/# CONFIG_RT2860V2_AP_ATE is not set/CONFIG_RT2860V2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
-    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
-    sed 's/# CONFIG_MT7610_AP_ATE is not set/CONFIG_MT7610_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
-    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
-    sed 's/# CONFIG_MT76X2_AP_ATE is not set/CONFIG_MT76X2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
-    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
-    sed 's/# CONFIG_MT76X3_AP_ATE is not set/CONFIG_MT76X3_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
-    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
-    sed 's/# CONFIG_MT7615_AP_ATE is not set/CONFIG_MT7615_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
-    mv -f $ROOTDIR/linux/.config.tmp $ROOTDIR/linux/.config
-
-    echo "Reconfigure userspace"
-    sed 's/# CONFIG_TELNETD is not set/CONFIG_TELNETD=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
-    mv -f $ROOTDIR/user/busybox/.config.tmp $ROOTDIR/user/busybox/.config
-    sed 's/# CONFIG_FEATURE_TELNETD_INETD_WAIT is not set/CONFIG_FEATURE_TELNETD_INETD_WAIT=y/g' $ROOTDIR/user/busybox/.config > $ROOTDIR/user/busybox/.config.tmp
-    mv -f $ROOTDIR/user/busybox/.config.tmp $ROOTDIR/user/busybox/.config
-    sed 's/# CONFIG_RALINKAPP_ATED is not set/CONFIG_RALINKAPP_ATED=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
     mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
 fi
 
