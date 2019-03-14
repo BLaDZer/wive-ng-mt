@@ -1,6 +1,6 @@
-# $Id: Makefile.linux,v 1.97 2018/07/06 12:04:48 nanard Exp $
+# $Id: Makefile.linux,v 1.99 2019/02/10 11:37:14 nanard Exp $
 # MiniUPnP project
-# (c) 2006-2017 Thomas Bernard
+# (c) 2006-2019 Thomas Bernard
 # http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
 # Author : Thomas Bernard
 # for use with GNU Make
@@ -167,6 +167,14 @@ endif
 #else
 #$(info please install uuid-dev package / libuuid)
 #endif # ($(TEST),1)
+
+#GLIBC_VERSION := $(shell ldd --version | head -n 1 | sed 's/^.* //')
+#GLIBC_VERSION_MAJOR = $(shell echo $(GLIBC_VERSION) | cut -f 1 -d . )
+#GLIBC_VERSION_MINOR = $(shell echo $(GLIBC_VERSION) | cut -f 2 -d . )
+# clock_gettime() needs -lrt when glibc version < 2.17
+#LDLIBS += $(shell if [ $(GLIBC_VERSION_MAJOR) -lt 2 ] \
+#  || [ \( $(GLIBC_VERSION_MAJOR) -eq 2 \) -a \( $(GLIBC_VERSION_MINOR) -lt 17 \) ] ; \
+#  then echo "-lrt" ; fi )
 
 TESTUPNPDESCGENOBJS = testupnpdescgen.o upnpdescgen.o
 
