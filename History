@@ -4600,11 +4600,12 @@
 9) init.d: fix apply user routes over LAN in some case.<br>
 10) init.d: fix fs script install.<br>
 11) init.d: fix dnsmasq reconf.<br>
-12) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
-13) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
-14) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
-15) kernel: net: sit: fix memory leak in sit_init_net().<br>
-16) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
-17) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
+12) init.d: send dhcp vendor class by default.<br>
+13) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
+14) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
+15) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
+16) kernel: net: sit: fix memory leak in sit_init_net().<br>
+17) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
+18) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
 <br>
 <br>
