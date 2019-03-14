@@ -4601,5 +4601,8 @@
 10) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
 11) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
 12) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
+13) kernel: net: sit: fix memory leak in sit_init_net().<br>
+14) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
+15) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
 <br>
 <br>
