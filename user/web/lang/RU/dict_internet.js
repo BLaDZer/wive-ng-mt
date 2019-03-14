@@ -114,7 +114,7 @@ var internet_dictionary = {
 	'ipv6 static'				: 'Прямое динамическое или статическое подключение',
 	'ipv6 dhcp6c'				: 'Автоматическая настройка IPv6 через DHCP/RA',
 	'ipv6 6rd'				: 'Туннель 6RD',
-	'ipv6 6to4'				: 'Туннель 6TO4',
+	'ipv6 6to4'				: 'Туннель 6to4/6in4',
 	'ipv6 allow forward'			: 'Разрешить доступ в локальную сеть из интернета',
 	'ipv6 static ip'			: 'Настройка статического IP',
 	'ipv6 static lan address'		: 'LAN IPv6 адрес / Префикс подсети',

@@ -244,7 +244,7 @@ var internet_dictionary = {
 	'ipv6 static'			: 'Native dynamic/static IP Connection',
 	'ipv6 dhcp6c'			: 'IPv6 autoconfigure by DHCP/RA',
 	'ipv6 6rd'			: 'Tunneling Connection (6RD)',
-	'ipv6 6to4'			: 'Tunneling Connection (6TO4)',
+	'ipv6 6to4'			: 'Tunneling Connection (6to4/6in4)',
 	'ipv6 allow forward'		: 'Allow access to LAN from internet',
 	'ipv6 static ip'		: 'IPv6 Static IP Setup',
 	'ipv6 static lan address'	: 'LAN IPv6 Address / Subnet Prefix Length',
