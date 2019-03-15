@@ -142,7 +142,7 @@ upnp_add_inboundpinhole(const char * raddr,
 		return (r >= 0) ? 1 : r;
 	}
 #if defined(USE_PF) || defined(USE_NETFILTER)
-	*uid = add_pinhole (ext_if_name, raddr, rport,
+	*uid = add_pinhole (ext_if_name6, raddr, rport,
 	                    iaddr, iport, proto, desc, timestamp);
 	return *uid >= 0 ? 1 : -1;
 #else
@@ -175,14 +175,14 @@ upnp_add_inboundpinhole_internal(const char * raddr, unsigned short rport,
 #ifdef IPPROTO_UDPLITE
 		if(atoi(proto) == IPPROTO_UDPLITE)
 		{
-	/*		snprintf(cmd, sizeof(cmd), cmdval_full_udplite, miniupnpd_forward_chain, line_number, proto, ext_if_name, raddr, iaddr);
-			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_full_udplite_raw, line_number, proto, ext_if_name, raddr, iaddr);*/
+	/*		snprintf(cmd, sizeof(cmd), cmdval_full_udplite, miniupnpd_forward_chain, line_number, proto, ext_if_name6, raddr, iaddr);
+			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_full_udplite_raw, line_number, proto, ext_if_name6, raddr, iaddr);*/
 		}
 		else
 #endif
 		{
-	/*		snprintf(cmd, sizeof(cmd), cmdval_full_udptcp, miniupnpd_forward_chain, line_number, proto, ext_if_name, raddr, rport, iaddr, iport);
-			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_full_udptcp_raw, line_number, proto, ext_if_name, raddr, rport, iaddr, iport);*/
+	/*		snprintf(cmd, sizeof(cmd), cmdval_full_udptcp, miniupnpd_forward_chain, line_number, proto, ext_if_name6, raddr, rport, iaddr, iport);
+			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_full_udptcp_raw, line_number, proto, ext_if_name6, raddr, rport, iaddr, iport);*/
 		}
 	}
 	else
@@ -190,14 +190,14 @@ upnp_add_inboundpinhole_internal(const char * raddr, unsigned short rport,
 #ifdef IPPROTO_UDPLITE
 		if(atoi(proto) == IPPROTO_UDPLITE)
 		{
-			/*snprintf(cmd, sizeof(cmd), cmdval_udplite, miniupnpd_forward_chain, line_number, proto, ext_if_name, iaddr);
-			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_udplite_raw, line_number, proto, ext_if_name, iaddr);*/
+			/*snprintf(cmd, sizeof(cmd), cmdval_udplite, miniupnpd_forward_chain, line_number, proto, ext_if_name6, iaddr);
+			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_udplite_raw, line_number, proto, ext_if_name6, iaddr);*/
 		}
 		else
 #endif
 		{
-			/*snprintf(cmd, sizeof(cmd), cmdval_udptcp, miniupnpd_forward_chain, line_number, proto, ext_if_name, rport, iaddr, iport);
-			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_udptcp_raw, line_number, proto, ext_if_name, rport, iaddr, iport);
+			/*snprintf(cmd, sizeof(cmd), cmdval_udptcp, miniupnpd_forward_chain, line_number, proto, ext_if_name6, rport, iaddr, iport);
+			snprintf(cmd_raw, sizeof(cmd_raw), cmdval_udptcp_raw, line_number, proto, ext_if_name6, rport, iaddr, iport);
 */
 		}
 	}

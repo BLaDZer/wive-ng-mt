@@ -1501,6 +1501,14 @@ init(int argc, char * * argv, struct runtime_vars * v)
 			else
 				fprintf(stderr, "Option -%c takes one argument.\n", argv[i][1]);
 			break;
+#ifdef ENABLE_IPV6
+		case 'I':
+			if(i+1 < argc)
+				ext_if_name6 = argv[++i];
+			else
+				fprintf(stderr, "Option -%c takes one argument.\n", argv[i][1]);
+			break;
+#endif
 #ifdef USE_PF
 		case 'q':
 			if(i+1 < argc)
@@ -1678,6 +1686,10 @@ init(int argc, char * * argv, struct runtime_vars * v)
 		goto print_usage;
 	}
 
+	/* default do not force ipv6 ifname */
+	if(!ext_if_name6)
+	    ext_if_name6 = ext_if_name;
+
 	if (use_ext_ip_addr && GETFLAG(PERFORMSTUNMASK)) {
 		fprintf(stderr, "Error: options ext_ip= and ext_perform_stun=yes cannot be specified together\n");
 		return 1;
@@ -1826,7 +1838,11 @@ print_usage:
 #ifndef DISABLE_CONFIG_FILE
 			"[-f config_file] "
 #endif
-			"[-i ext_ifname] [-o ext_ip]\n"
+			"[-i ext_ifname] "
+#ifdef ENABLE_IPV6
+			"[-I ext_ifname6] "
+#endif
+			"[-o ext_ip]\n"
 #ifndef MULTIPLE_EXTERNAL_IP
 			"\t\t[-a listening_ip]"
 #else

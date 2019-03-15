@@ -17,6 +17,11 @@
 /* name of the network interface used to access internet */
 extern const char * ext_if_name;
 
+/* name of the network interface used to access internet v6 */
+#ifdef ENABLE_IPV6
+extern const char * ext_if_name6;
+#endif
+
 /* stun host/port configuration */
 extern const char * ext_stun_host;
 extern uint16_t ext_stun_port;

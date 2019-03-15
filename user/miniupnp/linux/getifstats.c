@@ -10,9 +10,7 @@
 #include <syslog.h>
 #include <string.h>
 #include <time.h>
-
-#include "../config.h"
-#include "../getifstats.h"
+#include <sys/socket.h>
 
 #ifdef GET_WIRELESS_STATS
 #include <unistd.h>
@@ -20,6 +18,15 @@
 #include <arpa/inet.h>
 #include <linux/wireless.h>
 #endif /* GET_WIRELESS_STATS */
+
+#include "../config.h"
+#include "../getifstats.h"
+
+#ifdef ENABLE_GETIFSTATS_CACHING
+#include "../upnputils.h"
+#include "../upnpglobalvars.h"
+#endif
+
 
 /* that is the answer */
 #define BAUDRATE_DEFAULT 4200000
@@ -32,7 +39,9 @@ getifstats(const char * ifname, struct ifdata * data)
 	char * p;
 	int i;
 	int r = -1;
+#if 0
 	char fname[64];
+#endif
 #ifdef ENABLE_GETIFSTATS_CACHING
 	static time_t cache_timestamp = 0;
 	static struct ifdata cache_data;

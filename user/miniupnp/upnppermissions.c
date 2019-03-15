@@ -101,7 +101,7 @@ read_permission_line(struct upnpperm * perm,
 		p = q;
 		while(isdigit(*q) || (*q == '.'))
 			q++;
-			*q = '\0';
+		*q = '\0';
 
 		unsigned short i, mask[4];
 		unsigned char *am = (unsigned char *) &(perm->mask.s_addr);

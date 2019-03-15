@@ -16,6 +16,11 @@
 /* network interface for internet */
 const char * ext_if_name = 0;
 
+/* network interface for internet6 */
+#ifdef ENABLE_IPV6
+const char * ext_if_name6 = 0;
+#endif
+
 /* stun host/port configuration */
 const char * ext_stun_host = 0;
 uint16_t ext_stun_port = 0;

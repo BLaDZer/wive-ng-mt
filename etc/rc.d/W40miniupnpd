@@ -24,7 +24,7 @@ start() {
 	gen_config
 	# add/replace route multicast local srv to LAN
 	ip -4 route replace $upnmp_net dev $lan_if
-        miniupnpd -f /etc/miniupnpd.conf -i "$real_wan_if" -o "$real_wan_ipaddr" -a "$lan_if" -z "$HostName" &
+        miniupnpd -f /etc/miniupnpd.conf -i "$real_wan_if" $ext_six_wan_if -o "$real_wan_ipaddr" -a "$lan_if" -z "$HostName" &
     fi
 }
 
@@ -62,6 +62,12 @@ cat /etc/miniupnpd.conf.uuid >> /etc/miniupnpd.conf
 
 get_param() {
     eval `nvram_buf_get 2860 upnpEnabled`
+    if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" != "0" ] && [ "$real_wan_if" != "$six_wan_if" ]; then
+	$LOG "Use $six_wan_if as WAN for pinhole"
+	ext_six_wan_if="-I $six_wan_if"
+    else
+	ext_six_wan_if=""
+    fi
 }
 
 stop() {
