@@ -4595,17 +4595,18 @@
 4) dropbear: update to 2018.76 version (git commit 2707b602).<br>
 5) libopenssl: up to 1.0.2r version.<br>
 6) miniupnpd: up to 2.1.20190210 version.<br>
-7) webui: rework status show.<br>
-8) init.d: adblock: remove https list (busybox wget not full correct use https may be trash in output).<br>
-9) init.d: fix apply user routes over LAN in some case.<br>
-10) init.d: fix fs script install.<br>
-11) init.d: fix dnsmasq reconf.<br>
-12) init.d: send dhcp vendor class by default.<br>
-13) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
-14) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
-15) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
-16) kernel: net: sit: fix memory leak in sit_init_net().<br>
-17) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
-18) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
+7) udpxy: fix infinitive loop in ts stream parse.<br>
+8) webui: rework status show.<br>
+9) init.d: adblock: remove https list (busybox wget not full correct use https may be trash in output).<br>
+10) init.d: fix apply user routes over LAN in some case.<br>
+11) init.d: fix fs script install.<br>
+12) init.d: fix dnsmasq reconf.<br>
+13) init.d: send dhcp vendor class by default.<br>
+14) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
+15) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
+16) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
+17) kernel: net: sit: fix memory leak in sit_init_net().<br>
+18) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
+19) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
 <br>
 <br>

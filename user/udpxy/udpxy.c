@@ -511,7 +511,7 @@ struct filter_ctx {
 	uint32_t flags;
 	uint16_t pmtId;
 	size_t   skipped;
-
+	time_t   startTime;
 #ifdef DEBUG_TS_FILTER
 	int      nnn;
 #endif
@@ -523,6 +523,7 @@ init_ts_filter(struct filter_ctx* f)
 	f->flags = /*g_uopt.dont_wait_patpmt != uf_FALSE ? (F_FOUND|F_INITED) :*/ 0;
 	f->pmtId = 0;
 	f->skipped = 0;
+	f->startTime = time(NULL);
 #ifdef DEBUG_TS_FILTER
 	f->nnn = 0;
 #endif
@@ -739,7 +740,8 @@ relay_traffic( int ssockfd, int dsockfd, struct server_ctx* ctx,
             check_mcast_refresh( ssockfd, &rfr_tm, mreq );
         }
         nrcv = read_data( &ds, ssockfd, data, data_len, &ropt );
-        if( -1 == nrcv ) break;
+        if( -1 == nrcv )
+		break;
 
         TRACE( check_fragments( "received new", data_len,
                     lrcv, nrcv, t_delta, g_flog ) );
@@ -748,28 +750,35 @@ relay_traffic( int ssockfd, int dsockfd, struct server_ctx* ctx,
         if( !HAS_FLAGS(ts_filter.flags, F_FOUND) )
         	apply_ts_filter(&ds, data, nrcv, &ts_filter);
 
-        if( !HAS_FLAGS(ts_filter.flags, F_FOUND) )
-			continue;
+        if( !HAS_FLAGS(ts_filter.flags, F_FOUND) ) {
+            if ( difftime(time(NULL), ts_filter.startTime) < 15 ) {
+                continue;
+            } else {
+                TRACE( (void)tmfprintf( g_flog, "PMT search timeout, relay break\n" ) );
+                break;
+            }
+        }
 
-		if( !HAS_FLAGS(ts_filter.flags, F_INITED) ) {
-			nsent = write_data( &ds, ts_filter.strmHdr, sizeof(ts_filter.strmHdr), dsockfd );
-			if( -1 == nsent ) break;
+	if( !HAS_FLAGS(ts_filter.flags, F_INITED) ) {
+		nsent = write_data( &ds, ts_filter.strmHdr, sizeof(ts_filter.strmHdr), dsockfd );
+		if( -1 == nsent )
+			break;
 
-			if( uf_TRUE == g_uopt.cl_tpstat )
-				tpstat_update( ctx, &tps, nsent );
+		if( uf_TRUE == g_uopt.cl_tpstat )
+			tpstat_update( ctx, &tps, nsent );
 
-			if( ds.flags & F_SCATTERED ) {
-				ds.pkt_count -= ts_filter.skipped;
-				memmove(ds.pkt, ds.pkt + ts_filter.skipped, sizeof(ds.pkt[0]) * ds.pkt_count);
-			} else {
-				pdata += ts_filter.skipped;
-				nrcv -= ts_filter.skipped;
-			}
-
-			ts_filter.flags |= F_INITED;
+		if( ds.flags & F_SCATTERED ) {
+			ds.pkt_count -= ts_filter.skipped;
+			memmove(ds.pkt, ds.pkt + ts_filter.skipped, sizeof(ds.pkt[0]) * ds.pkt_count);
+		} else {
+			pdata += ts_filter.skipped;
+			nrcv -= ts_filter.skipped;
 		}
 
-		nsent = 0;
+		ts_filter.flags |= F_INITED;
+	}
+
+	nsent = 0;
         if( dsockfd && (nrcv > 0) ) {
 			nsent = write_data( &ds, pdata, nrcv, dsockfd );
             if( -1 == nsent ) break;
