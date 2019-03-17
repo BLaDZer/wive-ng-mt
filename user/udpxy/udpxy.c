@@ -532,6 +532,7 @@ init_ts_filter(struct filter_ctx* f)
 static void
 consume_ts_packet(uint8_t* pkt, struct filter_ctx* f)
 {
+	uint8_t  i=0;
 	uint16_t pid=0;
 	uint32_t flags=0;
 
@@ -568,16 +569,18 @@ consume_ts_packet(uint8_t* pkt, struct filter_ctx* f)
 			TRACE( (void)tmfprintf( g_flog, "Got PAT. No section\n" ) );
 			return;
 		}
-		prg = pat_get_program(pat, 0);
-		if( (prg + PAT_PROGRAM_SIZE) >= pkt_end ) {
-			TRACE( (void)tmfprintf( g_flog, "Got PAT. No program\n" ) );
-			return;
+		while ((prg = pat_get_program(pat, i)) != NULL) {
+			i++;
+			if( (prg + PAT_PROGRAM_SIZE) >= pkt_end ) break;
+			// Program number 0 is NetworkID!
+			if (patn_get_program(prg) != 0) {
+				f->pmtId = patn_get_pid(prg);
+				TRACE( (void)tmfprintf( g_flog, "Got PAT. Found program #%04x\n", f->pmtId ) );
+				f->flags |= F_PAT;
+				return;
+			}
 		}
-		f->pmtId = patn_get_pid(prg);
-		TRACE( (void)tmfprintf( g_flog, "Got PAT. Found program #%04x\n", f->pmtId ) );
-
-		f->flags |= F_PAT;
-
+		TRACE( (void)tmfprintf( g_flog, "Got PAT. No program\n" ) );
 		return;
 	}
 	if( HAS_FLAGS(flags, F_PAT) && pid == f->pmtId ) {
