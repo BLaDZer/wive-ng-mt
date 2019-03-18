@@ -468,7 +468,7 @@ ProcessIncomingHTTP(int shttpl, const char * protocol)
 		if(get_lan_for_peer((struct sockaddr *)&clientname) == NULL)
 		{
 			/* The peer is not a LAN ! */
-			syslog(LOG_WARNING,
+			syslog(LOG_DEBUG,
 			       "%s peer %s is not from a LAN, closing the connection",
 			       protocol, addr_str);
 			close(shttp);
@@ -2624,7 +2624,7 @@ main(int argc, char * * argv)
 				if(lan_addr == NULL) {
 					char sender_str[64];
 					sockaddr_to_string((struct sockaddr *)&senderaddr, sender_str, sizeof(sender_str));
-						syslog(LOG_WARNING, "NAT-PMP packet sender %s not from a LAN, ignoring",
+						syslog(LOG_DEBUG, "NAT-PMP packet sender %s not from a LAN, ignoring",
 					       sender_str);
 					continue;
 				}
@@ -2647,7 +2647,7 @@ main(int argc, char * * argv)
 				if(lan_addr == NULL) {
 					char sender_str[64];
 					sockaddr_to_string((struct sockaddr *)&senderaddr, sender_str, sizeof(sender_str));
-					syslog(LOG_WARNING, "NAT-PMP packet sender %s not from a LAN, ignoring",
+					syslog(LOG_DEBUG, "NAT-PMP packet sender %s not from a LAN, ignoring",
 					       sender_str);
 					continue;
 				}

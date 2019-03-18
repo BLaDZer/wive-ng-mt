@@ -1025,7 +1025,7 @@ ProcessSSDPData(int s, const char *bufr, int n,
 	}
 	if(lan_addr == NULL)
 	{
-		syslog(LOG_WARNING, "SSDP packet sender %s (if_index=%d) not from a LAN, ignoring",
+		syslog(LOG_DEBUG, "SSDP packet sender %s (if_index=%d) not from a LAN, ignoring",
 		       sender_str, source_if);
 		return;
 	}
