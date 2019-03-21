@@ -43,11 +43,6 @@ static_conf() {
 	$LOG "Add default route via $wan_gateway."
 	ip -4 route replace default via "$wan_gateway"
     fi
-    # add routes configured in web
-    if [ -e /etc/routes_replace ]; then
-	$LOG "Add user routes."
-	/etc/routes_replace replace "$lan_if" "$wan_if"
-    fi
     # Add route to multicast subnet
     if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
 	$LOG "Add route to multicast subnet."
@@ -123,6 +118,12 @@ start() {
     else
 	$LOG "Unknown mode. Please reset device."
 	exit 1
+    fi
+
+    # add routes configured in web (allways independed by mode)
+    if [ -e /etc/routes_replace ]; then
+	$LOG "Add user routes."
+	/etc/routes_replace replace "$lan_if" "$wan_if" > /dev/null 2>&1
     fi
 }
 

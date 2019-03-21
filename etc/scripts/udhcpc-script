@@ -281,7 +281,7 @@ case "$1" in
 	    # add routes configured in web
 	    if [ -e /etc/routes_replace ]; then
 		$LOG "Apply user routes."
-		/etc/routes_replace replace $lan_if $interface
+		/etc/routes_replace replace "$lan_if" "$interface" > /dev/null 2>&1
 	    fi
 
 	    $LOG "Flush route cache"

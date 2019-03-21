@@ -40,7 +40,7 @@ config)
 	# add routes configured in web
 	if [ -e /etc/routes_replace ]; then
 	    $LOG "Add user routes for $lan_if $wan_if interfaces."
-	    /etc/routes_replace replace "$lan_if" "$interface"
+	    /etc/routes_replace replace "$lan_if" "$interface" > /dev/null 2>&1
 	fi
 	# Add route to multicast subnet
 	if [ "$igmpEnabled" = "1" -o "$UDPXYMode" != "0" ]; then
