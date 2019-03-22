@@ -176,7 +176,7 @@ if [ "$MODE" = "all" ]; then
     # in dhcp client mode restart from dhcp script           #
     # in static/zeroconf/pure pppoe mode need restart anyway #
     ##########################################################
-    if [ "$wanConnectionMode" != "DHCP" ] || [ "$purepppoemode" = "1" ]; then
+    if [ "$wanConnectionMode" != "dhcp" ] || [ "$purepppoemode" = "1" ]; then
 	service vpnhelper restart
     fi
 fi
