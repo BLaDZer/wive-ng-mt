@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# prevent double startiptables configure in one time
+while [ -e /tmp/vpnhelper_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+echo $$ > /tmp/vpnhelper_runing
+
 # get params
 . /etc/scripts/global.sh
 
@@ -171,3 +178,6 @@ case "$1" in
 	*)
 	    echo $"Usage: $0 {start|stop|stop_safe|restart}"
 esac
+
+# remove running flag
+rm -f /tmp/vpnhelper_runing

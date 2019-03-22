@@ -24,10 +24,6 @@ start() {
 	fi
     fi
 
-    #flush all networks caches before start final config
-    flush_arp_caches
-    flush_net_caches
-
     $LOG "Switch to 2nd boot stage and start webui."
     internet.sh
 
