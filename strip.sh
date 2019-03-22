@@ -39,7 +39,7 @@ mv -f "$SCONFIG_SH.tmp" "$SCONFIG_SH"
 chmod 777 "$SCONFIG_SH"
 
 echo -------------------------------FIND FILES TO STRIP-----------------------------
-NON_STRIPS_BIN=`find $RO_ROOT/bin -type f -print -exec file {} \; | grep -vE "modules|icon|start|rc|fs|\.sh|\.dat" | cut -d":" -f1`
+NON_STRIPS_BIN=`find $RO_ROOT/bin -type f -print -exec file {} \; | grep -vE "modules|icon|start|/rc|/fs|\.sh|\.dat" | cut -d":" -f1`
 NON_STRIPS_LIB=`find $RO_ROOT/lib -type f -print -exec file {} \; | grep -vE "modules|libc.so|libpthread.so|\.a|\.la|\.pc|\.dat" | cut -d":" -f1`
 echo -----------------------------------STRIP BIN----------------------------------
 for i in $NON_STRIPS_BIN; do
