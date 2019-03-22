@@ -23,7 +23,7 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --disable-zlib --disable-openpty"
-CONFOPTS="$CONFOPTS --disable-shadow --disable-pam"
+CONFOPTS="$CONFOPTS --disable-shadow --disable-pam --disable-harden"
 CONFOPTS="$CONFOPTS --disable-lastlog --disable-utmp --disable-utmpx"
 CONFOPTS="$CONFOPTS --disable-wtmp --disable-wtmpx --disable-loginfunc"
 CONFOPTS="$CONFOPTS --disable-pututline --disable-pututxline"
