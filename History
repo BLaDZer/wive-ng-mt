@@ -4606,7 +4606,7 @@
 15) init.d: send dhcp vendor class by default.<br>
 16) init.d: fix upnp work in 6to4/6in4 mode.<br>
 17) init.d: fix apply user routes in some cases.<br>
-18) init.d: fix doble pptp client restart.<br>
+18) init.d: fix double pptp client restart.<br>
 19) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
 20) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
 21) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
