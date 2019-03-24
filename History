@@ -4607,11 +4607,18 @@
 16) init.d: fix upnp work in 6to4/6in4 mode.<br>
 17) init.d: fix apply user routes in some cases.<br>
 18) init.d: fix double pptp client restart.<br>
-19) kernel: net: tcp: tcp_v4_err() should be more careful.<br>
-20) kernel: net: tcp: clear icsk_backoff in tcp_write_queue_purge().<br>
-21) kernel: net: ipv4: use a dedicated counter for icmp_v4 redirect packets.<br>
-22) kernel: net: sit: fix memory leak in sit_init_net().<br>
-23) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
-24) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
+20) kernel: introduce a small and native hashtable.<br>
+21) kernel: sysctl: add missing range check in do_proc_dointvec_minmax_conv.<br>
+22) kernel: tmpfs: fix link accounting when a tmpfile is linked in.<br>
+23) kernel: tmpfs: fix uninitialized return value in shmem_link.<br>
+24) kernel: fix mtk cache data trash at boot in some cases.<br>
+25) kernel: net: sit: fix memory leak in sit_init_net().<br>
+26) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
+27) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
+28) kernel: net: sit: fix UBSAN Undefined behaviour in check_6rd.<br>
+29) kernel: net: pptp: dst_release sk_dst_cache in pptp_sock_destruct.<br>
+30) kernel: net: packet: fix 4gb buffer limit due to overflow check.<br>
+31) kernel: net: sit: check if IPv6 enabled before calling ip6_err_gen_icmpv6_unreach().<br>
+32) kernel: net: revert bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
 <br>
 <br>

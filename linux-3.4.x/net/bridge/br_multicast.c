@@ -953,18 +953,13 @@ static void br_multicast_query_received(struct net_bridge *br,
 					int saddr,
 					bool is_general_query)
 {
-	/* Based on RFC4541, section 2.1.1 IGMP Forwarding Rules,
-	 * the arrival port for IGMP Queries where the source address
-	 * is 0.0.0.0 should not be added to router port list.
-	 */
 	if (saddr && is_general_query)
 		mod_timer(&br->multicast_querier_timer,
 			  jiffies + br->multicast_querier_interval);
 	else if (timer_pending(&br->multicast_querier_timer))
 		return;
 
-	if (saddr)
-	    br_multicast_mark_router(br, port);
+	br_multicast_mark_router(br, port);
 }
 
 static int br_ip4_multicast_query(struct net_bridge *br,
