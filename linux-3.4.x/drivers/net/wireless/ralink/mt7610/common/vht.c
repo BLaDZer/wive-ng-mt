@@ -227,6 +227,7 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 {
 	RT_PHY_INFO *ht_phyinfo;
 	MULTISSID_STRUCT *wdev;
+	PSTRING pCountry = (PSTRING)(pAd->CommonCfg.CountryCode);
 
 	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
 
@@ -273,7 +274,9 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 
 #ifdef BADBCM_FIX
 	/* Iphone6, some mackbooks and some huawai honor phones dos not work correctly with 80MHz channel width (BUG?) drop BW to 40MHz */
-	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {
+	if ((pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) &&
+		(strncmp(pCountry, "US", 2) != 0) && (strncmp(pCountry, "DE", 2) != 0) &&
+		(strncmp(pCountry, "EU", 2) != 0) && (strncmp(pCountry, "FI", 2) != 0)) {
 		UCHAR BAD_IPHONE6_1_OUI[]  = {0x74, 0x1B, 0xB2};
 		UCHAR BAD_IPHONE6_2_OUI[]  = {0x84, 0x89, 0xAD};
 		UCHAR BAD_IPHONE6_3_OUI[]  = {0xD8, 0x1D, 0x72};
@@ -289,6 +292,8 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 		UCHAR BAD_MACBOOK_2_OUI[]  = {0xB8, 0xE8, 0x56};
 		UCHAR BAD_MACBOOK_3_OUI[]  = {0x08, 0x6D, 0x41};
 		UCHAR BAD_MACBOOK_4_OUI[]  = {0x18, 0x65, 0x90};
+		UCHAR BAD_MACBOOK_5_OUI[]  = {0xA8, 0x66, 0x7F};
+		UCHAR BAD_MACBOOK_6_OUI[]  = {0x98, 0x01, 0xA7};
 		UCHAR BAD_HUAWEI_1_OUI[]  = {0x3C, 0xFA, 0x43};
 		UCHAR BAD_HUAWEI_2_OUI[]  = {0x7C, 0x11, 0xCB};
 		UCHAR BAD_HUAWEI_3_OUI[]  = {0xF0, 0x43, 0x47};
@@ -301,6 +306,8 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_3_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_4_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_5_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_6_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_1_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_3_OUI, 3)
