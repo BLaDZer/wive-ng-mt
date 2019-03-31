@@ -4607,6 +4607,7 @@
 16) init.d: fix upnp work in 6to4/6in4 mode.<br>
 17) init.d: fix apply user routes in some cases.<br>
 18) init.d: fix double pptp client restart.<br>
+19) init.d: fs: exclude ads.conf from save to rwfs (very big).<br>
 20) kernel: introduce a small and native hashtable.<br>
 21) kernel: sysctl: add missing range check in do_proc_dointvec_minmax_conv.<br>
 22) kernel: tmpfs: fix link accounting when a tmpfile is linked in.<br>
