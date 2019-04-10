@@ -5,7 +5,8 @@
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
-#include "libnvram.h"
+#include <libnvram.h>
+#include <libwive.h>
 
 static int set_usage(char *aout)
 {
