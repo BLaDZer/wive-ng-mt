@@ -4588,7 +4588,7 @@
 40) kernel: ralink_wifi: more flex channel list announce configure.<br>
 <br>
 <br>
-<b>8.0.x</b><br>
+<b>8.0.x-8.1.x</b><br>
 1) The contract with NAG is complete. This version start new cicle.<br>
 2) build_system: add DemoUI target.<br>
 3) radvd: update to 2.18 version.<br>

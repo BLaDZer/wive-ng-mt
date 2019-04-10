@@ -42,10 +42,15 @@ endif
 #always install radio firmware
 ra_dir_y			    += rt_firmware
 
-all romfs:
+all:
 	for i in $(ra_dir_y) ; do \
 	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh $(ROOTDIR) $(HTARGET) || exit 1 ; cd .. ) || exit 1 ; fi ; \
 	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) || exit 1 ; cd .. ) || exit 1 ; fi  \
+	done
+
+romfs:
+	for i in $(ra_dir_y) ; do \
+		[ ! -d $$i ] || $(MAKE) -C $$i romfs || exit $$? ; \
 	done
 
 clean:
