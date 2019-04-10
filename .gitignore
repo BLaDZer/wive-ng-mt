@@ -419,6 +419,10 @@ fulldump
 /linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
 /linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate
 
+#
+# prevent upload fwupdate in git
+#
+/user/rt2880_app/fwupdate
 
 #
 # exclude toolchain

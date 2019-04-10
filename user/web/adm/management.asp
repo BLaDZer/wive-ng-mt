@@ -16,6 +16,8 @@
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
+			var updaterTimerId = -1;
+
 			function initTranslation() {
 			  _TR("manTitle",				"management title");
 			  _TR("manIntroduction",			"management introduction");
@@ -56,6 +58,8 @@
 			  _TR("setmanExpSetExport", 		"button backup");
 			  _TR("setmanImpSetImport", 		"button load");
 			  _TR("setmanLoadDefault", 		"button reset");
+
+				init_translation_model();
 			}
 
 			function initValue() {
@@ -87,6 +91,13 @@
 				initTranslation();
 
 				disableControlsByAuth();
+
+				function reloadUpdater() {
+					ajaxLoadScript('/adm/updater.js');
+					clearTimeout(updaterTimerId);
+					updaterTimerId = setTimeout(reloadUpdater, 5000);
+				}
+				reloadUpdater();
 			}
 
 			function AdmFormCheck(form) {
@@ -203,6 +214,22 @@
 						'firmwareReloader',
 						_("message upgrade"),
 						ajaxShowProgress);
+				}
+			}
+
+			function onUploadFirmwareAutoSubmit(form) {
+				displayElement("manAdmFirmwareAuto2", false);
+				if (form.cmd.value == "flash") {
+					var confirmed = ajaxPostForm(
+						_("management dont power off"),
+						form,
+						'firmwareReloader',
+						_("message upgrade"),
+						ajaxShowProgress);
+
+					if (confirmed) { clearTimeout(updaterTimerId); }
+				} else {
+					form.submit();
 				}
 			}
 
@@ -370,6 +397,27 @@
 									<span id="uploadFWnote"></span>
 								</td>
 							</tr>
+							<tr id="manAdmFirmwareAuto">
+								<td class="head" id="uploadFWLocation" data-tr="management autoupdate title">Automatic update</td>
+								<td>
+									<div id="fwAutoUptodateDiv" data-tr="management autoupdate uptodate">Current firmware version is up to date.</div>
+									<div id="fwAutoAvailableDiv"><span data-tr="management autoupdate available">New firmware available to download:</span> <span id="fwAutoVersion"></span></div>
+									<div id="fwAutoDownloadingDiv" data-tr="management autoupdate downloading">New firmware is downloading...</div>
+									<div id="fwAutoDownloadedDiv"> <span data-tr="management autoupdate downloaded">New firmware is ready to install:</span> <span id="fwAutoVersion2"></span></div>
+									<div id="fwAutoFlashingDiv" data-tr="management autoupdate flash">Installing new firmware...</div>
+								</td>
+							</tr>
+							<tr id="manAdmFirmwareAuto2">
+								<td class="head" id="uploadFWLocation"></td>
+								<td>
+									<form method="POST" name="UploadFirmwareAuto" action="/goform/firmwareUploadAutoForm" enctype="multipart/form-data">
+										<input type="hidden" name="cmd" value="">
+										<input type="button" value="Update" id="updateFWAuto" name="updateFWAuto" onClick="onUploadFirmwareAutoSubmit(this.form);">
+									</form>
+								</td>
+							</tr>
+
+
 						</table>
 						<!-- ================= RwFs ================= -->
 						<table class="form auth-hide-user">

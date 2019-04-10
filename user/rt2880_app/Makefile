@@ -29,6 +29,7 @@ ra_dir_$(CONFIG_RT2880_REG_RW)      += reg
 ra_dir_$(CONFIG_RT2880_MII_MGR)     += mii_mgr
 ra_dir_$(CONFIG_RT2880_NVRAM)       += nvram
 ra_dir_$(CONFIG_RT2880_MTD)         += mtd
+ra_dir_$(CONFIG_RT2880_MTD)         += fwupdate
 ra_dir_$(CONFIG_RT2880_MTD_VERF)    += mtd_verifier
 ra_dir_$(CONFIG_RT2880_GPIO_TEST)   += gpio
 ra_dir_$(CONFIG_RTESW_SWITCH)       += switch
@@ -42,7 +43,10 @@ endif
 ra_dir_y			    += rt_firmware
 
 all romfs:
-	for i in $(ra_dir_y) ; do make -C $$i $@ || exit $?; done
+	for i in $(ra_dir_y) ; do \
+	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh $(ROOTDIR) $(HTARGET) || exit 1 ; cd .. ) || exit 1 ; fi ; \
+	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) || exit 1 ; cd .. ) || exit 1 ; fi  \
+	done
 
 clean:
 	-for i in $(SUBDIRS_APP) ; do make -C $$i clean ; done

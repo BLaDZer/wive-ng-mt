@@ -1,6 +1,23 @@
 #include "util.h"
 #include "sessionid.h"
 
+int read_from_file(char* filename, char* buf, int maxlen) {
+	FILE* fp = fopen(filename, "rt");
+	if (!fp) {
+		return 0;
+	}
+
+	fread(buf, 1, maxlen, fp);
+	fclose(fp);
+
+	if (ferror(fp)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+
 void strcat_c(char *str, char c)
 {
     for (;*str;str++);

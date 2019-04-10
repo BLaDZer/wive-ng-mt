@@ -116,6 +116,7 @@ typedef struct asp_nvram_acl_t{
 
 //char PASS_HASH_SALT[128];
 
+int read_from_file(char* filename, char* buf, int maxlen);
 void strcat_c(char *str, char c);
 
 #ifdef NGX_HTTP_SSL

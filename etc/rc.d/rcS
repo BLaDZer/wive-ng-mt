@@ -107,7 +107,13 @@ else
     BtnRstTimeout=""
 fi
 
+# handle gpio buttons
 butcheck $BtnRstTimeout &
+
+# update service start allways
+if [ -e /bin/fwupdate ]; then
+    fwupdate -d &
+fi
 
 # start entropy increase daemon
 if [ -e /bin/haveged ]; then

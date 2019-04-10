@@ -37,6 +37,16 @@ var admin_dictionary = {
 	'management export settings'		: 'Вы хотите загрузить настройки в файл?',
 	'management ask reset factory'		: 'Все настройки буду сброшены на заводские. Хотите продолжить?',
 
+	'management autoupdate title'				: 'Автообновление',
+	'management autoupdate uptodate'			: 'Установлена актуальная версия.',
+	'management autoupdate available'			: 'Новая версия доступна для загрузки:',
+	'management autoupdate downloading'			: 'Загрузка новой версии...',
+	'management autoupdate downloaded'			: 'Новая версия готова к установке:',
+	'management autoupdate flash'				: 'Установка новой версии...',
+	'management autoupdate button check'			: 'Проверить',
+	'management autoupdate button download'			: 'Загрузить',
+	'management autoupdate button update'			: 'Установить',
+
 	'status title'				: 'Состояние маршрутизатора',
 	'status introduction'			: 'Сводная информация о состоянии оборудования',
 	'status system information'		: 'Информация о системе',

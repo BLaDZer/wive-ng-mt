@@ -9,6 +9,20 @@ static int isDemoMode(webs_t *wp, char** params, int nparams)
 #endif
 }
 
+static int getUpdaterState(webs_t *wp, char** params, int nparams)
+{
+	char buf[256] = {0};
+	read_from_file("/tmp/updater/state", buf, sizeof(buf));
+	return outWrite("%s", buf);
+}
+
+static int getUpdaterImageName(webs_t *wp, char** params, int nparams)
+{
+	char buf[256] = {0};
+	read_from_file("/tmp/updater/image_name", buf, sizeof(buf));
+	return outWrite("%s", buf);
+}
+
 
 static int _getCfgGeneral(webs_t *wp, char* key, char** out)
 {
@@ -801,6 +815,17 @@ static void rwfsUploadForm(webs_t* wp, char_t *path, char_t *query)
     return;// 0;
 }
 
+static void firmwareUploadAutoForm(webs_t* wp, char_t *path, char_t *query)
+{
+	char* cmd = websGetVar(wp, "cmd", "");
+	FILE* fp = fopen("/tmp/updater/command", "wt");
+	if (fp) {
+		fwrite(cmd, 1, strlen(cmd), fp);
+		fclose(fp);
+	}
+
+	websDone(wp, 200);
+}
 
 static void firmwareUploadForm(webs_t* wp, char_t *path, char_t *query)
 {
@@ -1005,6 +1030,9 @@ void asp_mod_utils_init()
 {
         aspDefineFunc("isDemoMode", isDemoMode, EVERYONE);
 
+        aspDefineFunc("getUpdaterState", getUpdaterState, EVERYONE);
+        aspDefineFunc("getUpdaterImageName", getUpdaterImageName, EVERYONE);
+
         aspDefineFunc("getCfgGeneral", getCfgGeneral, EVERYONE);
         aspDefineFunc("getAuthUsername", getAuthUsername, EVERYONE);
         aspDefineFunc("getAuthRole", getAuthRole, EVERYONE);
@@ -1032,6 +1060,7 @@ void asp_mod_utils_init()
 	aspDefineFunc("webLogout", webLogout, EVERYONE);
 
 	websFormDefine("firmwareUploadForm", firmwareUploadForm, ADMIN);
+	websFormDefine("firmwareUploadAutoForm", firmwareUploadAutoForm, ADMIN);
 	websFormDefine("rwfsUploadForm", rwfsUploadForm, ADMIN);
 	websFormDefine("settingsUploadForm", settingsUploadForm, ADMIN);
 

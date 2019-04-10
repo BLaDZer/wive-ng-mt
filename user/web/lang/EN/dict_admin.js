@@ -36,6 +36,16 @@ var admin_dictionary = {
 	'management export settings'				: 'Do you want to export settings to file?',
 	'management ask reset factory'				: 'All settings will be reset to factory defaults. Really proceed?',
 
+	'management autoupdate title'				: 'Automatic Update',
+	'management autoupdate uptodate'			: 'Current firmware version is up to date.',
+	'management autoupdate available'			: 'New firmware available to download:',
+	'management autoupdate downloading'			: 'New firmware is downloading...',
+	'management autoupdate downloaded'			: 'New firmware is ready to install:',
+	'management autoupdate flash'				: 'Installing new firmware...',
+	'management autoupdate button check'			: 'Check',
+	'management autoupdate button download'			: 'Download',
+	'management autoupdate button update'			: 'Install',
+
 	'status title'						: 'Access Point Status',
 	'status introduction'					: 'Let\'s take a look at the status of Wive-NG-MT.',
 	'status system information'				: 'System Info',
