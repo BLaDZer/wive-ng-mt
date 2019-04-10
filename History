@@ -4596,34 +4596,35 @@
 5) libopenssl: up to 1.0.2r version.<br>
 6) miniupnpd: up to 2.1.20190210 version.<br>
 7) miniupnpd: add -I option for force pinhole ifname for ipv6.<br>
-8) udpxy: fix infinitive loop in ts stream parse.<br>
-9) udpxy: fix get network id from PMT.<br>
-10) webui: rework status show.<br>
-11) build_system: integrate on-line updater (propriretary wi-cat system, not for public now).<br>
-12) init.d: adblock: remove https list (busybox wget not full correct use https may be trash in output).<br>
-13) init.d: fix apply user routes over LAN in some case.<br>
-14) init.d: fix fs script install.<br>
-15) init.d: fix dnsmasq reconf.<br>
-16) init.d: send dhcp vendor class by default.<br>
-17) init.d: fix upnp work in 6to4/6in4 mode.<br>
-18) init.d: fix apply user routes in some cases.<br>
-19) init.d: fix double pptp client restart.<br>
-20) init.d: fs: exclude ads.conf from save to rwfs (very big).<br>
-21) kernel: introduce a small and native hashtable.<br>
-22) kernel: sysctl: add missing range check in do_proc_dointvec_minmax_conv.<br>
-23) kernel: tmpfs: fix link accounting when a tmpfile is linked in.<br>
-24) kernel: tmpfs: fix uninitialized return value in shmem_link.<br>
-25) kernel: fix mtk cache data trash at boot in some cases.<br>
-26) kernel: kernel: net/packet: Set __GFP_NOWARN upon allocation in alloc_pg_vec.<br>
-27) kernel: net: sit: fix memory leak in sit_init_net().<br>
-28) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
-29) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
-30) kernel: net: sit: fix UBSAN Undefined behaviour in check_6rd.<br>
-31) kernel: net: pptp: dst_release sk_dst_cache in pptp_sock_destruct.<br>
-32) kernel: net: packet: fix 4gb buffer limit due to overflow check.<br>
-33) kernel: net: sit: check if IPv6 enabled before calling ip6_err_gen_icmpv6_unreach().<br>
-34) kernel: net: revert bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
-35) kernel: ralink_wifi: add new macbook oui A8:66:7F and 98:01:a7 to bcm fix.<br>
-36) kernel: ralink_wifi: allow use 80MHz with old BCM devices in US/DE/FI/EU regions.<br>
+8) dropbear: up to 2019.78 (commit fd8721be7).<br>
+9) udpxy: fix infinitive loop in ts stream parse.<br>
+10) udpxy: fix get network id from PMT.<br>
+11) webui: rework status show.<br>
+12) build_system: integrate on-line updater (propriretary wi-cat system, not for public now).<br>
+13) init.d: adblock: remove https list (busybox wget not full correct use https may be trash in output).<br>
+14) init.d: fix apply user routes over LAN in some case.<br>
+15) init.d: fix fs script install.<br>
+16) init.d: fix dnsmasq reconf.<br>
+17) init.d: send dhcp vendor class by default.<br>
+18) init.d: fix upnp work in 6to4/6in4 mode.<br>
+19) init.d: fix apply user routes in some cases.<br>
+20) init.d: fix double pptp client restart.<br>
+21) init.d: fs: exclude ads.conf from save to rwfs (very big).<br>
+22) kernel: introduce a small and native hashtable.<br>
+23) kernel: sysctl: add missing range check in do_proc_dointvec_minmax_conv.<br>
+24) kernel: tmpfs: fix link accounting when a tmpfile is linked in.<br>
+25) kernel: tmpfs: fix uninitialized return value in shmem_link.<br>
+26) kernel: fix mtk cache data trash at boot in some cases.<br>
+27) kernel: kernel: net/packet: Set __GFP_NOWARN upon allocation in alloc_pg_vec.<br>
+28) kernel: net: sit: fix memory leak in sit_init_net().<br>
+29) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
+30) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
+31) kernel: net: sit: fix UBSAN Undefined behaviour in check_6rd.<br>
+32) kernel: net: pptp: dst_release sk_dst_cache in pptp_sock_destruct.<br>
+33) kernel: net: packet: fix 4gb buffer limit due to overflow check.<br>
+34) kernel: net: sit: check if IPv6 enabled before calling ip6_err_gen_icmpv6_unreach().<br>
+35) kernel: net: revert bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
+36) kernel: ralink_wifi: add new macbook oui A8:66:7F and 98:01:a7 to bcm fix.<br>
+37) kernel: ralink_wifi: allow use 80MHz with old BCM devices in US/DE/FI/EU regions.<br>
 <br>
 <br>

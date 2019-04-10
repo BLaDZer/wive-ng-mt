@@ -222,7 +222,7 @@ void cli_getopts(int argc, char ** argv) {
 					break;
 #endif
 				case 'p': /* remoteport */
-					next = &cli_opts.remoteport;
+					next = (char**)&cli_opts.remoteport;
 					break;
 #if DROPBEAR_CLI_PUBKEY_AUTH
 				case 'i': /* an identityfile */
@@ -899,6 +899,7 @@ static void add_extendedopt(const char* origstr) {
 #ifndef DISABLE_SYSLOG
 			"\tUseSyslog\n"
 #endif
+			"\tPort\n"
 		);
 		exit(EXIT_SUCCESS);
 	}
@@ -916,6 +917,11 @@ static void add_extendedopt(const char* origstr) {
 		return;
 	}
 #endif
+
+	if (match_extendedopt(&optstr, "Port") == DROPBEAR_SUCCESS) {
+		cli_opts.remoteport = optstr;
+		return;
+	}
 
 	dropbear_log(LOG_WARNING, "Ignoring unknown configuration option '%s'", origstr);
 }
