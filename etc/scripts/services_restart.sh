@@ -217,6 +217,13 @@ if [ -e /bin/irqbalance ]; then
 fi
 
 ###########################################################
+# force check updates					  #
+###########################################################
+if [ -e /bin/fwupdate ]; then
+    fwupdate -c check &
+fi
+
+###########################################################
 # start adblock service script				  #
 ###########################################################
 if [ -e /etc/scripts/config-adblock.sh ]; then
