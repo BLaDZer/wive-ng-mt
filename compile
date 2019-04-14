@@ -184,7 +184,7 @@ make || exit 1
 
 echo ---------------------------------VERS-ID---------------------------------
 make -C $ROOTDIR/tools/versiongen
-$ROOTDIR/user/versiongen/versiongen "images/$DEVNAME-$MODE.$VERSIONPKG.bin" > "images/version.txt"
+$ROOTDIR/tools/versiongen/versiongen "images/$DEVNAME-$MODE.$VERSIONPKG.bin" > "images/version.txt"
 echo -----------------------------------PACK----------------------------------
 mv -f images/*.bin "images/$DEVNAME-$MODE.$VERSIONPKG.bin"
 links -dump History > "images/CHANGELOG.$VERSIONPKG.txt"
