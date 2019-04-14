@@ -27,7 +27,7 @@ install:
 clean:
 	rm -rf ./bin
 	make -C mkimage clean
-	make -C mkimage versiongen clean
+	make -C versiongen clean
 
 mrproper:
 	echo "OK"
