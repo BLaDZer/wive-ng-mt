@@ -4625,7 +4625,8 @@
 34) kernel: net: packet: fix 4gb buffer limit due to overflow check.<br>
 35) kernel: net: sit: check if IPv6 enabled before calling ip6_err_gen_icmpv6_unreach().<br>
 36) kernel: net: revert bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
-37) kernel: ralink_wifi: add new macbook oui A8:66:7F and 98:01:a7 to bcm fix.<br>
-38) kernel: ralink_wifi: allow use 80MHz with old BCM devices in US/DE/FI/EU regions.<br>
+37) kernel: net: bridge: multicast: use rcu to access port list from br_multicast_start_querier.<br>
+38) kernel: ralink_wifi: add new macbook oui A8:66:7F and 98:01:a7 to bcm fix.<br>
+39) kernel: ralink_wifi: allow use 80MHz with old BCM devices in US/DE/FI/EU regions.<br>
 <br>
 <br>
