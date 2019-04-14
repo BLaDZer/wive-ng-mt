@@ -1690,76 +1690,12 @@ void br_multicast_init(struct net_bridge *br)
 		    (unsigned long)br);
 }
 
-static void br_ip4_multicast_join_snoopers(struct net_bridge *br)
-{
-	struct in_device *in_dev = in_dev_get(br->dev);
-
-	if (!in_dev)
-		return;
-
-	__ip_mc_inc_group(in_dev, htonl(INADDR_ALLSNOOPERS_GROUP), GFP_ATOMIC);
-	in_dev_put(in_dev);
-}
-
-#if IS_ENABLED(CONFIG_IPV6)
-static void br_ip6_multicast_join_snoopers(struct net_bridge *br)
-{
-	struct in6_addr addr;
-
-	ipv6_addr_set(&addr, htonl(0xff020000), 0, 0, htonl(0x6a));
-	ipv6_dev_mc_inc(br->dev, &addr);
-}
-#else
-static inline void br_ip6_multicast_join_snoopers(struct net_bridge *br)
-{
-}
-#endif
-
-static void br_multicast_join_snoopers(struct net_bridge *br)
-{
-	br_ip4_multicast_join_snoopers(br);
-	br_ip6_multicast_join_snoopers(br);
-}
-
-static void br_ip4_multicast_leave_snoopers(struct net_bridge *br)
-{
-	struct in_device *in_dev = in_dev_get(br->dev);
-
-	if (WARN_ON(!in_dev))
-		return;
-
-	__ip_mc_dec_group(in_dev, htonl(INADDR_ALLSNOOPERS_GROUP), GFP_ATOMIC);
-	in_dev_put(in_dev);
-}
-
-#if IS_ENABLED(CONFIG_IPV6)
-static void br_ip6_multicast_leave_snoopers(struct net_bridge *br)
-{
-	struct in6_addr addr;
-
-	ipv6_addr_set(&addr, htonl(0xff020000), 0, 0, htonl(0x6a));
-	ipv6_dev_mc_dec(br->dev, &addr);
-}
-#else
-static inline void br_ip6_multicast_leave_snoopers(struct net_bridge *br)
-{
-}
-#endif
-
-static void br_multicast_leave_snoopers(struct net_bridge *br)
-{
-	br_ip4_multicast_leave_snoopers(br);
-	br_ip6_multicast_leave_snoopers(br);
-}
-
 void br_multicast_open(struct net_bridge *br)
 {
 	br->multicast_startup_queries_sent = 0;
 
 	if (br->multicast_disabled)
 		return;
-
-	br_multicast_join_snoopers(br);
 
 	mod_timer(&br->multicast_query_timer, jiffies);
 }
@@ -1775,8 +1711,6 @@ void br_multicast_stop(struct net_bridge *br)
 	del_timer_sync(&br->multicast_router_timer);
 	del_timer_sync(&br->multicast_querier_timer);
 	del_timer_sync(&br->multicast_query_timer);
-
-	br_multicast_leave_snoopers(br);
 
 	spin_lock_bh(&br->multicast_lock);
 	mdb = mlock_dereference(br->mdb, br);
@@ -1889,10 +1823,8 @@ int br_multicast_toggle(struct net_bridge *br, unsigned long val)
 		goto unlock;
 
 	br->multicast_disabled = !val;
-	if (br->multicast_disabled) {
-		br_multicast_leave_snoopers(br);
+	if (br->multicast_disabled)
 		goto unlock;
-	}
 
 	if (!netif_running(br->dev))
 		goto unlock;

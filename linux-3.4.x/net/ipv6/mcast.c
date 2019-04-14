@@ -938,7 +938,6 @@ int __ipv6_dev_mc_dec(struct inet6_dev *idev, const struct in6_addr *addr)
 
 	return -ENOENT;
 }
-EXPORT_SYMBOL(ipv6_dev_mc_inc);
 
 int ipv6_dev_mc_dec(struct net_device *dev, const struct in6_addr *addr)
 {
@@ -956,7 +955,6 @@ int ipv6_dev_mc_dec(struct net_device *dev, const struct in6_addr *addr)
 	rcu_read_unlock();
 	return err;
 }
-EXPORT_SYMBOL(ipv6_dev_mc_dec);
 
 /*
  *	check if the interface/address pair is valid
