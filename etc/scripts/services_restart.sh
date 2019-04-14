@@ -220,7 +220,7 @@ fi
 # force check updates					  #
 ###########################################################
 if [ -e /bin/fwupdate ]; then
-    fwupdate -c check &
+    fwupdate -c check  > /dev/null 2>&1 &
 fi
 
 ###########################################################
