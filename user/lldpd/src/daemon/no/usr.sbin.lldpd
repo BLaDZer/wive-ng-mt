@@ -1,6 +1,6 @@
 #include <tunables/global>
 
-/opt/Wive-MT/user/lldpd/filesystem/sbin/lldpd {
+/opt/Wive-HQ/user/lldpd/filesystem/sbin/lldpd {
   #include <abstractions/base>
   #include <abstractions/nameservice>
 
@@ -19,23 +19,23 @@
   # Need to receive/send raw packets
   network packet raw,
 
-  /opt/Wive-MT/user/lldpd/filesystem/sbin/lldpd mr,
+  /opt/Wive-HQ/user/lldpd/filesystem/sbin/lldpd mr,
   /run/systemd/notify w,
 
   # Ability to run lldpcli for self-configuration
-  /opt/Wive-MT/user/lldpd/filesystem/sbin/lldpcli rix,
-  /opt/Wive-MT/user/lldpd/filesystem/etc/lldpd.d/ r,
-  /opt/Wive-MT/user/lldpd/filesystem/etc/lldpd.d/* r,
-  /opt/Wive-MT/user/lldpd/filesystem/etc/lldpd.conf r,
+  /opt/Wive-HQ/user/lldpd/filesystem/sbin/lldpcli rix,
+  /opt/Wive-HQ/user/lldpd/filesystem/etc/lldpd.d/ r,
+  /opt/Wive-HQ/user/lldpd/filesystem/etc/lldpd.d/* r,
+  /opt/Wive-HQ/user/lldpd/filesystem/etc/lldpd.conf r,
 
   # PID file and socket
   /var/run/lldpd.pid rw,
   /var/run/lldpd.socket rw,
 
   # Chroot setup
-  /opt/Wive-MT/user/lldpd/filesystem/var/run/lldpd w,
-  /opt/Wive-MT/user/lldpd/filesystem/var/run/lldpd/etc/ rw,
-  /opt/Wive-MT/user/lldpd/filesystem/var/run/lldpd/etc/localtime rw,
+  /opt/Wive-HQ/user/lldpd/filesystem/var/run/lldpd w,
+  /opt/Wive-HQ/user/lldpd/filesystem/var/run/lldpd/etc/ rw,
+  /opt/Wive-HQ/user/lldpd/filesystem/var/run/lldpd/etc/localtime rw,
 
   # Gather system description
   /etc/os-release r,
