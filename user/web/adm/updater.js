@@ -12,6 +12,17 @@ displayElement('fwAutoFlashingDiv', updater_state == "flashing" );
 var form = document.forms['UploadFirmwareAuto'];
 displayElement('manAdmFirmwareAuto2', updater_state == "available" || updater_state == "downloaded" || updater_state == "uptodate" || updater_state == "error");
 
+if (updater_state == "flashing")
+{
+	var rootWindow = ajaxGetRootWindow();
+	if (typeof rootWindow.currentProgressHandler !== 'undefined') {
+		var handler = rootWindow.currentProgressHandler;
+		if (handler.name == 'indicator') {
+			ajaxReloadDelayedPage('<% getFirmwareUpdateTime(1); %>'*1000);
+		}
+	}
+	clearTimeout(updaterTimerId);
+} else
 if (updater_state == "available")
 {
 	document.getElementById('fwAutoVersion').innerHTML = updater_version;

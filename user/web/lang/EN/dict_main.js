@@ -5,6 +5,7 @@ var lang_dictionary = {
 	'warning cwmpd'			: 'The remote control of the router by ISP experts is active.',
 	'warning cwmpd auto available'	: 'Your ISP can automatically configure your internet connection. Enable remote control of the router?',
 	'warning cwmpd auto alert'	: 'Are you sure you want to enable remote router control? Before using this feature, check with your provider if the configuration of this router model is supported.',
+	'warning update available'	: 'A newer version of the device firmware is available. Go to the management page to install the new firmware.',
 	'button warning'		: 'Go to settings',
 
 	'message apply'			: 'Please wait while settings are applied...',

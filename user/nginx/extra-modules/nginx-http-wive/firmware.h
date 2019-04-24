@@ -40,7 +40,7 @@
 #define MEM_HALF        	512
 #define MIN_FIRMWARE_SIZE       2097152 		/* minium firmware size(2MB) */
 
-
+int getFirmwareUpdateTime(int reset_rwfs);
 void upload_html_header(webs_t* wp);
 void upload_html_success(webs_t* wp, int timeout);
 void upload_html_error(webs_t* wp, char* err);

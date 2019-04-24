@@ -207,7 +207,6 @@
 			function onUploadFirmwareSubmit(form) {
 				if (checkFilePresent(form.filename))
 				{
-					ajaxReloadDelayedPage(150000);
 					ajaxPostForm(
 						_("management dont power off"),
 						form,
@@ -220,14 +219,12 @@
 			function onUploadFirmwareAutoSubmit(form) {
 				displayElement("manAdmFirmwareAuto2", false);
 				if (form.cmd.value == "flash") {
-					var confirmed = ajaxPostForm(
+					ajaxPostForm(
 						_("management dont power off"),
 						form,
 						'firmwareReloader',
 						_("message upgrade"),
 						ajaxShowProgress);
-
-					if (confirmed) { clearTimeout(updaterTimerId); }
 				} else {
 					form.submit();
 				}

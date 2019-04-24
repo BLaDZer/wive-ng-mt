@@ -546,15 +546,17 @@ function enableCWMPAutoClick() {
 function showWarning() {
 
 	getRunningServices(function(services) {
+		var updater_state = '<% getUpdaterState(); %>';
 
 		var warning_access_password		= NVRAM_Password == "Admin";
 		var warning_wireless_security		= NVRAM_AuthMode == "OPEN";
 		var warning_wireless_key		= NVRAM_WPAPSK1 == "1234567890";
 		var warning_cwmpd			= services.indexOf("cwmpd") != -1;
 		var warning_cwmpd_auto_available	= BUILD_CWMP == '1' && ('<% getCWMPAutoAvailable(); %>' == '1') && NVRAM_cwmpdEnabled == '0';
+		var warning_update_available		= (updater_state  == 'available') || (updater_state  == 'downloaded');
 		var warningHTML				= '';
 
-		if (warning_access_password || warning_wireless_security || warning_wireless_key || warning_cwmpd || warning_cwmpd_auto_available) {
+		if (warning_access_password || warning_wireless_security || warning_wireless_key || warning_cwmpd || warning_cwmpd_auto_available || warning_update_available) {
 			warningHTML += '<br>';
 			warningHTML += '<table class="warning">';
 			warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
@@ -585,6 +587,13 @@ function showWarning() {
 				warningHTML += '<tr>';
 				warningHTML += '<td class="warning">' + _("warning cwmpd auto available") + '</td>';
 				warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button enable") + '" onClick="enableCWMPAutoClick();"></td>';
+				warningHTML += '</tr>';
+			}
+
+			if (warning_update_available) {
+				warningHTML += '<tr>';
+				warningHTML += '<td class="warning">' + _("warning update available") + '</td>';
+				warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/adm/management.asp");\'></td>';
 				warningHTML += '</tr>';
 			}
 

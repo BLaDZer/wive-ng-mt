@@ -9,6 +9,12 @@ static int isDemoMode(webs_t *wp, char** params, int nparams)
 #endif
 }
 
+static int getFirmwareUpdateTimeAsp(webs_t *wp, char** params, int nparams)
+{
+	int reset_rwfs = (nparams > 0) && strToIntDef(params[0],0);
+	return outWrite("%i", getFirmwareUpdateTime(reset_rwfs));
+}
+
 static int getUpdaterState(webs_t *wp, char** params, int nparams)
 {
 	char buf[256] = {0};
@@ -1059,6 +1065,7 @@ void asp_mod_utils_init()
 	websFormDefine("auth", shadowAuth, EVERYONE);
 	aspDefineFunc("webLogout", webLogout, EVERYONE);
 
+	aspDefineFunc("getFirmwareUpdateTime", getFirmwareUpdateTimeAsp, EVERYONE);
 	websFormDefine("firmwareUploadForm", firmwareUploadForm, ADMIN);
 	websFormDefine("firmwareUploadAutoForm", firmwareUploadAutoForm, ADMIN);
 	websFormDefine("rwfsUploadForm", rwfsUploadForm, ADMIN);

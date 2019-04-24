@@ -124,12 +124,19 @@ int check_binary_content_type(const char *content_type)
 	return 0;
 }
 
+int getFirmwareUpdateTime(int reset_rwfs)
+{
+	return 8*(IMAGE1_SIZE/0x100000) + 10 + (reset_rwfs?10:0);
+}
+
 
 int mtd_write_firmware(char *filename, int offset, int len)
 {
     char cmd[512];
     int status;
     int err=0;
+
+    system("echo -n flashing>/tmp/updater/state");
 
 /* check image size before erase flash and write image */
 #ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
@@ -160,6 +167,7 @@ int mtd_write_firmware(char *filename, int offset, int len)
     if (err == 0)
         return 0;
 
+    system("echo -n error>/tmp/updater/state");
     fprintf(stderr, "mtd_write return error - image oversized or uncorrect!!!%d, %s", len, __FUNCTION__);
     return -1;
 }
@@ -342,7 +350,7 @@ void upload_html_success(webs_t* wp, int timeout)
 		timeout
 	);
 
-        websDone(wp, 200);
+	websDone(wp, 200);
 }
 
 void upload_html_error(webs_t* wp, char* err)
@@ -465,18 +473,16 @@ int firmware_upgrade(webs_t* wp)
                 return 9;
 	}
 
-	// firmware update timeouts
-	// examination, reset NVRAM if needed
+	// reset NVRAM if needed
 	// start web timer and crash rwfs BEFORE flash destroy
 	if (reset_rwfs)
 	{
 		doSystem("%s", "fs restore");
-		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 20);
-	} else
-		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 10);
+	}
+
+	upload_html_success(wp, getFirmwareUpdateTime(reset_rwfs));
 
 	// flash write
-
         ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade started\n");
         websDone(wp, 200);
 
