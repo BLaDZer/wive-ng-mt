@@ -18,7 +18,7 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
     # put manual dns to resolv.conf
     # if nameservers is null add 127.0.0.1 for local dns use
     # if nameservers not valid use googledns
-    if [ "$wan_primary_dns" != "" -o "$wan_secondary_dns" != "" ] && [ "$wan_static_dns" = "on" ]; then
+    if [ "$wan_primary_dns" != "" -o "$wan_secondary_dns" != "" ] && [ "$wan_static_dns" = "on" ] && [ "$vpnPurePPPOE" != "1" ]; then
 	$LOG "Generate resolv DNS1: $wan_primary_dns DNS2: $wan_secondary_dns"
 	if [ "$wan_primary_dns" != "" ]; then
 	    echo "nameserver $wan_primary_dns" >> $fname

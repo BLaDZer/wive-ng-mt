@@ -4611,23 +4611,24 @@
 20) init.d: fix double pptp client restart.<br>
 21) init.d: fs: exclude ads.conf from save to rwfs (very big).<br>
 22) init.d: fwupdate: force check update on all events.<br>
-23) kernel: introduce a small and native hashtable.<br>
-24) kernel: sysctl: add missing range check in do_proc_dointvec_minmax_conv.<br>
-25) kernel: tmpfs: fix link accounting when a tmpfile is linked in.<br>
-26) kernel: tmpfs: fix uninitialized return value in shmem_link.<br>
-27) kernel: fix mtk cache data trash at boot in some cases.<br>
-28) kernel: kernel: net/packet: Set __GFP_NOWARN upon allocation in alloc_pg_vec.<br>
-29) kernel: net: sit: fix memory leak in sit_init_net().<br>
-30) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
-31) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
-32) kernel: net: sit: fix UBSAN Undefined behaviour in check_6rd.<br>
-33) kernel: net: pptp: dst_release sk_dst_cache in pptp_sock_destruct.<br>
-34) kernel: net: packet: fix 4gb buffer limit due to overflow check.<br>
-35) kernel: net: sit: check if IPv6 enabled before calling ip6_err_gen_icmpv6_unreach().<br>
-36) kernel: net: revert bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
-37) kernel: net: bridge: multicast: use rcu to access port list from br_multicast_start_querier.<br>
-38) kernel: net: ip6_tunnel: match to ARPHRD_TUNNEL6 for dev type.<br>
-39) kernel: ralink_wifi: add new macbook oui A8:66:7F and 98:01:a7 to bcm fix.<br>
-40) kernel: ralink_wifi: allow use 80MHz with old BCM devices in US/DE/FI/EU regions.<br>
+23) init.d: do not apply static dns at PurePPPOE mode.<br>
+24) kernel: introduce a small and native hashtable.<br>
+25) kernel: sysctl: add missing range check in do_proc_dointvec_minmax_conv.<br>
+26) kernel: tmpfs: fix link accounting when a tmpfile is linked in.<br>
+27) kernel: tmpfs: fix uninitialized return value in shmem_link.<br>
+28) kernel: fix mtk cache data trash at boot in some cases.<br>
+29) kernel: kernel: net/packet: Set __GFP_NOWARN upon allocation in alloc_pg_vec.<br>
+30) kernel: net: sit: fix memory leak in sit_init_net().<br>
+31) kernel: net: fs/drop_caches.c: avoid softlockups in drop_pagecache_sb().<br>
+32) kernel: net: netfilter: nf_nat: skip nat clash resolution for same-origin entries.<br>
+33) kernel: net: sit: fix UBSAN Undefined behaviour in check_6rd.<br>
+34) kernel: net: pptp: dst_release sk_dst_cache in pptp_sock_destruct.<br>
+35) kernel: net: packet: fix 4gb buffer limit due to overflow check.<br>
+36) kernel: net: sit: check if IPv6 enabled before calling ip6_err_gen_icmpv6_unreach().<br>
+37) kernel: net: revert bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
+38) kernel: net: bridge: multicast: use rcu to access port list from br_multicast_start_querier.<br>
+39) kernel: net: ip6_tunnel: match to ARPHRD_TUNNEL6 for dev type.<br>
+40) kernel: ralink_wifi: add new macbook oui A8:66:7F and 98:01:a7 to bcm fix.<br>
+41) kernel: ralink_wifi: allow use 80MHz with old BCM devices in US/DE/FI/EU regions.<br>
 <br>
 <br>
