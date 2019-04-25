@@ -967,53 +967,6 @@ int gen_wifi_config(int mode, int genmode)
 	if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
 		ssid_num = MAX_NUMBER_OF_BSSID;
 
-#ifdef CONFIG_MT7615_AP_DBDC_MODE
-	    /* in dbdc mode only one auto channel select alg may be used for all bands */
-	    scanalg24 = nvram_get_int(RT2860_NVRAM, "AutoChannelSelect", 0);
-	    scanalg5  = nvram_get_int(RT2860_NVRAM, "AutoChannelSelectINIC", 0);
-	    /* in dbdc mode only one auto channel select alg may be used for all bands */
-	    if (scanalg5 > scanalg24)
-		resultalg = scanalg5;
-	    else
-		resultalg = scanalg24;
-#endif
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (!inic) {
-#endif
-	    FPRINT_DAT(WirelessMode);
-	    FPRINT_DAT(RadioOn);
-	    FPRINT_DAT(TxPower);
-	    FPRINT_DAT(Channel);
-	    FPRINT_DAT(BasicRate);
-	    FPRINT_DAT(SSID1);
-	    FPRINT_DAT(ACSCheckTime);
-	    FPRINT_DAT(AutoChannelSkipList);
-#ifndef CONFIG_MT7615_AP_DBDC_MODE /* in dbdc only one variable for bgrscan skip, split for future */
-	    FPRINT_DAT(BgndScanSkipCh);
-#endif
-#ifdef CONFIG_MT7615_AP_DBDC_MODE
-	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
-#else
-	    FPRINT_DAT(AutoChannelSelect);
-#endif
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	} else {
-	    fprintf(fp, "WirelessMode=%s\n", nvram_get(mode, "WirelessModeINIC"));
-	    fprintf(fp, "RadioOn=%s\n", nvram_get(mode, "RadioOnINIC"));
-	    fprintf(fp, "TxPower=%s\n", nvram_get(mode, "TxPowerINIC"));
-	    fprintf(fp, "Channel=%s\n", nvram_get(mode, "ChannelINIC"));
-	    fprintf(fp, "BasicRate=%s\n", nvram_get(mode, "BasicRateINIC"));
-	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
-	    fprintf(fp, "SSID1=%s\n", nvram_get(mode, "SSID1INIC"));
-	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
-	    fprintf(fp, "BgndScanSkipCh=%s\n", nvram_get(mode, "BgndScanSkipChINIC"));
-#ifdef CONFIG_MT7615_AP_DBDC_MODE
-	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
-#else
-	    fprintf(fp, "AutoChannelSelect=%s\n", nvram_get(mode, "AutoChannelSelectINIC"));
-#endif
-	}
-#endif
 	// Stub
 	fprintf(fp, "FixedTxMode=\n");
 
@@ -1042,19 +995,11 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(SSID7);
 	FPRINT_DAT(SSID8);
 
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (inic)
-	    fprintf(fp, "BeaconPeriod=%s\n", nvram_get(mode, "BeaconPeriodINIC"));
-	else
-#endif
-	    FPRINT_DAT(BeaconPeriod);
-
 	FPRINT_DAT(DtimPeriod);
 	FPRINT_DAT(DisableOLBC);
 	FPRINT_DAT(BGProtection);
 	FPRINT_DAT(RTSThreshold);
 	FPRINT_DAT(TxPreamble);
-	FPRINT_DAT(TxPower);
 	FPRINT_DAT(TxBurst);
 	FPRINT_DAT(BurstMode);
 	FPRINT_DAT(PktAggregate);
@@ -1075,13 +1020,65 @@ int gen_wifi_config(int mode, int genmode)
     	FPRINT_DAT(RekeyMethod);
 	FPRINT_DAT(RekeyInterval);
 
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (inic)
-	    fprintf(fp, "WPAPSK1=%s\n", nvram_get(mode, "WPAPSK1INIC"));
-	else
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	    /* in dbdc mode only one auto channel select alg may be used for all bands */
+	    scanalg24 = nvram_get_int(RT2860_NVRAM, "AutoChannelSelect", 0);
+	    scanalg5  = nvram_get_int(RT2860_NVRAM, "AutoChannelSelectINIC", 0);
+	    /* in dbdc mode only one auto channel select alg may be used for all bands */
+	    if (scanalg5 > scanalg24)
+		resultalg = scanalg5;
+	    else
+		resultalg = scanalg24;
 #endif
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	if (!inic) {
+#endif
+	    FPRINT_DAT(HT_BW);
 	    FPRINT_DAT(WPAPSK1);
-
+	    FPRINT_DAT(BeaconPeriod);
+	    FPRINT_DAT(WirelessMode);
+	    FPRINT_DAT(RadioOn);
+	    FPRINT_DAT(TxPower);
+	    FPRINT_DAT(Channel);
+	    FPRINT_DAT(BasicRate);
+	    FPRINT_DAT(SSID1);
+	    FPRINT_DAT(ACSCheckTime);
+	    FPRINT_DAT(AutoChannelSkipList);
+	    FPRINT_DAT(HT_TxStream);
+	    FPRINT_DAT(HT_RxStream);
+	    FPRINT_DAT(HT_EXTCHA);
+#ifndef CONFIG_MT7615_AP_DBDC_MODE /* in dbdc only one variable for bgrscan skip, split for future */
+	    FPRINT_DAT(BgndScanSkipCh);
+#endif
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
+#else
+	    FPRINT_DAT(AutoChannelSelect);
+#endif
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	} else {
+	    fprintf(fp, "WirelessMode=%s\n", nvram_get(mode, "WirelessModeINIC"));
+	    fprintf(fp, "RadioOn=%s\n", nvram_get(mode, "RadioOnINIC"));
+	    fprintf(fp, "TxPower=%s\n", nvram_get(mode, "TxPowerINIC"));
+	    fprintf(fp, "Channel=%s\n", nvram_get(mode, "ChannelINIC"));
+	    fprintf(fp, "BasicRate=%s\n", nvram_get(mode, "BasicRateINIC"));
+	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
+	    fprintf(fp, "SSID1=%s\n", nvram_get(mode, "SSID1INIC"));
+	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
+	    fprintf(fp, "BgndScanSkipCh=%s\n", nvram_get(mode, "BgndScanSkipChINIC"));
+	    fprintf(fp, "BeaconPeriod=%s\n", nvram_get(mode, "BeaconPeriodINIC"));
+	    fprintf(fp, "WPAPSK1=%s\n", nvram_get(mode, "WPAPSK1INIC"));
+	    fprintf(fp, "HT_BW=%s\n", nvram_get(mode, "HT_BWINIC"));
+	    fprintf(fp, "HT_EXTCHA=%s\n", nvram_get(mode, "HT_EXTCHAINIC"));
+	    fprintf(fp, "HT_TxStream=%s\n", nvram_get(mode, "HT_TxStreamINIC"));
+	    fprintf(fp, "HT_RxStream=%s\n", nvram_get(mode, "HT_RxStreamINIC"));
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
+#else
+	    fprintf(fp, "AutoChannelSelect=%s\n", nvram_get(mode, "AutoChannelSelectINIC"));
+#endif
+	}
+#endif
 	FPRINT_DAT(WPAPSK2);
 	FPRINT_DAT(WPAPSK3);
 	FPRINT_DAT(WPAPSK4);
@@ -1128,12 +1125,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(Key4Str7);
 	FPRINT_DAT(Key4Str8);
 
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (inic)
-	    fprintf(fp, "HT_BW=%s\n", nvram_get(mode, "HT_BWINIC"));
-	else
-#endif
-	FPRINT_DAT(HT_BW);
 	FPRINT_DAT(HT_HTC);
 	FPRINT_DAT(HT_RDG);
 	FPRINT_DAT(HT_OpMode);
@@ -1151,19 +1142,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(HT_40MHZ_INTOLERANT);
 	FPRINT_DAT(HT_MIMOPSMode);
 
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (!inic) {
-#endif
-	    FPRINT_DAT(HT_TxStream);
-	    FPRINT_DAT(HT_RxStream);
-	    FPRINT_DAT(HT_EXTCHA);
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	} else {
-	    fprintf(fp, "HT_EXTCHA=%s\n", nvram_get(mode, "HT_EXTCHAINIC"));
-	    fprintf(fp, "HT_TxStream=%s\n", nvram_get(mode, "HT_TxStreamINIC"));
-	    fprintf(fp, "HT_RxStream=%s\n", nvram_get(mode, "HT_RxStreamINIC"));
-	}
-#endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// VHT
 	FPRINT_DAT(VHT_BW);
