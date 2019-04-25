@@ -184,9 +184,9 @@ stop() {
     if [ "$pid" != "" ]; then
 	$LOG "Stopping irqbalance"
         # terminate bndstrg daemon
-        while killall -q bndstrg; do
+        while killall -q irqbalance; do
             usleep 500000
-            killall -q -SIGKILL bndstrg
+            killall -q -SIGKILL irqbalance
         done
     fi
 }
