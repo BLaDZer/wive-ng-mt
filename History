@@ -4637,5 +4637,6 @@
 <br>
 <br>
 <b>8.2.x</b><br>
+1) init.d: six: only local dns server use as relay for ipv6 dns.<br>
 <br>
 <br>

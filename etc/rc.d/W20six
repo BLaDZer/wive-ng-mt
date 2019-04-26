@@ -148,26 +148,26 @@ dhcpradvdreconf() {
 	    fi
 	fi
 
-	# dns servers for clients
-	if [ -e /etc/resolvipv6.conf ]; then
-	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
-	    $LOG "Use DNS recieved from ISP $DNSADRESSES"
-	fi
-
-	if [ "$DNSADRESSES" = "" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
-	    DNSADRESSES="$IPv6DNSPrimary $IPv6DNSSecondary"
-	    $LOG "Use user manual configured DNS $DNSADRESSES"
-	fi
-
-	if [ "$DNSADRESSES" = "" ]; then
-	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
-	    $LOG "Use public google DNS $DNSADRESSES"
-	fi
-
-	# dns relay use with ISP DNS, this temporary for wait DNSMASQ full ready replace ISP servers for ipv6
+	# use local dns server as relay
 	if [ "$dnsPEnabled" = "1" ]; then
-	    DNSRELAYADDRESS=`ip -o -6 addr show dev $lan_if scope global | awk {' print $4 '} | cut -f1 -d"/"`
-	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSRELAYADDRESS"
+	    DNSADRESSES=`ip -o -6 addr show dev $lan_if scope global | awk {' print $4 '} | cut -f1 -d"/"`
+	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSADRESSES"
+	else
+	    # dns servers for clients if local dns relay is off
+	    if [ -e /etc/resolvipv6.conf ]; then
+		DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
+		$LOG "Use DNS recieved from ISP $DNSADRESSES"
+	    fi
+
+	    if [ "$DNSADRESSES" = "" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
+		DNSADRESSES="$IPv6DNSPrimary $IPv6DNSSecondary"
+		$LOG "Use user manual configured DNS $DNSADRESSES"
+	    fi
+
+	    if [ "$DNSADRESSES" = "" ]; then
+		DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
+		$LOG "Use public google DNS $DNSADRESSES"
+	    fi
 	fi
 
 	if [ "$dhcpv6Enabled" = "1" ]; then
@@ -207,7 +207,7 @@ dhcpradvdreconf() {
     		printf "
             	};
 
-                RDNSS $DNSRELAYADDRESS $DNSADRESSES
+                RDNSS $DNSADRESSES
                 {
                         AdvRDNSSLifetime 20;
                 };
