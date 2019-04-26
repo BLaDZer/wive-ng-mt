@@ -637,7 +637,8 @@ rdnssaddr	: IPV6ADDR
 					break;
 				default:
 					flog(LOG_CRIT, "too many addresses in RDNSS section");
-					ABORT;
+					/* ABORT; */
+					break;
 			}
 
 		}
