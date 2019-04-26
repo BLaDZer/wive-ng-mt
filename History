@@ -4640,6 +4640,7 @@
 1) init.d: six: only local dns server use as relay for ipv6 dns.<br>
 2) init.d: six: call reread configs dnsmasq after recive new dns records in dhcp.<br>
 3) init.d: six: add ::1 record for local resolv.<br>
-4) init.d: dnsmasq: compose mixed resolv file for easy reload upstream dns from others places.<br>
+4) init.d: six: avoid unneeded google dns stubs insert to local resolv.<br>
+5) init.d: dnsmasq: compose mixed resolv file for easy reload upstream dns from others places.<br>
 <br>
 <br>

@@ -45,7 +45,7 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
 	    $LOG "Add ISP DNS from ipv6 servers for local resolv"
 	    cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
 	else
-	    if [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
+	    if [ "$IPv6Dhcpc" = "0" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
 		$LOG "Add user ipv6 servers $IPv6DNSPrimary $IPv6DNSSecondary for local resolv"
 		if [ "$IPv6DNSPrimary" != "" ]; then
 		    echo "nameserver $IPv6DNSPrimary" >> $fname
