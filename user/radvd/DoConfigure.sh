@@ -25,6 +25,6 @@ if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTD
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-dependency-tracking --without-check"
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-dependency-tracking --without-check --without-stack-protector"
 
 ./configure $CONFOPTS

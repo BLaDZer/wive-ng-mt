@@ -4592,7 +4592,7 @@
 1) The contract with NAG is complete. This version start new cicle.<br>
 2) build_system: add DemoUI target.<br>
 3) build_system: integrate on-line updater (propriretary wi-cat system, not for public now).<br>
-4) radvd: update to 2.18 version.<br>
+4) radvd: update to 2.18 version (commit 23757690).<br>
 5) radvd: do not stop work if dns servers more then 3.<br>
 6) dropbear: update to 2018.76 version (git commit 2707b602).<br>
 7) libopenssl: up to 1.0.2r version.<br>
