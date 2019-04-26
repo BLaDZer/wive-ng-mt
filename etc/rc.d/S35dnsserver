@@ -108,7 +108,7 @@ get_param() {
     eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock dns_sec dns_diffsrv`
 
     cname="/etc/dnsmasq.conf"
-    fname="/tmp/resolv.conf"
+    fname="/tmp/resolvall.conf"
     hname="/etc/hosts"
 
     cachesize="1024"
