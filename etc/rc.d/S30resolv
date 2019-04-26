@@ -53,6 +53,9 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
 		if [ "$IPv6DNSSecondary" != "" ]; then
 		    echo "nameserver $IPv6DNSSecondary" >> $fname
 		fi
+	    elif [ "$dnsPEnabled" = "1" ]; then
+		$LOG "Generate ipv6 resolv at local."
+		echo "nameserver ::1" >> $fname
 	    else
 		$LOG "Add google ipv6 servers for local resolv"
 		echo "nameserver 2001:4860:4860::8888" >> $fname

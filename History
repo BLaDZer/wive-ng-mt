@@ -4639,6 +4639,7 @@
 <b>8.2.x</b><br>
 1) init.d: six: only local dns server use as relay for ipv6 dns.<br>
 2) init.d: six: call reread configs dnsmasq after recive new dns records in dhcp.<br>
-3) init.d: dnsmasq: compose mixed resolv file for easy reload upstream dns from others places.<br>
+3) init.d: six: add ::1 record for local resolv.<br>
+4) init.d: dnsmasq: compose mixed resolv file for easy reload upstream dns from others places.<br>
 <br>
 <br>
