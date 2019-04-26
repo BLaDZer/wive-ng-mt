@@ -13,6 +13,7 @@ LOG="logger -t dnsserver"
 start() {
     get_param
     gen_hosts
+    gen_resolv
     if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
 	# create dir for extended configs
 	mkdir -p /etc/dnsmasq.d
@@ -68,10 +69,19 @@ gen_hosts() {
     echo "# user-defined entries"			>> /etc/hosts
     echo "$dns_local_hosts" | tr ',' '\t' | tr ';' '\n'	>> /etc/hosts
 
-    # read for all write by root
-    chmod 644 "$cname" > /dev/null 2>&1
-    chmod 644 "$fname" > /dev/null 2>&1
     chmod 644 "$hname" > /dev/null 2>&1
+}
+
+gen_resolv() {
+    # compose mixed ipv4/6 resolv.conf for easy use
+    > $fname
+    if [ -e /etc/resolv.conf ]; then
+	cat /etc/resolv.conf | grep "nameserver" >> $fname
+    fi
+    if [ -e /etc/resolvipv6.conf ]; then
+	cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
+    fi
+    chmod 644 "$fname" > /dev/null 2>&1
 }
 
 gen_sec() {
@@ -98,16 +108,19 @@ get_param() {
     eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock dns_sec dns_diffsrv`
 
     cname="/etc/dnsmasq.conf"
-    fname="/etc/resolv.conf"
+    fname="/tmp/resolv.conf"
     hname="/etc/hosts"
 
     cachesize="1024"
     forwardmax="512"
+
+    chmod 644 "$cname" > /dev/null 2>&1
 }
 
 reload() {
     get_param
     gen_hosts
+    gen_resolv
     is_run=`pidof dnsmasq`
     if [ "$is_run" != "" ]; then
 	$LOG "Send HUP to dnsmasq."

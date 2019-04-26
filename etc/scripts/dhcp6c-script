@@ -16,8 +16,14 @@ if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
         for nameserver in $new_domain_name_servers; do
             echo nameserver $nameserver >> $new_resolv_conf
         done
+	dnsreload="1"
     fi
 fi
 
 $LOG "Call reconfigure radvd/dhcp6s"
 service six dhcpradvdreconf
+
+if [ -e /etc/resolvipv6.conf ] && [ "$dnsreload" = "1" ]; then
+    $LOG "Call dnsmasq reread configs"
+    service dnsserver reload
+fi
