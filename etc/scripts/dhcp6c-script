@@ -23,7 +23,7 @@ fi
 $LOG "Call reconfigure radvd/dhcp6s"
 service six dhcpradvdreconf
 
-if [ -e /etc/resolvipv6.conf ] && [ "$dnsreload" = "1" ]; then
+if [ -e "$new_resolv_conf" ] && [ "$dnsreload" = "1" ]; then
     $LOG "Call dnsmasq reread configs"
     service dnsserver reload
 fi
