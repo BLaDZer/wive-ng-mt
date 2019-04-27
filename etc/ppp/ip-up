@@ -81,6 +81,8 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
 	cp -f /etc/resolv.conf /tmp/resolv.conf.tmp.$PPP_IFACE
 	cat /etc/ppp/resolv.conf /etc/resolv.conf  > /tmp/resolv.$PPP_IFACE
 	cp -f /tmp/resolv.$PPP_IFACE /etc/resolv.conf
+	# sort and uniq dns
+	uniqdns
 	# read for all write by root
 	chmod 644 /etc/resolv.conf > /dev/null 2>&1
     else

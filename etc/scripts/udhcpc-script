@@ -335,6 +335,8 @@ case "$1" in
 			$LOG "Add ipv6 servers for local resolv"
 			grep "nameserver" /etc/resolvipv6.conf >> $RESOLV_CONF
 		    fi
+		    # sort and uniq dns
+		    uniqdns
 		    # read for all write by root
 		    chmod 644 "$RESOLV_CONF" > /dev/null 2>&1
 		fi

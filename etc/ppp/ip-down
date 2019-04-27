@@ -39,6 +39,8 @@ eval `nvram_buf_get 2860 vpnPeerDNS`
 	rm -f /etc/ppp/resolv.conf > /dev/null 2>&1
 	rm -f /tmp/resolv.conf.tmp.$PPP_IFACE > /dev/null 2>&1
 	rm -f /tmp/resolv.$PPP_IFACE > /dev/null 2>&1
+	# sort and uniq dns
+	uniqdns
     else
 	##########################################################
 	# Regenerate resolv only if wan_static_dns on		 #

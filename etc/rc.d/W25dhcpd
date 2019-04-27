@@ -54,8 +54,10 @@ start() {
 		:
 	    else
 		if [ -e /etc/resolv.conf ]; then
+		    # sort and uniq dns
+		    uniqdns
 		    # parse resolv.conf file
-		    servers=`grep nameserver < /etc/resolv.conf | grep -v "::" | uniq | tail -qn2 | awk {' print $2 '}`
+		    servers=`grep nameserver < /etc/resolv.conf | grep -v ":" | uniq | tail -qn2 | awk {' print $2 '}`
 		    dhcpPriDns=""
 		    dhcpSecDns=""
 		    count=0

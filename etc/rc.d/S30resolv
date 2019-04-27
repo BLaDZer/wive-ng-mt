@@ -81,6 +81,8 @@ if [ ! -e /tmp/bootgood ] || [ "$IPv6Dhcpc" = "0" ]; then
 	chmod 644 "$fname6" > /dev/null 2>&1
     fi
 fi
+# sort and uniq dns
+uniqdns
 }
 
 get_param() {

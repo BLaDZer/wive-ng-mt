@@ -153,6 +153,8 @@ dhcpradvdreconf() {
 	    DNSADRESSES=`ip -o -6 addr show dev $lan_if scope global | awk {' print $4 '} | cut -f1 -d"/"`
 	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSADRESSES"
 	else
+	    # sort and uniq dns
+	    uniqdns
 	    # dns servers for clients if local dns relay is off
 	    if [ -e /etc/resolvipv6.conf ] && [ "$IPv6Dhcpc" = "1" ]; then
 		DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : | grep -v "nameserver ::1" |  sed -e 's/nameserver//g')`
