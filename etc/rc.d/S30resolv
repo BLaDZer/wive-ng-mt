@@ -12,6 +12,9 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
     rm -f $fname
     touch $fname
 
+    # need full recompose
+    fullregen="1"
+
     # add domain name option
     echo "domain $HostName.lo" >> $fname
 
@@ -39,38 +42,53 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
 	    $LOG "Add ISP DNS from vpn servers for local resolv"
 	    cat /etc/ppp/resolv.conf | grep "nameserver" >> $fname
     fi
-
-    if [ "$IPv6OpMode" != "0" ]; then
-	if [ -e /etc/resolvipv6.conf ]; then
-	    $LOG "Add ISP DNS from ipv6 servers for local resolv"
-	    cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
-	else
-	    if [ "$IPv6Dhcpc" = "0" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
-		$LOG "Add user ipv6 servers $IPv6DNSPrimary $IPv6DNSSecondary for local resolv"
-		if [ "$IPv6DNSPrimary" != "" ]; then
-		    echo "nameserver $IPv6DNSPrimary" >> $fname
-		fi
-		if [ "$IPv6DNSSecondary" != "" ]; then
-		    echo "nameserver $IPv6DNSSecondary" >> $fname
-		fi
-	    elif [ "$dnsPEnabled" = "1" ]; then
-		$LOG "Generate ipv6 resolv at local."
-		echo "nameserver ::1" >> $fname
-	    else
-		$LOG "Add google ipv6 servers for local resolv"
-		echo "nameserver 2001:4860:4860::8888" >> $fname
-		echo "nameserver 2001:4860:4860::8844" >> $fname
-	    fi
-	fi
-    fi
-    # read for all write by root
     chmod 644 "$fname" > /dev/null 2>&1
+fi
+
+# /etc/resolvipv6.conf update allways for static/tunneled
+# add to local /etc/resolv.conf only if full resolv regenerate need
+if [ ! -e /tmp/bootgood ] || [ "$IPv6Dhcpc" = "0" ]; then
+    if [ "$IPv6OpMode" != "0" ]; then
+	# drop current
+	rm -f $fname6
+	touch $fname6
+
+	if [ "$IPv6Dhcpc" = "0" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
+	    $LOG "Add user ipv6 dns servers $IPv6DNSPrimary $IPv6DNSSecondary"
+	    if [ "$IPv6DNSPrimary" != "" ]; then
+	        echo "nameserver $IPv6DNSPrimary" >> $fname6
+	    fi
+	    if [ "$IPv6DNSSecondary" != "" ]; then
+		echo "nameserver $IPv6DNSSecondary" >> $fname6
+	    fi
+	elif [ "$dnsPEnabled" = "1" ]; then
+	    $LOG "Generate ipv6 resolv at local."
+	    echo "nameserver ::1" >> $fname6
+	else
+	    $LOG "Add google ipv6 servers"
+	    echo "nameserver 2001:4860:4860::8888" >> $fname6
+	    echo "nameserver 2001:4860:4860::8844" >> $fname6
+	fi
+
+	# v6 exist in local resolv
+	localexist=`grep -c ":" $fname`
+
+	# copy results stub to local resolv
+	if [ "$fullregen" = "1" ] || [ "$localexist" = "0" ]; then
+	    $LOG "Install ipv6 DNS servers to local resolv."
+	    cat $fname6 | grep "nameserver" >> $fname
+	fi
+	chmod 644 "$fname6" > /dev/null 2>&1
+    fi
 fi
 }
 
 get_param() {
     eval `nvram_buf_get 2860 wan_primary_dns wan_secondary_dns IPv6DNSPrimary IPv6DNSSecondary vpnPeerDNS`
     fname="/etc/resolv.conf"
+    fname6="/etc/resolvipv6.conf"
+
+    fullregen="0"
 
     #if no file create
     if [ ! -e $fname ]; then

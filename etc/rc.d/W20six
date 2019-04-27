@@ -154,8 +154,8 @@ dhcpradvdreconf() {
 	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSADRESSES"
 	else
 	    # dns servers for clients if local dns relay is off
-	    if [ -e /etc/resolvipv6.conf ]; then
-		DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
+	    if [ -e /etc/resolvipv6.conf ] && [ "$IPv6Dhcpc" = "1" ]; then
+		DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : | grep -v "nameserver ::1" |  sed -e 's/nameserver//g')`
 		$LOG "Use DNS recieved from ISP $DNSADRESSES"
 	    fi
 

@@ -332,7 +332,7 @@ case "$1" in
 	    		echo "nameserver 8.8.4.4" >> $RESOLV_CONF
 		    fi
 		    if [ "$IPv6OpMode" != "0" ] && [ -e /etc/resolvipv6.conf ]; then
-			$LOG "Add ISP ipv6 servers for local resolv"
+			$LOG "Add ipv6 servers for local resolv"
 			grep "nameserver" /etc/resolvipv6.conf >> $RESOLV_CONF
 		    fi
 		    # read for all write by root
