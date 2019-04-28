@@ -93,7 +93,7 @@ static void formVPNSetup(webs_t* wp, char_t *path, char_t *query)
  */
 static int getDns(webs_t *wp, char** params, int nparams)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     char buf[80] = {0}, ns_str[11], dns[16] = {0};
     int idx = 0, req = 0;
 
@@ -112,7 +112,17 @@ static int getDns(webs_t *wp, char** params, int nparams)
         return NGX_OK; // do not output anything
     }
 
-    fp = fopen("/etc/resolv.conf", "r");
+    int dnsProxyEnabled = ngx_nvram_get_int(wp, "dnsPEnabled", 0);
+
+    if (dnsProxyEnabled) {
+        fp = fopen("/tmp/resolvall.conf", "r");
+    }
+
+    if (NULL == fp)
+    {
+        fp = fopen("/etc/resolv.conf", "r");
+    }
+
     if (NULL == fp)
     {
         return outWrite(T(""));
@@ -123,6 +133,10 @@ static int getDns(webs_t *wp, char** params, int nparams)
         if (sscanf(buf, "%s %s", ns_str, dns) != 2)
             continue;
         if (strcasecmp(ns_str, "nameserver") != 0)
+            continue;
+        if (strcmp(dns, "127.0.0.1") == 0)
+            continue;
+        if (strcmp(dns, "::1") == 0)
             continue;
 
         idx++;
@@ -1160,7 +1174,7 @@ parameter_fetch_t service_ipv6_flags[] =
 static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *opmode;
-	char_t *ipaddr, *isp_prefix, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
+	char_t *ipaddr, *isp_prefix, *prefix_len, *dhcp6c_enable, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
@@ -1175,11 +1189,14 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 				ngx_nvram_set(wp, "IPv6ManualMTU", "0");
 	}
 	else {
-    		opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
+		opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
+		int opmode_int = strToIntDef(opmode, 0);
 
 		nvram_init(RT2860_NVRAM);
 
-		if (!strcmp(opmode, "1")) {
+		dhcp6c_enable = websGetVar(wp, T("dhcp6c_enable"), T("off"));
+
+		if (opmode_int > 1 || (opmode_int == 1 && !strcmp(dhcp6c_enable, "off"))) {
 			ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
 			prefix_len = websGetVar(wp, T("ipv6_lan_prefix_len"), T(""));
 			wan_ipaddr = websGetVar(wp, T("ipv6_wan_ipaddr"), T(""));
@@ -1197,9 +1214,14 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 			ngx_nvram_bufset(wp, "IPv6DNSPrimary", srv_dns_primary);
 			ngx_nvram_bufset(wp, "IPv6DNSSecondary", srv_dns_secondary);
 			ngx_nvram_bufset(wp, "IPv6ManualMTU", ipv6_manual_mtu);
+		}
+
+		if (opmode_int == 1) {
+			ipv6_manual_mtu = websGetVar(wp, T("ipv6_manual_mtu"), T("0"));
+			ngx_nvram_bufset(wp, "IPv6ManualMTU", ipv6_manual_mtu);
 #if defined (CONFIG_IPV6_SIT) || defined (CONFIG_IPV6_SIT_MODULE)
 #if defined (CONFIG_IPV6_SIT_6RD)
-		} else if (!strcmp(opmode, "2")) {
+		} else if (opmode_int == 2) {
 			ipaddr = websGetVar(wp, T("ipv6_6rd_prefix"), T(""));
 			prefix_len = websGetVar(wp, T("ipv6_6rd_prefix_len"), T(""));
 			srv_ipaddr = websGetVar(wp, T("ipv6_6rd_border_ipaddr"), T(""));
@@ -1207,7 +1229,7 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 			ngx_nvram_bufset(wp, "IPv6PrefixLen", prefix_len);
 			ngx_nvram_bufset(wp, "IPv6SrvAddr", srv_ipaddr);
 #endif
-		} else if (!strcmp(opmode, "3")) {
+		} else if (opmode_int == 3) {
 			ipaddr = websGetVar(wp, T("ipv6_6to4_prefix"), T(""));
 			isp_prefix = websGetVar(wp, T("ipv6_6to4_isp_prefix"), T("off"));
 			prefix_len = websGetVar(wp, T("ipv6_6to4_prefix_len"), T(""));

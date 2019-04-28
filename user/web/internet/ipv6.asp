@@ -121,7 +121,9 @@
 			}
 
 			function checkValues(form) {
-				if ((form.ipv6_opmode.value == "1") && (!form.dhcp6c_enable.checked)) {
+				var is_opmode_static = form.ipv6_opmode.value == '2' || form.ipv6_opmode.value == '3' || (form.ipv6_opmode.value == '1' && !form.dhcp6c_enable.checked);
+
+				if (is_opmode_static) {
 					var ipv6_lan = form.ipv6_lan_ipaddr.value.replace(/\s+/g, '');
 					var ipv6_lan_prefix = form.ipv6_lan_prefix_len.value.replace(/\s+/g, '');
 					var ipv6_wan = form.ipv6_wan_ipaddr.value.replace(/\s+/g, '');
@@ -199,7 +201,9 @@
 					else {
 						document.getElementById('ipv6_manual_mtu').value = +document.getElementById('ipv6_manual_mtu').value;
 					}
-				} else if (form.ipv6_opmode.value == '2') {
+				}
+
+				if (form.ipv6_opmode.value == '2') {
 					var v6rd_prefix = form.ipv6_6rd_prefix.value.replace(/\s+/g, '');
 					var v6rd_prefix_len = form.ipv6_6rd_prefix_len.value.replace(/\s+/g, '');
 					var v6rd_border_ipaddr = form.ipv6_6rd_border_ipaddr.value.replace(/\s+/g, '');
@@ -272,15 +276,16 @@
 
 			function SwitchOpMode(form) {
 				var opmode = form.ipv6_opmode.value;
+				var is_opmode_static = opmode == '2' || opmode == '3' || (opmode == '1' && !form.dhcp6c_enable.checked);
 
 				enableElements( [ form.ipv6_allow_forward ], opmode != '0');
 				enableElements( [ form.ipv6_Ipv6InVPN ], opmode != '0' && NVRAM_vpnEnabled == 'on');
 				enableElements( [ form.dhcp6c_enable ], opmode == '1');
-				enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], opmode == '1' && !form.dhcp6c_enable.checked);
+				enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], is_opmode_static);
 				enableElements( [ form.ipv6_6rd_prefix, form.ipv6_6rd_prefix_len, form.ipv6_6rd_border_ipaddr ], BUILD_IPV6_6RD == '1' && opmode == '2');
 				enableElements( [ form.IPv6SrvAddr ], opmode == '3');
 
-				if (opmode == '1') {
+				if (is_opmode_static) {
 					form.ipv6_lan_ipaddr.value				= NVRAM_IPv6IPAddr;
 					form.ipv6_lan_prefix_len.value			= NVRAM_IPv6PrefixLen;
 					form.ipv6_wan_ipaddr.value				= NVRAM_IPv6WANIPAddr;
@@ -288,7 +293,8 @@
 					form.ipv6_static_gw.value				= NVRAM_IPv6GWAddr;
 					form.ipv6_static_dns_primary.value		= NVRAM_IPv6DNSPrimary;
 					form.ipv6_static_dns_secondary.value	= NVRAM_IPv6DNSSecondary;
-				} else if (opmode == '2') {
+				}
+				if (opmode == '2') {
 					form.ipv6_6rd_prefix.value				= NVRAM_IPv6IPAddr;
 					form.ipv6_6rd_prefix_len.value			= NVRAM_IPv6PrefixLen;
 					form.ipv6_6rd_border_ipaddr.value		= NVRAM_IPv6SrvAddr;
@@ -300,13 +306,17 @@
 					form.ipv6_6to4_dns_secondary.value		= NVRAM_IPv6DNSSecondary;
 				}
 
-				displayElement( ['IPv6AllowForwardRowDisplay', 'v6iana_tr'], opmode != '0');
+				displayElement( ['IPv6AllowForwardRowDisplay'], opmode != '0');
 				displayElement( 'v6invpn_tr', opmode != '0' && NVRAM_vpnEnabled == 'on');
 				displayElement( [ 'dhcp6cRowDisplay', 'v6StaticMTU_tr' ], opmode == '1');
-				displayElement( 'v6StaticTable', opmode == '1' && !form.dhcp6c_enable.checked);
+				displayElement( 'v6StaticTable', is_opmode_static);
 				displayElement( 'v66rdTable', BUILD_IPV6_6RD == '1' && opmode == '2');
 				displayElement( [ '6to4Table' ], opmode == '3');
 				displayElement( 'daemons', opmode != '0' && (BUILD_RADVD == '1' || BUILD_DHCPV6 == '1'));
+
+				var dhcp6c_checked = opmode == '1' && form.dhcp6c_enable.checked;
+				displayElement( ['v6iana_tr'], dhcp6c_checked);
+				if (!dhcp6c_checked) form.ipv6_ianaDisable.checked = false;
 
 				disableControlsByAuth();
 			}
