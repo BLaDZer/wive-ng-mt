@@ -1174,7 +1174,7 @@ parameter_fetch_t service_ipv6_flags[] =
 static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *opmode;
-	char_t *ipaddr, *isp_prefix, *prefix_len, *dhcp6c_enable, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
+	char_t *ipaddr, *isp_prefix, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
@@ -1194,9 +1194,7 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 
 		nvram_init(RT2860_NVRAM);
 
-		dhcp6c_enable = websGetVar(wp, T("dhcp6c_enable"), T("off"));
-
-		if (opmode_int > 1 || (opmode_int == 1 && !strcmp(dhcp6c_enable, "off"))) {
+		if (opmode_int == 1) {
 			ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
 			prefix_len = websGetVar(wp, T("ipv6_lan_prefix_len"), T(""));
 			wan_ipaddr = websGetVar(wp, T("ipv6_wan_ipaddr"), T(""));
@@ -1213,11 +1211,6 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 			ngx_nvram_bufset(wp, "IPv6GWAddr", srv_ipaddr);
 			ngx_nvram_bufset(wp, "IPv6DNSPrimary", srv_dns_primary);
 			ngx_nvram_bufset(wp, "IPv6DNSSecondary", srv_dns_secondary);
-			ngx_nvram_bufset(wp, "IPv6ManualMTU", ipv6_manual_mtu);
-		}
-
-		if (opmode_int == 1) {
-			ipv6_manual_mtu = websGetVar(wp, T("ipv6_manual_mtu"), T("0"));
 			ngx_nvram_bufset(wp, "IPv6ManualMTU", ipv6_manual_mtu);
 #if defined (CONFIG_IPV6_SIT) || defined (CONFIG_IPV6_SIT_MODULE)
 #if defined (CONFIG_IPV6_SIT_6RD)
