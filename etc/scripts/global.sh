@@ -445,6 +445,10 @@ uniqdns() {
 	sort -u /etc/resolv.conf > /tmp/resolv.conf.sort
 	mv -f /tmp/resolv.conf.sort /etc/resolv.conf
     fi
+    if [ -e /etc/resolvipv4.conf ]; then
+	sort -u /etc/resolv.conf > /tmp/resolv.conf.sort
+	mv -f /tmp/resolv.conf.sort /etc/resolv.conf
+    fi
     if [ -e /etc/resolvipv6.conf ]; then
 	sort -u /etc/resolvipv6.conf > /tmp/resolvipv6.conf.sort
 	mv -f /tmp/resolvipv6.conf.sort /etc/resolvipv6.conf

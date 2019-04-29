@@ -3,27 +3,23 @@
 # Wive-NG dhcp6c script
 
 LOG="logger -t dhcp6c"
+new_resolv_conf=/etc/resolvipv6.conf
 
-if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then
-    new_resolv_conf=/etc/resolvipv6.conf
-    rm -f $new_resolv_conf
-    if [ -n "$new_domain_name" ]; then
-	$LOG "ipv6: domain name - $new_domain_name"
-        echo search $new_domain_name >> $new_resolv_conf
-    fi
+if [ -n "$new_domain_name_servers" ]; then
     if [ -n "$new_domain_name_servers" ]; then
 	$LOG "ipv6: domain name servers - $new_domain_name_servers"
         for nameserver in $new_domain_name_servers; do
-            echo nameserver $nameserver >> $new_resolv_conf
+            echo nameserver $nameserver > $new_resolv_conf
         done
 	dnsreload="1"
     fi
 fi
 
-$LOG "Call reconfigure radvd/dhcp6s"
-service six dhcpradvdreconf
-
 if [ -e "$new_resolv_conf" ] && [ "$dnsreload" = "1" ]; then
-    $LOG "Call dnsmasq reread configs"
+    # regenerate resolv conf and reload dnsmasq config for apply
+    service resolv restart
     service dnsserver reload
 fi
+
+$LOG "Call reconfigure radvd/dhcp6s for apply new params from dhcp"
+service six dhcpradvdreconf

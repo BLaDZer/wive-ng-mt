@@ -30,26 +30,6 @@ eval `nvram_buf_get 2860 vpnPeerDNS`
 	rm -f $PPP_FIREWALL
     fi
 
-    #replace dns to default
-    if [ "$vpnPeerDNS" = "on" ] && [ -e /etc/ppp/resolv.conf ] && [ -e /tmp/resolv.conf.tmp.$PPP_IFACE ]; then
-	$LOG "Restore DNS from pppd"
-	cp -f /tmp/resolv.conf.tmp.$PPP_IFACE /etc/resolv.conf
-	# read for all write by root
-	chmod 644 /etc/resolv.conf > /dev/null 2>&1
-	rm -f /etc/ppp/resolv.conf > /dev/null 2>&1
-	rm -f /tmp/resolv.conf.tmp.$PPP_IFACE > /dev/null 2>&1
-	rm -f /tmp/resolv.$PPP_IFACE > /dev/null 2>&1
-	# sort and uniq dns
-	uniqdns
-    else
-	##########################################################
-	# Regenerate resolv only if wan_static_dns on		 #
-	##########################################################
-	if [ "$wan_static_dns" = "on" ]; then
-	    service resolv start
-	fi
-    fi
-
     #remove portforward rules
     if [ -e /etc/portforward_vpn ]; then
 	/etc/portforward_vpn "D" "$PPP_IFACE" "$PPP_LOCAL" > /dev/null 2>&1

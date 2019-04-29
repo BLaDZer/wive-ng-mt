@@ -9,14 +9,8 @@ start() {
 get_param
 if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
     # drop current
-    rm -f $fname
-    touch $fname
-
-    # need full recompose
-    fullregen="1"
-
-    # add domain name option
-    echo "domain $HostName.lo" >> $fname
+    rm -f $fname4
+    touch $fname4
 
     # put manual dns to resolv.conf
     # if nameservers is null add 127.0.0.1 for local dns use
@@ -24,25 +18,19 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
     if [ "$wan_primary_dns" != "" -o "$wan_secondary_dns" != "" ] && [ "$wan_static_dns" = "on" ] && [ "$purepppoemode" != "1" -o "$vpnPeerDNS" != "on" ]; then
 	$LOG "Generate resolv DNS1: $wan_primary_dns DNS2: $wan_secondary_dns"
 	if [ "$wan_primary_dns" != "" ]; then
-	    echo "nameserver $wan_primary_dns" >> $fname
+	    echo "nameserver $wan_primary_dns" >> $fname4
 	fi
 	if [ "$wan_secondary_dns" != "" ]; then
-	    echo "nameserver $wan_secondary_dns" >> $fname
+	    echo "nameserver $wan_secondary_dns" >> $fname4
 	fi
     elif [ "$dnsPEnabled" = "1" ]; then
 	$LOG "Generate resolv at local."
-	echo "nameserver 127.0.0.1" >> $fname
+	echo "nameserver 127.0.0.1" >> $fname4
     else
 	$LOG "Not correct DNS use Google dns for fallback"
-	echo "nameserver 8.8.8.8" >> $fname
-	echo "nameserver 8.8.4.4" >> $fname
+	echo "nameserver 8.8.8.8" >> $fname4
+	echo "nameserver 8.8.4.4" >> $fname4
     fi
-
-    if [ "$vpnEnabled" = "on" ] && [ "$vpnPeerDNS" = "on" ] && [ -e /etc/ppp/resolv.conf ]; then
-	    $LOG "Add ISP DNS from vpn servers for local resolv"
-	    cat /etc/ppp/resolv.conf | grep "nameserver" >> $fname
-    fi
-    chmod 644 "$fname" > /dev/null 2>&1
 fi
 
 # /etc/resolvipv6.conf update allways for static/tunneled
@@ -69,25 +57,44 @@ if [ ! -e /tmp/bootgood ] || [ "$IPv6Dhcpc" = "0" ]; then
 	    echo "nameserver 2001:4860:4860::8888" >> $fname6
 	    echo "nameserver 2001:4860:4860::8844" >> $fname6
 	fi
-
-	# v6 exist in local resolv
-	localexist=`grep -c ":" $fname`
-
-	# copy results stub to local resolv
-	if [ "$fullregen" = "1" ] || [ "$localexist" = "0" ]; then
-	    $LOG "Install ipv6 DNS servers to local resolv."
-	    cat $fname6 | grep "nameserver" >> $fname
-	fi
 	chmod 644 "$fname6" > /dev/null 2>&1
     fi
 fi
+
+#####################################################
+# compose new /etc/resolv.conf
+#####################################################
+
+# drop current
+rm -f $fname
+touch $fname
+
+# add domain name option
+echo "domain $HostName.lo" >> $fname
+
+if [ -e $fname4 ]; then
+    $LOG "Install ipv4 DNS servers to local resolv."
+    cat $fname4 | grep "nameserver" >> $fname
+fi
+if [ "$IPv6OpMode" != "0" ] && [ -e $fname6 ]; then
+    $LOG "Install ipv6 DNS servers to local resolv."
+    cat $fname6 | grep "nameserver" >> $fname
+fi
+if [ "$vpnEnabled" = "on" ] && [ "$vpnPeerDNS" = "on" ] && [ -e /etc/ppp/resolv.conf ]; then
+    $LOG "Add ISP DNS from vpn servers for local resolv"
+    cat /etc/ppp/resolv.conf | grep "nameserver" >> $fname
+fi
+
 # sort and uniq dns
 uniqdns
+
+chmod 644 "$fname" > /dev/null 2>&1
 }
 
 get_param() {
     eval `nvram_buf_get 2860 wan_primary_dns wan_secondary_dns IPv6DNSPrimary IPv6DNSSecondary vpnPeerDNS`
     fname="/etc/resolv.conf"
+    fname4="/etc/resolvipv4.conf"
     fname6="/etc/resolvipv6.conf"
 
     fullregen="0"

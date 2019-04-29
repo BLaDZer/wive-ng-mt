@@ -47,11 +47,9 @@ elif [ "$MODE" = "misc" ]; then
 fi
 
 ##########################################################
-# Regenerate resolv only if wan_static_dns on
+# Regenerate resolv for all times
 ##########################################################
-if [ "$wan_static_dns" = "on" ]; then
-    service resolv restart
-fi
+service resolv restart
 
 ##########################################################
 # Always reload some services				 #

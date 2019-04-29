@@ -8,7 +8,7 @@
 [ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
 
 LOG="logger -t udhcpc"
-RESOLV_CONF="/etc/resolv.conf"
+RESOLV_CONF="/etc/resolvipv4.conf"
 WINS_CONF="/tmp/wins.dhcp"
 
 # All route list
@@ -331,12 +331,6 @@ case "$1" in
 	    		echo "nameserver 8.8.8.8" >> $RESOLV_CONF
 	    		echo "nameserver 8.8.4.4" >> $RESOLV_CONF
 		    fi
-		    if [ "$IPv6OpMode" != "0" ] && [ -e /etc/resolvipv6.conf ]; then
-			$LOG "Add ipv6 servers for local resolv"
-			grep "nameserver" /etc/resolvipv6.conf >> $RESOLV_CONF
-		    fi
-		    # sort and uniq dns
-		    uniqdns
 		    # read for all write by root
 		    chmod 644 "$RESOLV_CONF" > /dev/null 2>&1
 		fi

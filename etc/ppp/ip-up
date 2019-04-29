@@ -75,25 +75,6 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
         /etc/routes_ppp_replace replace $PPP_IFACE
     fi
 
-    #replace dns from pppd
-    if [ "$vpnPeerDNS" = "on" ] && [ -e /etc/ppp/resolv.conf ]; then
-	$LOG "Replace DNS from pppd"
-	cp -f /etc/resolv.conf /tmp/resolv.conf.tmp.$PPP_IFACE
-	cat /etc/ppp/resolv.conf /etc/resolv.conf  > /tmp/resolv.$PPP_IFACE
-	cp -f /tmp/resolv.$PPP_IFACE /etc/resolv.conf
-	# sort and uniq dns
-	uniqdns
-	# read for all write by root
-	chmod 644 /etc/resolv.conf > /dev/null 2>&1
-    else
-	##########################################################
-	# Regenerate resolv only if wan_static_dns on		 #
-	##########################################################
-	if [ "$wan_static_dns" = "on" ]; then
-	    service resolv start
-	fi
-    fi
-
     PPP_FIREWALL="/tmp/ppp_firewall_${PPP_IFACE}"
 
     #########################GENERATE VPN NETFILTER SCRIPT########################################################################

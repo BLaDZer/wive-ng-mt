@@ -75,17 +75,7 @@ gen_hosts() {
 gen_resolv() {
     # compose mixed ipv4/6 resolv.conf for easy use
     # filter loopback, sort and uniq
-    > $fname
-    if [ -e /etc/resolv.conf ] && [ -e /etc/resolvipv6.conf ]; then
-	cat /etc/resolv.conf /etc/resolvipv6.conf | grep "nameserver" | grep -vE "nameserver ::1|nameserver 127.0.0.1" | sort -u >> $fname
-    else
-	if [ -e /etc/resolv.conf ]; then
-	    cat /etc/resolv.conf | grep "nameserver" | grep -vE "nameserver ::1|nameserver 127.0.0.1" >> $fname
-	fi
-	if [ -e /etc/resolvipv6.conf ]; then
-	    cat /etc/resolvipv6.conf | grep "nameserver" | grep -vE "nameserver ::1|nameserver 127.0.0.1" >> $fname
-	fi
-    fi
+    cat /etc/resolv.conf | grep "nameserver" | grep -vE "nameserver ::1|nameserver 127.0.0.1"  | sort -u > $fname
     chmod 644 "$fname" > /dev/null 2>&1
 }
 
