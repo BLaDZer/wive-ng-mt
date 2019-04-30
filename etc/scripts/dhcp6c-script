@@ -6,13 +6,12 @@ LOG="logger -t dhcp6c"
 new_resolv_conf=/etc/resolvipv6.conf
 
 if [ -n "$new_domain_name_servers" ]; then
-    if [ -n "$new_domain_name_servers" ]; then
-	$LOG "ipv6: domain name servers - $new_domain_name_servers"
-        for nameserver in $new_domain_name_servers; do
-            echo nameserver $nameserver > $new_resolv_conf
-        done
-	dnsreload="1"
-    fi
+    $LOG "ipv6: domain name servers - $new_domain_name_servers"
+    rm -f "$new_resolv_conf"
+    for nameserver in $new_domain_name_servers; do
+	echo nameserver $nameserver >> $new_resolv_conf
+    done
+    dnsreload="1"
 fi
 
 if [ -e "$new_resolv_conf" ] && [ "$dnsreload" = "1" ]; then
