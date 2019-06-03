@@ -74,7 +74,7 @@ udhcpc_conf() {
     if [ "$dhcpVendorClass" != "" ]; then
 	dhcpVendorClass="-V $dhcpVendorClass"
     else
-	dhcpVendorClass="Wi-CAT"
+	dhcpVendorClass="-V Wi-CAT"
     fi
     if [ "$wan_manual_mtu" = "0" ] || [ "$wan_manual_mtu" = "" ]; then
 	wan_manual_mtu="-O mtu"
