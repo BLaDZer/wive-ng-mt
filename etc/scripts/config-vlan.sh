@@ -36,19 +36,17 @@ link_up() {
 	# arg1:  phy address.
 	state=$(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi")
 	# Get state: $state
-	let "state &= 0xf7ff"
+	let "state |= 0x9000"
 	# Modded state: $(printf "0x%x" $state)
 	# power up
 	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $state)	> /dev/null 2>&1
-	# link up
-	mii_mgr -s -p $1 -r 0 -v 0x9000				> /dev/null 2>&1
 }
 
 link_down() {
 	# arg1:  phy address.
 	state=$(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi")
 	# Get state: $state
-	let "state |= 0x800"
+	let "state |= 0x0800"
 	# Modded state: $(printf "0x%x" $state)
 	# power down
 	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $state)	> /dev/null 2>&1
