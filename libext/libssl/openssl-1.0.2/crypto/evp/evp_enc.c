@@ -319,7 +319,7 @@ int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher,
 
 static int evp_EncryptDecryptUpdate(EVP_CIPHER_CTX *ctx,
                                     unsigned char *out, int *outl,
-                      const unsigned char *in, int inl)
+                                    const unsigned char *in, int inl)
 {
     int i, j, bl;
 

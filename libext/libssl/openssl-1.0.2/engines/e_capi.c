@@ -923,12 +923,12 @@ int capi_rsa_priv_dec(int flen, const unsigned char *from,
 #endif
     default:
         {
-        char errstr[10];
-        BIO_snprintf(errstr, 10, "%d", padding);
-        CAPIerr(CAPI_F_CAPI_RSA_PRIV_DEC, CAPI_R_UNSUPPORTED_PADDING);
-        ERR_add_error_data(2, "padding=", errstr);
-        return -1;
-    }
+            char errstr[10];
+            BIO_snprintf(errstr, 10, "%d", padding);
+            CAPIerr(CAPI_F_CAPI_RSA_PRIV_DEC, CAPI_R_UNSUPPORTED_PADDING);
+            ERR_add_error_data(2, "padding=", errstr);
+            return -1;
+        }
     }
 
     /* Create temp reverse order version of input */
