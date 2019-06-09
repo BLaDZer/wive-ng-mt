@@ -4645,9 +4645,10 @@
 6) init.d: dnsmasq: compose mixed resolv file for easy reload upstream dns from others places.<br>
 7) init.d: fix default vendor class.<br>
 8) init.d: do not touch polling phy mode at reinit (remove rudimetal workaround).<br>
-9) openssl: up to 1.0.2s.<br>
-10) webui: fix static dns for ipv6 in some mode show.<br>
-11) webui: fix read current dns server used for relay.<br>
-12) webui: some review and cleanup.<br>
+9) init.d: fix disable force renew dhcp from port link up.<br>
+10) openssl: up to 1.0.2s.<br>
+11) webui: fix static dns for ipv6 in some mode show.<br>
+12) webui: fix read current dns server used for relay.<br>
+13) webui: some review and cleanup.<br>
 <br>
 <br>

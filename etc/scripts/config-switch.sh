@@ -121,6 +121,8 @@ set_dhcptouch_portnum() {
 	    sysctl -wq net.ipv4.send_sigusr_dhcpc=9
 	else
 	    if [ "$ForceRenewDHCP" != "0" ] && [ "$wan_port" != "" ]; then
+		eval `nvram_buf_get 2860 ForceRenewDHCP`
+
 		# configure event wait port
 		if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
 		    # extPHY use static WAN at phy N=5
