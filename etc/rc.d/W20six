@@ -306,7 +306,11 @@ dhcpcreconf() {
 	    fi
 	fi
 	SLAID="sla-id 0;"
-	SLALEN="sla-len 8;"
+	if [ "$IPv6SlaLen" = "" ]; then
+	    SLALEN="sla-len 16;"
+	else
+	    SLALEN="sla-len $IPv6SlaLen;"
+	fi
 
 	printf "
 	interface $six_wan_if {
@@ -345,7 +349,7 @@ dhcpcstop() {
 
 get_param() {
     eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen \
-	    IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary IPv6ManualMTU IPv6DisableIANA IPv6ISPPrefix`
+	    IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary IPv6ManualMTU IPv6DisableIANA IPv6ISPPrefix IPv6SlaLen`
 
     if [ "$SysLogd" = "1" ]; then
 	logto="syslog"
