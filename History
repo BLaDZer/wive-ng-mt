@@ -4651,5 +4651,6 @@
 12) webui: fix static dns for ipv6 in some mode show.<br>
 13) webui: fix read current dns server used for relay.<br>
 14) webui: some review and cleanup.<br>
+15) kernel: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
 <br>
 <br>
