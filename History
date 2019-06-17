@@ -4653,5 +4653,6 @@
 14) webui: some review and cleanup.<br>
 15) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
 16) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
+17) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
 <br>
 <br>
