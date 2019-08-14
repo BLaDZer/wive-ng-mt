@@ -4646,14 +4646,17 @@
 7) init.d: fix default vendor class.<br>
 8) init.d: do not touch polling phy mode at reinit (remove rudimetal workaround).<br>
 9) init.d: fix disable force renew dhcp from port link up.<br>
-10) openssl: up to 1.0.2s.<br>
-11) busybox: vi fix delete line issue.<br>
-12) webui: fix static dns for ipv6 in some mode show.<br>
-13) webui: fix read current dns server used for relay.<br>
-14) webui: some review and cleanup.<br>
-15) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
-16) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
-17) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
-18) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
+10) init.d: fix release dhcp adress and pppoe session terminate at soft router reboot.<br>
+11) init.d: optimize unload script.<br>
+12) sysctl: use arp notify instead of reply for any interace of arp request.<br>
+13) openssl: up to 1.0.2s.<br>
+14) busybox: vi fix delete line issue.<br>
+15) webui: fix static dns for ipv6 in some mode show.<br>
+16) webui: fix read current dns server used for relay.<br>
+17) webui: some review and cleanup.<br>
+18) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
+19) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
+20) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
+21) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
 <br>
 <br>

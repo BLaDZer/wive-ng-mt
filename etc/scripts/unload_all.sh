@@ -6,49 +6,45 @@
 # do not stop syslog/klog !
 #############################
 
-stop_serv="radius chillispot transmission samba xupnp radvd dynroute shaper crontab ddns udpxy miniupnpd \
-	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cwmpd cdp iappd watchdog syslog"
+stop_serv="hotplug bndstr radius chillispot transmission samba xupnpd dynroute crontab ddns udpxy miniupnpd \
+	    igmp_proxy ntp snmpd parprouted irqbalance lld2d lldpd cdp iappd dnsserver inetd six dhcpd"
 
-kill_apps="chilli_stat chilli transmission-daemon smbd nmbd xupnpd udhcpd dhcp6s radvd zebra ripd crond igmpproxy \
-	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd haveged radiusd syslogd klogd"
+kill_apps="chilli_stat haveged butcheck"
 
-unload_modules() {
-    echo "Unload modules"
-    # unload all unused modules
-    rmmod_mod=`lsmod | awk {' print $1'}`
-    for mod in $rmmod_mod
-    do
-	if [ "$mod" != "mt7610_ap" -a "$mod" != "mt76x2_ap" -a "$mod" != "mt76x2_sta" -a "$mod" != "mt76x3_ap" -a "$mod" != "hw_nat" ]; then
-    	    rmmod $mod > /dev/null 2>&1
-	fi
-    done
-    rmmod -a
-}
+eval `nvram_buf_get 2860 RemoteManagement`
+
+if [ "$1" = "REBOOT" ] || [ "$RemoteManagement" != "2" ]; then
+    # stop vpn and wan for correct terminate
+    # pppoe session and DHCP address release
+    stop_serv="$stop_serv vpnhelper wan"
+fi
 
 unload_apps() {
-    echo "Stop services." # first step stop services
+    echo "Stop services."
+    # first stop adfilter (more and more ram usage)
+    service dnsserver adstop
     for serv in $stop_serv
     do
-	service $serv stop > /dev/null 2>&1
-	# stop ext scripts logic for dnsmasq
-	if [ "$serv" = "dnsmasq" ]; then
-	    service $serv adstop > /dev/null 2>&1
-	fi
+	service $serv stop
     done
+
+    # free caches
+    sync
 
     echo "Kill aplications." # second step terminate and kill application if not correct stopped
     for app in $kill_apps
     do
-	killapp=`pidof $app`
-	if [ "$killapp" != "" ]; then
-	    (killall -q $app && usleep 50000 && killall -q -SIGKILL $app) > /dev/null 2>&1
+	pid=`pidof $app`
+	if [ "$pid" != "" ]; then
+    	    while killall -q $app; do
+        	usleep 10000
+        	killall -q -SIGKILL $app
+    	    done
 	fi
     done
+}
 
-    # shure ready
-    usleep 500000
-
-    # remove web pages from tmpfs and link to rootfs
+remove_web() {
     if [ -d /tmp/web ]; then
 	echo "Remove web pages from tmpfs."
 	rm -rf /tmp/web
@@ -77,5 +73,5 @@ unload_apps
 # umount all particions and disable swap
 umount_all
 
-# unload all modules this is need after unmont
-unload_modules
+# remove web pages from tmpfs and link to rootfs
+remove_web

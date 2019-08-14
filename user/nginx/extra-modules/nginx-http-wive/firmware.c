@@ -486,7 +486,7 @@ int firmware_upgrade(webs_t* wp)
         ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade started\n");
         websDone(wp, 200);
 
-        doSystem("%s", "unload_all.sh");
+        doSystem("unload_all.sh");
         mtd_write_firmware(filename, 0, (int)file_size);
 
 	return 0;
