@@ -678,9 +678,6 @@ static void reboot_web(webs_t* wp, char_t *path, char_t *query)
     /* only by save and reboot logic must save rwfs */
     doSystem("fs save");
 
-    /* unload all and correct VPN session stop */
-    doSystem("unload_all.sh REBOOT");
-
     /* Reboot */
     wp->on_response_ok = DO_REBOOT;
 }

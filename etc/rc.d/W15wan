@@ -134,9 +134,12 @@ stop() {
     pid=`pidof udhcpc`
     if [ "$pid" != "" ]; then
 	$LOG "Stop DHCP client"
+	# send release to dhcp server
+	killall -q -SIGUSR2 udhcpc
+	# wait release procedure
+	sleep 2
 	while killall -q udhcpc; do
-	    # wait release procedure
-	    sleep 2
+	    usleep 500000
 	    killall -q -SIGKILL udhcpc
 	done
     fi
@@ -145,8 +148,7 @@ stop() {
     if [ "$pid" != "" ]; then
 	$LOG "Stop ZCIP client"
 	while killall -q zcip; do
-	    # wait release procedure
-	    sleep 1
+	    usleep 500000
 	    killall -q -SIGKILL zcip
 	done
     fi
