@@ -7,17 +7,21 @@
 #############################
 
 stop_serv="hotplug bndstr radius chillispot transmission samba xupnpd dynroute crontab ddns udpxy miniupnpd \
-	    igmp_proxy ntp snmpd parprouted irqbalance lld2d lldpd cdp iappd dnsserver inetd six dhcpd"
+	    igmp_proxy ntp snmpd parprouted irqbalance lld2d lldpd cdp iappd dnsserver inetd"
 
-kill_apps="chilli_stat haveged butcheck"
+# kill dhcp services directly to avoid unneded deconfig and flush conntrack
+kill_apps="dhcpd dhcp6c dhcp6s radvd chilli_stat haveged butcheck"
 
-eval `nvram_buf_get 2860 RemoteManagement`
+term_sessions() {
+    eval `nvram_buf_get 2860 RemoteManagement`
 
-if [ "$1" = "REBOOT" ] || [ "$RemoteManagement" != "2" ]; then
-    # stop vpn and wan for correct terminate
-    # pppoe session and DHCP address release
-    stop_serv="$stop_serv vpnhelper wan"
-fi
+    if [ "$1" = "REBOOT" ] || [ "$RemoteManagement" != "2" ]; then
+	# stop vpn and wan for correct terminate pppoe session
+	service vpnhelper stop
+    fi
+    # send release to DHCP server
+    killall -q -SIGUSR2 udhcpc
+}
 
 unload_apps() {
     echo "Stop services."
@@ -64,11 +68,14 @@ umount_all() {
     fi
 }
 
-# disable hotplug helper
-disable_hotplug
+# terminate pppoe and
+term_sessions
 
 # unload all applications
 unload_apps
+
+# disable hotplug helper
+disable_hotplug
 
 # umount all particions and disable swap
 umount_all
