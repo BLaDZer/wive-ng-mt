@@ -9,17 +9,31 @@
 stop_serv="hotplug bndstr radius chillispot transmission samba xupnpd dynroute crontab ddns udpxy miniupnpd \
 	    igmp_proxy ntp snmpd parprouted irqbalance lld2d lldpd cdp iappd dnsserver inetd"
 
-# kill dhcp services directly to avoid unneded deconfig and flush conntrack
-kill_apps="udhcpd dhcp6c dhcp6s radvd chilli_stat haveged butcheck"
+# kill dhcp servers directly to avoid unneded deconfig and flush conntrack
+kill_apps="udhcpd dhcp6s radvd chilli_stat haveged butcheck"
 
 term_sessions() {
     eval `nvram_buf_get 2860 RemoteManagement`
 
     if [ "$1" = "REBOOT" ] || [ "$RemoteManagement" != "2" ]; then
-	# stop vpn and wan for correct terminate pppoe session
-	service vpnhelper stop
+	# VPN force disconnect from server
+	killall -q -SIGHUP pppd
+	# wait send disconnetc
+	usleep 500000
+	# terminate pppd daemon
+	while killall -q pppd; do
+	    usleep 200000
+	    killall -q -SIGKILL pppd
+	done
+	# terminate xl2tp daemon
+	while killall -q xl2tpd; do
+	    usleep 200000
+	    killall -q -SIGKILL xl2tpd
+	done
 	# send release to DHCP server
 	killall -q -SIGUSR2 udhcpc
+	# kill dhcp6c
+	killall -q -SIGKILL dhcp6c
     fi
 }
 
