@@ -18,9 +18,9 @@ term_sessions() {
     if [ "$1" = "REBOOT" ] || [ "$RemoteManagement" != "2" ]; then
 	# stop vpn and wan for correct terminate pppoe session
 	service vpnhelper stop
+	# send release to DHCP server
+	killall -q -SIGUSR2 udhcpc
     fi
-    # send release to DHCP server
-    killall -q -SIGUSR2 udhcpc
 }
 
 unload_apps() {
