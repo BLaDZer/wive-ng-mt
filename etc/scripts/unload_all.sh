@@ -10,7 +10,7 @@ stop_serv="hotplug bndstr radius chillispot transmission samba xupnpd dynroute c
 	    igmp_proxy ntp snmpd parprouted irqbalance lld2d lldpd cdp iappd dnsserver inetd"
 
 # kill dhcp services directly to avoid unneded deconfig and flush conntrack
-kill_apps="dhcpd dhcp6c dhcp6s radvd chilli_stat haveged butcheck"
+kill_apps="udhcpd dhcp6c dhcp6s radvd chilli_stat haveged butcheck"
 
 term_sessions() {
     eval `nvram_buf_get 2860 RemoteManagement`
