@@ -135,7 +135,7 @@ stop() {
 	    usleep 500000
 	    # terminate pppd daeon
 	    while killall -q pppd; do
-		usleep 500000
+		usleep 200000
 		killall -q -SIGKILL pppd
 	    done
 	    # remove pid files

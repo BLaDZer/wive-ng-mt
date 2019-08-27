@@ -341,7 +341,7 @@ struct BUG_off_t_size_is_misdetected {
 #if defined(__GLIBC__)
 /* glibc uses __errno_location() to get a ptr to errno */
 /* We can just memorize it once - no multithreading in busybox :) */
-extern int *const bb_errno;
+extern int *bb_errno;
 #undef errno
 #define errno (*bb_errno)
 #endif
@@ -2087,7 +2087,7 @@ struct globals;
 /* '*const' ptr makes gcc optimize code much better.
  * Magic prevents ptr_to_globals from going into rodata.
  * If you want to assign a value, use SET_PTR_TO_GLOBALS(x) */
-extern struct globals *const ptr_to_globals;
+extern struct globals *ptr_to_globals;
 /* At least gcc 3.4.6 on mipsel system needs optimization barrier */
 #define barrier() __asm__ __volatile__("":::"memory")
 #define SET_PTR_TO_GLOBALS(x) do { \
