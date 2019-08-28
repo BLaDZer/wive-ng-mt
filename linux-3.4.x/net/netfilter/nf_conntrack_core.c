@@ -1361,7 +1361,7 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 skip_alg_of:
 #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
 	/* skip several proto from offloads */
-	if (hooknum != NF_INET_LOCAL_OUT && FOE_ALG(skb) == 0 && pf == PF_INET && is_local_svc(protonum))
+	if (hooknum != NF_INET_LOCAL_OUT && pf == PF_INET && is_local_svc(protonum))
 		    skip_offload = SKIP_ALL;
 #endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
