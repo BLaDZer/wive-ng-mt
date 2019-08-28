@@ -1370,7 +1370,6 @@ skip_alg_of:
 	}
 #endif
 #if defined(CONFIG_BCM_NAT)
-	/* skip several proto only from sw_nat */
 	if (nf_conntrack_fastnat && !pure_route) {
 	    /*
 	    * software nat offload path send pkts to fastnat if adress changed (nat)
