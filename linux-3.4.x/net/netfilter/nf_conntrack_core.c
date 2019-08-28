@@ -93,7 +93,7 @@ unsigned int web_str_loaded  __read_mostly = 0;
 EXPORT_SYMBOL_GPL(web_str_loaded);
 #endif
 
-#if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
 static __always_inline unsigned int is_local_svc(u_int8_t protonm)
 {
 	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4 proto must be skip from hardware offload
@@ -104,8 +104,10 @@ static __always_inline unsigned int is_local_svc(u_int8_t protonm)
 	    case IPPROTO_IPV6:
 #endif
 	    case IPPROTO_GRE:
+#ifdef CONFIG_XFRM
 	    case IPPROTO_ESP:
 	    case IPPROTO_AH:
+#endif
 		return 1;
 	    default:
 		return 0;
@@ -1357,10 +1359,13 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 #endif /* XT_MATCH_WEBSTR */
 #endif /* defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT) */
 skip_alg_of:
+#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
+	/* skip several proto from offloads */
+	if (hooknum != NF_INET_LOCAL_OUT && FOE_ALG(skb) == 0 && pf == PF_INET && is_local_svc(protonum))
+		    skip_offload = SKIP_ALL;
+#endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
-	/* skip several proto only from hw_nat */
-	if (ra_sw_nat_hook_tx != NULL &&
-		(skip_offload == SKIP_ALL || (hooknum != NF_INET_LOCAL_OUT && FOE_ALG(skb) == 0 && pf == PF_INET && is_local_svc(protonum)))) {		/* skip PPE */
+	if (ra_sw_nat_hook_tx != NULL && skip_offload == SKIP_ALL) {		/* skip PPE */
 		    FOE_ALG_MARK(skb);
 	}
 #endif
