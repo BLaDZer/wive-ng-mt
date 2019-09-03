@@ -82,6 +82,8 @@ umount_all() {
     fi
 }
 
+sysctl -w vm.dirty_expire_centisecs=10
+
 # terminate pppoe and
 term_sessions
 
