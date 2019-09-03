@@ -548,9 +548,9 @@ function showWarning() {
 	getRunningServices(function(services) {
 		var updater_state = '<% getUpdaterState(); %>';
 
-		var warning_access_password		= NVRAM_Password == "Admin";
-		var warning_wireless_security		= NVRAM_AuthMode == "OPEN";
-		var warning_wireless_key		= NVRAM_WPAPSK1 == "1234567890";
+		var warning_access_password		= NVRAM_Password == "Admin" && AUTH_ROLE == 2;
+		var warning_wireless_security		= (NVRAM_RadioOn == "1" || NVRAM_RadioOnINIC == "1") && NVRAM_AuthMode == "OPEN";
+		var warning_wireless_key		= (NVRAM_AuthMode.indexOf("PSK") != -1) && ((NVRAM_RadioOn == "1" && NVRAM_WPAPSK1 == "1234567890") || (NVRAM_RadioOnINIC == "1" && NVRAM_WPAPSK1INIC == "1234567890"));
 		var warning_cwmpd			= services.indexOf("cwmpd") != -1;
 		var warning_cwmpd_auto_available	= BUILD_CWMP == '1' && ('<% getCWMPAutoAvailable(); %>' == '1') && NVRAM_cwmpdEnabled == '0';
 		var warning_update_available		= (updater_state  == 'available') || (updater_state  == 'downloaded');

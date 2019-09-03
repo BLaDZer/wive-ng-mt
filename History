@@ -4654,10 +4654,11 @@
 15) webui: fix static dns for ipv6 in some mode show.<br>
 16) webui: fix read current dns server used for relay.<br>
 17) webui: some review and cleanup.<br>
-18) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
-19) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
-20) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
-21) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
+18) webui: fix wifi sec alert.<br>
+19) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
+20) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
+21) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
+22) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
 23) kernel: backport some critical fixes from HQ (27.08.2019).<br>
 24) kernel: net: offloads: try fix ipsec vs software offloads war.<br>
 <br>

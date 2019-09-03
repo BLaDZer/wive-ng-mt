@@ -2141,9 +2141,9 @@
 
 			// Show warning message
 			function showWarning() {
-				var warning_access_password		= NVRAM_Password == "Admin";
-				var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
-				var warning_wireless_key		= NVRAM_WPAPSK1  == "1234567890";
+				var warning_access_password		= NVRAM_Password == "Admin" && AUTH_ROLE == 2;
+				var warning_wireless_security		= (NVRAM_RadioOn == "1" || NVRAM_RadioOnINIC == "1") && NVRAM_AuthMode == "OPEN";
+				var warning_wireless_key		= (NVRAM_AuthMode.indexOf("PSK") != -1) && ((NVRAM_RadioOn == "1" && NVRAM_WPAPSK1 == "1234567890") || (NVRAM_RadioOnINIC == "1" && NVRAM_WPAPSK1INIC == "1234567890"));
 
 				var warningHTML = "";
 
