@@ -4659,7 +4659,8 @@
 20) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
 21) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
 22) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
-23) kernel: net: offloads: try fix ipsec vs software offloads war.<br>
-24) kernel: backport some critical fixes from HQ (03.09.2019).<br>
+23) kernel: net: ip6mr: do not call __IP6_INC_STATS() from preemptible context.<br>
+24) kernel: net: offloads: try fix ipsec vs software offloads war.<br>
+25) kernel: backport some critical fixes from HQ (03.09.2019).<br>
 <br>
 <br>
