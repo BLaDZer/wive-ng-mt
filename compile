@@ -145,7 +145,7 @@ if [ "$DEVNAME" = "SNR-CPE-WI2-MT" ]; then
     echo "Reconfigure apps for intergated WI2 device"
     sed 's/# CONFIG_RTESW_SWITCH_TWOPORT is not set/CONFIG_RTESW_SWITCH_TWOPORT=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
     mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
-elif [ "$DEVNAME" = "SNR-CPE-AP1-MT" ]; then
+elif [ "$DEVNAME" = "SNR-CPE-AP1-MT" ] || [ "$DEVNAME" = "SNR-CPE-AP2-5GHZ-MT" ]; then
     echo "Reconfigure apps for intergated APx devices"
     sed 's/# CONFIG_RTESW_SWITCH_ONEPORT is not set/CONFIG_RTESW_SWITCH_ONEPORT=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
     mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
