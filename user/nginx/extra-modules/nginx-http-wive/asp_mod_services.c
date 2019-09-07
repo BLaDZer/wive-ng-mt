@@ -182,7 +182,7 @@ static void setDhcp(webs_t* wp, char_t *path, char_t *query)
 			ngx_nvram_bufset(wp, "dhcpEnabled", "1");
 			setupParameters(wp, dhcp_args, 0);
 
-			int dns_proxy = ngx_nvram_get_int(wp, "dnsPEnabled", 0);
+			int dns_proxy = ngx_nvram_get_int(wp, "dnsPEnabled", 1);
 			if (dns_proxy == 1) {
 				ngx_nvram_bufset(wp, "dhcpPriDns", "");
 				ngx_nvram_bufset(wp, "dhcpSecDns", "");

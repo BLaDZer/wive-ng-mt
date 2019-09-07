@@ -112,7 +112,7 @@ static int getDns(webs_t *wp, char** params, int nparams)
         return NGX_OK; // do not output anything
     }
 
-    int dnsProxyEnabled = ngx_nvram_get_int(wp, "dnsPEnabled", 0);
+    int dnsProxyEnabled = ngx_nvram_get_int(wp, "dnsPEnabled", 1);
 
     if (dnsProxyEnabled) {
         fp = fopen("/tmp/resolvall.conf", "r");

@@ -114,7 +114,7 @@ static int listCountryCodes(webs_t *wp, char** params, int nparams)
 static int getWlan11aChannels(webs_t *wp, char** params, int nparams)
 {
 	int  idx = 0;
-	int value = ngx_nvram_get_int(wp, "CountryRegionABand", -1);
+	int value = ngx_nvram_get_int(wp, "CountryRegionABand", 7);
 	int channel = ngx_nvram_get_int(wp, "ChannelINIC", 0);
 
 	switch (value)

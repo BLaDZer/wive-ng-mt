@@ -127,8 +127,8 @@ static int getStaAdhocChannel(webs_t *wp, char** params, int nparams)
 	unsigned int country_region_bg, country_region_a;
 	long country_region = 0;
 
-	country_region_bg = nvram_get_int(RT2860_NVRAM, "CountryRegion", 0);
-	country_region_a = nvram_get_int(RT2860_NVRAM, "CountryRegionABand", 0);
+	country_region_bg = nvram_get_int(RT2860_NVRAM, "CountryRegion", 5);
+	country_region_a = nvram_get_int(RT2860_NVRAM, "CountryRegionABand", 7);
 
 	country_region = country_region_bg | ( country_region_a << 8);
 	return websWrite(wp, "%ld", country_region);
