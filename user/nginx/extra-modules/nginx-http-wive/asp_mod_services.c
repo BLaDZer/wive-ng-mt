@@ -361,7 +361,7 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 51, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
 						"igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode", "upnpEnabled",
-						"xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",  "RemoteSSH",
+						"xupnpd", "RemoteManagement", "RemoteManagementPort",  "RemoteSSH",
 						"RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort", "WatchdogEnabled",
 						"WANPingFilter", "pppoe_pass", "ipv6_pass", "dhcpSwReset", "vlanDoubleTag",
 						"offloadMode", "hw_nat_wifi", "hw_nat_udp", "hw_nat_six", "nat_mode",
@@ -381,13 +381,6 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 			char_t *nat_th = websGetVar(wp, "hwnatThreshold", "50");
 			if (nat_th != NULL)
 				ngx_nvram_bufset(wp, "hw_nat_bind", nat_th);
-		}
-
-		int dns_proxy = ngx_nvram_get_int(wp, "dnsPEnabled", 0);
-		if (dns_proxy == 1)
-		{
-			ngx_nvram_bufset(wp, "dhcpPriDns", "");
-			ngx_nvram_bufset(wp, "dhcpSecDns", "");
 		}
 
 		nvram_commit(RT2860_NVRAM);
