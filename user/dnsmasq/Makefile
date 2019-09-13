@@ -89,7 +89,7 @@ top?=$(CURDIR)
 #nettle_libs =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC $(PKG_CONFIG) --libs nettle hogweed`
 #gmp_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC NO_GMP --copy -lgmp`
 #sunos_libs =    `if uname | grep SunOS >/dev/null 2>&1; then echo -lsocket -lnsl -lposix4; fi`
-version =     -DVERSION="2.8x"
+version =     -DVERSION="2.80"
 
 sum?=$(shell $(CC) -DDNSMASQ_COMPILE_OPTS $(COPTS) -E $(top)/$(SRC)/dnsmasq.h | ( md5sum 2>/dev/null || md5 ) | cut -f 1 -d ' ')
 sum!=$(CC) -DDNSMASQ_COMPILE_OPTS $(COPTS) -E $(top)/$(SRC)/dnsmasq.h | ( md5sum 2>/dev/null || md5 ) | cut -f 1 -d ' '
