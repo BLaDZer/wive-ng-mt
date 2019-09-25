@@ -4648,6 +4648,7 @@
 9) init.d: fix disable force renew dhcp from port link up.<br>
 10) init.d: fix release dhcp adress and pppoe session terminate at soft router reboot.<br>
 11) init.d: optimize unload script.<br>
+12) init.d: make rc.d/rc.local start from true place.<br>
 12) sysctl: use arp notify instead of reply for any interace of arp request.<br>
 13) openssl: up to 1.0.2s.<br>
 14) busybox: vi fix delete line issue.<br>

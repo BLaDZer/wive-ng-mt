@@ -56,6 +56,9 @@ start() {
 
     # always start rescan usb devices at last
     service hotplug rescan
+
+    # start rc.local, allways last and background
+    /etc/rc.d/rc.local &
 }
 
 stop() {
