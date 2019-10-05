@@ -32,6 +32,7 @@ var firewall_dictionary = {
 	'forward virtual server'			: 'Port Forwarding Settings',
 	'forward session limit'				: 'Limit TCP session per ip',
 	'forward virtual server setting'		: 'Port Forwarding Settings',
+	'forward index'					: 'ID',
 	'forward interface'				: 'Interface',
 	'forward protocol'				: 'Protocol',
 	'forward src ports'				: 'Src Ports',
@@ -56,6 +57,8 @@ var firewall_dictionary = {
 	'forward ip not mask'				: 'IP address is not specified for mask: ',
 	'forward port not match src'			: 'Port ranges do not match: Source port range number is ',
 	'forward port not match dst'			: ', destination port range number is ',
+
+	'firewall ping from wan'			: 'Accept icmp echo from WAN network',
 
 	'content filter title'				: 'Content Filter Settings',
 	'content filter introduction'			: 'You can set up Content Filter to restrict access to unwanted content.',

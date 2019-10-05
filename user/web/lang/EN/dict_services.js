@@ -260,7 +260,6 @@ var services_dictionary = {
 	'services misc vlan double tag'		: 'Vlan double tag QinQ support',
 	'services misc reinit wan'		: 'Reinit WAN if DHCP lease fail',
 	'services misc dhcp renew'		: 'DHCP renew lease at WAN UP',
-	'services misc ping from wan'		: 'Accept icmp echo from WAN network',
 	'services misc stp'			: '802.1d Spanning Tree',
 	'services misc dont modify ttl'		: 'Do not modify TTL',
 	'services misc multicast ttl'		: 'Do not modify multicast TTL',

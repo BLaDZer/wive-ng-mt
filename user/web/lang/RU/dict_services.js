@@ -261,7 +261,6 @@ var services_dictionary = {
 	'services misc vlan double tag'		: 'Поддержка двойного тегирования vlan',
 	'services misc reinit wan'		: 'Переподнять WAN линк если DHCP не получил адрес',
 	'services misc dhcp renew'		: 'Перезапросить адрес при подъёме WAN интерфейса',
-	'services misc ping from wan'		: 'Разрешить icmp echo из WAN подсети',
 	'services misc stp'			: 'Поддержка Spanning Tree',
 	'services misc dont modify ttl'		: 'Не изменять TTL',
 	'services misc multicast ttl'		: 'Не изменять TTL мультикаст трафика',

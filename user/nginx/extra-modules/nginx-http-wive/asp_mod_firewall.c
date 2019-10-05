@@ -237,6 +237,7 @@ static void setFirewallALG(webs_t* wp, char_t *path, char_t *query)
 parameter_fetch_t firewall_params[] =
 {
 	{ "ForwardSesLimit",	("ForwardSesLimit"),	0,	("0") },
+	{ "pingWANEnbl",	"WANPingFilter",	0,	("0") },
 	{ NULL,			NULL,			0,	NULL   }  // Terminator
 };
 

@@ -32,6 +32,7 @@ var firewall_dictionary = {
 	'forward virtual server'			: 'Настройки проброса портов',
 	'forward session limit'				: 'Ограничить число TCP соединений с одного IP',
 	'forward virtual server setting'		: 'Настройки проброса портов',
+	'forward index'					: 'ИД',
 	'forward interface'				: 'Интерфейс',
 	'forward protocol'				: 'Протокол',
 	'forward src ports'				: 'Порт ист.',
@@ -57,6 +58,8 @@ var firewall_dictionary = {
 	'forward port not match src'			: 'Диапазоны портов не совпадают: портов источника ',
 	'forward port not match dst'			: ', а портов приёмника ',
 	'forward accept rules'				: ' Список разрешенных правил: ',
+
+	'firewall ping from wan'			: 'Разрешить icmp echo из WAN подсети',
 
 	'content filter title'				: 'Настройки фильтрации контента',
 	'content filter introduction'			: 'Вы можете включить фильтр контента для ограничения доступа к нежелательному контенту.',

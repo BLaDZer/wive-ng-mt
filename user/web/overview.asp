@@ -81,7 +81,7 @@
 
 				if (!IS_DEMO) {
 				    showWarning();
-				    displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
+				    displayElement('fastpath_warning', (NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3') && NVRAM_OperationMode != '0');
 				}
 
 				initTranslation();

@@ -79,7 +79,6 @@
 				_TR("miscVLANDoubleTag",		"services misc vlan double tag");
 				_TR("miscReinitWAN",			"services misc reinit wan");
 				_TR("miscDHCPRenew",			"services misc dhcp renew");
-				_TR("miscSysfwPingFrmWANFilterHead",	"services misc ping from wan");
 				_TR("miscStp",				"services misc stp");
 				_TR("miscDontModifyTTL",		"services misc dont modify ttl");
 				_TR("miscDontModifyMCTTL",		"services misc multicast ttl");
@@ -145,7 +144,6 @@
 				form.lldpdEnbl.options.selectedIndex		= NVRAM_lldpdEnabled;
 				form.krnlPppoePass.options.selectedIndex	= NVRAM_pppoe_pass;
 				form.krnlIpv6Pass.options.selectedIndex		= NVRAM_ipv6_pass;
-				form.pingWANEnbl.options.selectedIndex		= NVRAM_WANPingFilter;
 				form.arpPT.options.selectedIndex		= NVRAM_parproutedEnabled;
 				form.hw_nat_wifiPT.options.selectedIndex	= NVRAM_hw_nat_wifi;
 				form.hw_nat_udpPT.options.selectedIndex		= NVRAM_hw_nat_udp;
@@ -522,7 +520,7 @@
 			}
 
 			function showOthersMenu() {
-				var elements = [ 'miscVLANDoubleTag_row', 'irqbalance', 'miscReinitWAN_row', 'miscDHCPRenew_row', 'miscSysfwPingFrmWANFilterHead_row', 'miscStp_row', 'miscDontModifyTTL_row', 'mcast_store_ttl_row', 'miscUsePMTU_row', 'miscMngmtStoreSettings_row', 'miscBtnRstTimeout_row' ];
+				var elements = [ 'miscVLANDoubleTag_row', 'irqbalance', 'miscReinitWAN_row', 'miscDHCPRenew_row', 'miscStp_row', 'miscDontModifyTTL_row', 'mcast_store_ttl_row', 'miscUsePMTU_row', 'miscMngmtStoreSettings_row', 'miscBtnRstTimeout_row' ];
 				if (statusOthersMenu == 0) {
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc others"));
 					statusOthersMenu = 1;
@@ -1034,15 +1032,6 @@
 						<td class="head" id="miscDHCPRenew" style="width: 45%">DHCP renew lease at WAN UP</td>
 						<td colspan="4">
 							<select name="ForceRenewDHCP" class="normal">
-								<option value="0" id="disable">Disable</option>
-								<option value="1" id="enable">Enable</option>
-							</select>
-						</td>
-					</tr>
-					<tr id="miscSysfwPingFrmWANFilterHead_row">
-						<td class="head" id="miscSysfwPingFrmWANFilterHead" style="width: 45%">Accept ping from WAN</td>
-						<td colspan="4">
-							<select name="pingWANEnbl" class="normal">
 								<option value="0" id="disable">Disable</option>
 								<option value="1" id="enable">Enable</option>
 							</select>

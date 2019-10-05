@@ -28,6 +28,8 @@
 				document.getElementById('portFilterEnabled').value			= NVRAM_IPPortFilterEnable;
 				document.getElementById('portFilterInputEnabled').value		= NVRAM_IPPortFilterInputEnable;
 				document.getElementById('ForwardSesLimit').value			= NVRAM_ForwardSesLimit;
+				document.getElementById('pingWANEnbl').options.selectedIndex		= NVRAM_WANPingFilter;
+
 
 				updateForwardingState(document.portForward);
 				updateFilteringState(document.portFiltering);
@@ -228,6 +230,7 @@
 				var disabled = (portFilteringRules.length >= MAX_RULES) ? ' disabled="disabled"' : '';
 
 				var table = '<table class="small" style="width: 100%;"><tr>';
+				table += '<th rowspan="2">' + _("forward index") + '</th>';
 				table += '<th>' + _("forward interface") + '</th>';
 				table += '<th>' + _("forward protocol") + '</th>';
 				table += '<th>' + _("forward src ip") + '</th>';
@@ -248,6 +251,7 @@
 
 					table +=
 						'<tr>' +
+						'<td rowspan="2">' + (i+1) + '</td>' + // Index
 						'<td>' + row[0] + '</td>' + // Interface
 						'<td>' + showProtocol(row[1]) + '</td>' + // Protocol
 						'<td>' + showValue(row[3]) + '</td>' + // Source IP
@@ -265,19 +269,20 @@
 				}
 
 				if (portFilteringRules.length <= 0)
-					table += '<tr><td colspan="9" style="text-align: left;">' + _("forward no filter rules") + '</td></tr>';
+					table += '<tr><td colspan="10" style="text-align: left;">' + _("forward no filter rules") + '</td></tr>';
 
 				var accept_sel = (defaultFilterPolicy == '0') ? ' selected="selected"' : '';
 				var drop_sel = (defaultFilterPolicy != '0') ? ' selected="selected"' : '';
 				table +=
 					'<tr><td colspan="7" style="text-align:left;">' + _("port basic default policy") + '</td>' +
-					'<td colspan="2" style="text-align: right;"><select name="defaultFilteringPolicy" onchange="javascript:changedefaultFilterPolicy(this.form);"><option value="0"' + accept_sel +'>' + _("port basic default policy accepted") + '</option><option value="1"' + drop_sel +'>' + _("port basic default policy dropped") + '</option></select></td></tr>';
+					'<td colspan="3" style="text-align: right;"><select name="defaultFilteringPolicy" onchange="javascript:changedefaultFilterPolicy(this.form);"><option value="0"' + accept_sel +'>' + _("port basic default policy accepted") + '</option><option value="1"' + drop_sel +'>' + _("port basic default policy dropped") + '</option></select></td></tr>';
 
 				// Controls
 				table +=
 					'<tr>'+
-					'<td><select class="pfSmall" name="interface" tabindex="10"><option value="LAN">LAN</option><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
-					'<td><select class="pfSmall" name="protocol" tabindex="11" onchange="javascript:protocolChange(this.form);"><option value="5">None</option><option value="1">TCP</option><option value="2">UDP</option><option value="4">ICMP</option></select></td>' +
+					'<td rowspan="2"><input type="text" name="itemIndex" class="pfShort" maxlength="5" name="itemIndex" tabindex="10"></td>' +
+					'<td><select class="pfSmall" name="interface" tabindex="11"><option value="LAN">LAN</option><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
+					'<td><select class="pfSmall" name="protocol" tabindex="12" onchange="javascript:protocolChange(this.form);"><option value="5">None</option><option value="1">TCP</option><option value="2">UDP</option><option value="4">ICMP</option></select></td>' +
 					'<td><input type="text" tabindex="13" class="pfNormal" maxlength="15" name="sip_address"></td>' +
 					'<td><input type="text" tabindex="15" class="pfShort" maxlength="5" name="sFromPort" disabled="disabled"></td>' +
 					'<td><input type="text" tabindex="17" class="pfNormal" maxlength="15" name="dip_address"></td>' +
@@ -545,7 +550,12 @@
 					];
 
 				// Add a rule
-				portFilteringRules[portFilteringRules.length] = row;
+				var index = parseInt(form.itemIndex.value);
+				if (isNaN(index)) {
+					portFilteringRules[portFilteringRules.length] = row;
+				} else {
+					portFilteringRules.splice(index, 0, row);
+				}
 
 				// Regenerate table
 				genFilteringTable();
@@ -817,6 +827,17 @@
 									<td><input type="text" id="ForwardSesLimit" name="ForwardSesLimit" class="half" maxlength="5">
 										<font color="#808080" data-tr="firewall default session limit">(default 0 - disabled)</font></td>
 								</tr>
+
+								<tr>
+									<td class="head" data-tr="firewall ping from wan">Accept ping from WAN</td>
+									<td colspan="4">
+										<select name="pingWANEnbl" id="pingWANEnbl" class="normal">
+											<option value="0" data-tr="button disable">Disable</option>
+											<option value="1" data-tr="button enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+
 							</tbody>
 						</table>
 						<table class="buttons">

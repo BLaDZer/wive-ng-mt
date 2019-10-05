@@ -996,15 +996,28 @@
 			// Load fields data
 			function LoadFields(form, MBSSID, show_warn) {
 				var i;
+				var hide_ent = false;
 
 				// Security Mode
 				form.security_mode.options.length = 0;
+
+				for (i = 0; i < MBSSID; i++) {
+					if (form["AuthMode"+i].value.indexOf('PSK') != -1) {
+						hide_ent = true;
+						break;
+					}
+				}
 
 				for (i = 0; i < security_modes_list.length; i++)
 				{
 					is_wep = security_modes_list[i][1] == "WEPAUTO";
 					if (is_wep && form["AuthMode"+MBSSID].value != "WEP") continue;
 					if (BUILD_8021X == '0' && security_modes_list[i][2] == '1') continue;
+					if (hide_ent) {
+						if (security_modes_list[i][1] == 'WPA') continue;
+						if (security_modes_list[i][1] == 'WPA2') continue;
+						if (security_modes_list[i][1] == 'WPA1WPA2') continue;
+					}
 
 					form.security_mode.options.add(new Option(security_modes_list[i][0], security_modes_list[i][1]));
 				}
@@ -1162,7 +1175,7 @@
 				var form = document.wireless_basic;
 				updateVisibility(form);
 
-				if (check && (form.security_mode.value != 'WPA2PSK' && form.security_mode.value != 'WPA2'))
+				if (check && (form.security_mode.selectedIndex != -1 && form.security_mode.value != 'WPA2PSK' && form.security_mode.value != 'WPA2'))
 					setTimeout(function () { showWarningEncriptionMode() }, 100);
 			}
 
@@ -1548,6 +1561,12 @@
 
 			// Check values on form submit
 			function checkValues_security(form) {
+				if (document.getElementById('security_mode').selectedIndex == -1) {
+					document.getElementById('security_mode').focus();
+					alert(_("secure invalid mode"));
+					return false;
+				}
+
 				switch (document.getElementById('security_mode').value) {
 					case 'WEPAUTO':		
 											if (!checkWEP())
@@ -1621,7 +1640,7 @@
 					return false;
 				}
 
-				if (form.mssid_1.value == form.mssidac_1.value)
+				if (form.ssidIndex.value == 0 && form.mssid_1.value == form.mssidac_1.value)
 					document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
 
 				return true;

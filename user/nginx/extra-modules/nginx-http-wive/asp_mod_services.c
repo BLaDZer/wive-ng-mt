@@ -309,7 +309,6 @@ parameter_fetch_t service_misc_flags[] =
 	{ ("udpxyPort"),		"UDPXYPort",		0, ("81") },
 #endif
 	{ ("watchdogEnable"),		"WatchdogEnabled",	0, ("0")  },
-	{ ("pingWANEnbl"),		"WANPingFilter",	0, ("0")  },
 	{ ("krnlPppoePass"),		"pppoe_pass",		0, ("0")  },
 	{ ("krnlIpv6Pass"),		"ipv6_pass",		0, ("0")  },
 	{ ("dhcpSwReset"),		"dhcpSwReset",		0, ("0")  },

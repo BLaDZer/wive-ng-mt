@@ -354,6 +354,7 @@ var wireless_dictionary = {
 	'secure lowsecure mode apply'		: 'You need to set a password and apply the settings.',
 	'secure lowsecure algo'			: 'Warning!\n\rEncryption algorithm with a low lewel of security is selected._Recommended use only AES encryption algorithm.\n\rSet AES encryption?',
 	'secure invalid mac'			: 'Invalid MAC address',
+	'secure invalid mode'			: 'Inavailable security mode selected! Please change the security mode and try again.',
 
 	'apcli title'				: 'AP Client Feature',
 	'apcli param'				: 'Here you can configure AP Client parameters.',
