@@ -4650,7 +4650,7 @@
 11) init.d: optimize unload script.<br>
 12) init.d: make rc.d/rc.local start from true place.<br>
 12) sysctl: use arp notify instead of reply for any interace of arp request.<br>
-13) openssl: up to 1.0.2s.<br>
+13) openssl: up to 1.0.2t.<br>
 14) busybox: vi fix delete line issue.<br>
 15) webui: fix static dns for ipv6 in some mode show.<br>
 16) webui: fix read current dns server used for relay.<br>
