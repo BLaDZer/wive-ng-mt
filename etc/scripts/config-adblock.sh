@@ -22,6 +22,7 @@ get_param()
 
     # RUSSIAN BLOCK LIST
     blocklists="https://schakal.ru/hosts/alive_hosts_mail_fb.txt"
+    # blocklists="http://cdn.raletag.gq/rueasyhosts.txt"
     # GLOBAL BLOCK LISTS
     blocklists="$blocklists http://winhelp2002.mvps.org/hosts.txt"
     blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
@@ -71,9 +72,8 @@ get_and_parse_lists()
 	uniq -i  "$list" "$templist"
 	rm -f "$list"
     else
-        $LOG "Parse filter error, exit"
-	rm -f /tmp/adblock_runing
-	exit 1;
+        $LOG "Parse filter error."
+	return;
     fi
 
     # create list
@@ -98,16 +98,14 @@ get_and_parse_lists()
 	    service dnsserver restart
 	    $LOG "Next adblock update after 24h."
 	else
-    	    $LOG "Create list error, exit"
-	    rm -f /tmp/adblock_runing
-	    exit 1;
+    	    $LOG "Create list error."
+	    return;
 	fi
 	rm -f "$list"
 	rm -f "$templist"
     else
-    	$LOG "Parse uniq error, exit"
-	rm -f /tmp/adblock_runing
-	exit 1;
+    	$LOG "Parse uniq error."
+	return;
     fi
 }
 
