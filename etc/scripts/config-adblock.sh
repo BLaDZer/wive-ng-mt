@@ -63,7 +63,7 @@ get_and_parse_lists()
     else
         $LOG "Lists get error. Network problem? Retry by 60 seconds."
         needsleep="60"
-	return;
+	return
     fi
 
     # uniq
@@ -73,7 +73,7 @@ get_and_parse_lists()
 	rm -f "$list"
     else
         $LOG "Parse filter error."
-	return;
+	return
     fi
 
     # create list
@@ -99,13 +99,13 @@ get_and_parse_lists()
 	    $LOG "Next adblock update after 24h."
 	else
     	    $LOG "Create list error."
-	    return;
+	    return
 	fi
 	rm -f "$list"
 	rm -f "$templist"
     else
     	$LOG "Parse uniq error."
-	return;
+	return
     fi
 }
 
