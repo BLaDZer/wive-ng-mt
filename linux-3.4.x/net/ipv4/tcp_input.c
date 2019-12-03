@@ -240,7 +240,7 @@ static inline void TCP_ECN_accept_cwr(struct tcp_sock *tp, const struct sk_buff 
 
 static inline void TCP_ECN_withdraw_cwr(struct tcp_sock *tp)
 {
-	tp->ecn_flags &= ~TCP_ECN_DEMAND_CWR;
+	tp->ecn_flags &= ~TCP_ECN_QUEUE_CWR;
 }
 
 static inline void TCP_ECN_check_ce(struct sock *sk, const struct sk_buff *skb)
@@ -1518,7 +1518,7 @@ static int skb_can_shift(const struct sk_buff *skb)
 	return !skb_headlen(skb) && skb_is_nonlinear(skb);
 }
 
-int tcp_skb_shift(struct sk_buff *to, struct sk_buff *from,
+static int tcp_skb_shift(struct sk_buff *to, struct sk_buff *from,
 		  int pcount, int shiftlen)
 {
 	/* TCP min gso_size is 8 bytes (TCP_MIN_GSO_SIZE)
