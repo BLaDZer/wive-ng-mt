@@ -4650,19 +4650,20 @@
 11) init.d: fix release dhcp adress and pppoe session terminate at soft router reboot.<br>
 12) init.d: optimize unload script.<br>
 13) init.d: make rc.d/rc.local start from true place.<br>
-14) sysctl: use arp notify instead of reply for any interace of arp request.<br>
-15) openssl: up to 1.0.2t.<br>
-16) busybox: vi fix delete line issue.<br>
-17) webui: fix static dns for ipv6 in some mode show.<br>
-18) webui: fix read current dns server used for relay.<br>
-19) webui: some review and cleanup.<br>
-20) webui: fix wifi sec alert.<br>
-21) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
-22) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
-23) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
-24) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
-25) kernel: net: ip6mr: do not call __IP6_INC_STATS() from preemptible context.<br>
-26) kernel: net: offloads: try fix ipsec vs software offloads war.<br>
-27) kernel: backport some critical fixes from HQ (03.11.2019).<br>
+14) init.d: set rp_filter = 1 (CVE-2019-14899).<br>
+15) sysctl: use arp notify instead of reply for any interace of arp request.<br>
+16) openssl: up to 1.0.2t.<br>
+17) busybox: vi fix delete line issue.<br>
+18) webui: fix static dns for ipv6 in some mode show.<br>
+19) webui: fix read current dns server used for relay.<br>
+20) webui: some review and cleanup.<br>
+21) webui: fix wifi sec alert.<br>
+22) kernel: net: tcp: limit payload size of sacked skbs (CVE-2019-11477).<br>
+23) kernel: net: tcp: tcp_fragment() should apply sane memory limits (CVE-2019-11478).<br>
+24) kernel: net: tcp: add tcp_min_snd_mss sysctl (CVE-2019-11479).<br>
+25) kernel: net: tcp: enforce tcp_min_snd_mss in tcp_mtu_probing() (CVE-2019-11479).<br>
+26) kernel: net: ip6mr: do not call __IP6_INC_STATS() from preemptible context.<br>
+27) kernel: net: offloads: try fix ipsec vs software offloads war.<br>
+28) kernel: backport some critical fixes from HQ (03.11.2019).<br>
 <br>
 <br>

@@ -56,7 +56,6 @@ set_arp_filter_mode()
     sysctl -wq net.ipv4.conf.$1.arp_announce=2
     sysctl -wq net.ipv4.conf.$1.arp_ignore=1
     sysctl -wq net.ipv4.conf.$1.arp_filter=1
-    sysctl -wq net.ipv4.conf.$1.rp_filter=0
 }
 
 ##########################################################################
