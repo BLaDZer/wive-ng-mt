@@ -478,7 +478,7 @@ static void vt8500_console_write(struct console *co, const char *s,
 	vt8500_write(&vt8500_port->uart, VT8500_URIER, ier);
 }
 
-static int __init vt8500_console_setup(struct console *co, char *options)
+static int vt8500_console_setup(struct console *co, char *options)
 {
 	struct vt8500_port *vt8500_port;
 	int baud = 9600;

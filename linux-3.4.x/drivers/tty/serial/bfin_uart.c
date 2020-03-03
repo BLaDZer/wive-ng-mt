@@ -1066,9 +1066,8 @@ static struct uart_ops bfin_serial_pops = {
  * If the port was already initialised (eg, by a boot loader),
  * try to determine the current setup.
  */
-static void __init
-bfin_serial_console_get_options(struct bfin_serial_port *uart, int *baud,
-			   int *parity, int *bits)
+static void bfin_serial_console_get_options(struct bfin_serial_port *uart,
+					    int *baud, int *parity, int *bits)
 {
 	unsigned short status;
 
@@ -1144,8 +1143,7 @@ bfin_serial_console_write(struct console *co, const char *s, unsigned int count)
 
 }
 
-static int __init
-bfin_serial_console_setup(struct console *co, char *options)
+static int bfin_serial_console_setup(struct console *co, char *options)
 {
 	struct bfin_serial_port *uart;
 	int baud = 57600;

@@ -52,6 +52,7 @@
 
 extern void build_clear_page(void);
 extern void build_copy_page(void);
+extern bool __virt_addr_valid(const volatile void *kaddr);
 
 /*
  * It's normally defined only for FLATMEM config but it's
@@ -180,8 +181,9 @@ static inline int pfn_valid(unsigned long pfn)
 {
 	/* avoid <linux/mm.h> include hell */
 	extern unsigned long max_mapnr;
+	unsigned long pfn_offset = ARCH_PFN_OFFSET;
 
-	return pfn >= ARCH_PFN_OFFSET && pfn < max_mapnr;
+	return pfn >= pfn_offset && pfn < max_mapnr;
 }
 #endif
 
@@ -204,7 +206,9 @@ static inline int pfn_valid(unsigned long pfn)
 
 #define virt_to_pfn(kaddr)   	PFN_DOWN(virt_to_phys((void *)(kaddr)))
 #define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
-#define virt_addr_valid(kaddr)	pfn_valid(PFN_DOWN(virt_to_phys(kaddr)))
+
+#define virt_addr_valid(kaddr)						\
+	__virt_addr_valid((const volatile void *) (kaddr))
 
 #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)

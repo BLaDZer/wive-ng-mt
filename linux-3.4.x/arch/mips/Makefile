@@ -90,9 +90,6 @@ all-$(CONFIG_SYS_SUPPORTS_ZBOOT)+= vmlinuz
 cflags-y			+= -G 0 -mno-abicalls -fno-pic -pipe -mno-branch-likely
 if_gcc5 = $(shell if echo __GNUC__ | $(CC) -E -xc - | grep ^5$ > /dev/null 2>&1; then echo 1; else echo 0; fi)
 cflags-y			+= -msoft-float
-ifeq ($(if_gcc5),1)
-cflags-y			+= -Wa,-msoft-float -DGCC5_SFT
-endif
 LDFLAGS_vmlinux			+= -G 0 -static -n -nostdlib
 
 ifdef CONFIG_LONG_CALLS
@@ -101,6 +98,15 @@ KBUILD_CFLAGS_MODULE		+= -mlong-calls
 else
 KBUILD_AFLAGS_MODULE		+= -mno-long-calls
 KBUILD_CFLAGS_MODULE		+= -mno-long-calls
+endif
+
+#
+# pass -msoft-float to GAS if it supports it.  However on newer binutils
+# (specifically newer than 2.24.51.20140728) we then also need to explicitly
+# set ".set hardfloat" in all files which manipulate floating point registers.
+#
+ifneq ($(call as-option,-Wa$(comma)-msoft-float,),)
+	cflags-y		+= -DGAS_HAS_SET_HARDFLOAT -Wa,-msoft-float
 endif
 
 cflags-y += -ffreestanding

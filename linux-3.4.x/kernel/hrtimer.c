@@ -60,7 +60,6 @@
  */
 DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases) =
 {
-
 	.lock = __RAW_SPIN_LOCK_UNLOCKED(hrtimer_bases.lock),
 	.clock_base =
 	{
@@ -68,19 +67,16 @@ DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases) =
 			.index = HRTIMER_BASE_MONOTONIC,
 			.clockid = CLOCK_MONOTONIC,
 			.get_time = &ktime_get,
-			.resolution = KTIME_LOW_RES,
 		},
 		{
 			.index = HRTIMER_BASE_REALTIME,
 			.clockid = CLOCK_REALTIME,
 			.get_time = &ktime_get_real,
-			.resolution = KTIME_LOW_RES,
 		},
 		{
 			.index = HRTIMER_BASE_BOOTTIME,
 			.clockid = CLOCK_BOOTTIME,
 			.get_time = &ktime_get_boottime,
-			.resolution = KTIME_LOW_RES,
 		},
 	}
 };
@@ -499,6 +495,8 @@ static inline void debug_deactivate(struct hrtimer *timer)
  * High resolution timer enabled ?
  */
 static int hrtimer_hres_enabled __read_mostly  = 1;
+unsigned int hrtimer_resolution __read_mostly = LOW_RES_NSEC;
+EXPORT_SYMBOL_GPL(hrtimer_resolution);
 
 /*
  * Enable / Disable high resolution mode
@@ -657,6 +655,7 @@ static int hrtimer_reprogram(struct hrtimer *timer,
 static inline void hrtimer_init_hres(struct hrtimer_cpu_base *base)
 {
 	base->expires_next.tv64 = KTIME_MAX;
+	base->hang_detected = 0;
 	base->hres_active = 0;
 }
 
@@ -703,7 +702,7 @@ static void retrigger_next_event(void *arg)
  */
 static int hrtimer_switch_to_hres(void)
 {
-	int i, cpu = smp_processor_id();
+	int cpu = smp_processor_id();
 	struct hrtimer_cpu_base *base = &per_cpu(hrtimer_bases, cpu);
 	unsigned long flags;
 
@@ -719,8 +718,7 @@ static int hrtimer_switch_to_hres(void)
 		return 0;
 	}
 	base->hres_active = 1;
-	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++)
-		base->clock_base[i].resolution = KTIME_HIGH_RES;
+	hrtimer_resolution = HIGH_RES_NSEC;
 
 	tick_setup_sched_timer();
 	/* "Retrigger" the interrupt to get things going */
@@ -856,8 +854,8 @@ u64 hrtimer_forward(struct hrtimer *timer, ktime_t now, ktime_t interval)
 	if (WARN_ON(timer->state & HRTIMER_STATE_ENQUEUED))
 		return 0;
 
-	if (interval.tv64 < timer->base->resolution.tv64)
-		interval.tv64 = timer->base->resolution.tv64;
+	if (interval.tv64 < hrtimer_resolution)
+		interval.tv64 = hrtimer_resolution;
 
 	if (unlikely(delta.tv64 >= interval.tv64)) {
 		s64 incr = ktime_to_ns(interval);
@@ -998,7 +996,7 @@ int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
 		 * timeouts. This will go away with the GTOD framework.
 		 */
 #ifdef CONFIG_TIME_LOW_RES
-		tim = ktime_add_safe(tim, base->resolution);
+		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
 #endif
 	}
 
@@ -1191,7 +1189,12 @@ static void __hrtimer_init(struct hrtimer *timer, clockid_t clock_id,
 
 	cpu_base = &__raw_get_cpu_var(hrtimer_bases);
 
-	if (clock_id == CLOCK_REALTIME && mode != HRTIMER_MODE_ABS)
+	/*
+	 * POSIX magic: Relative CLOCK_REALTIME timers are not affected by
+	 * clock modifications, so they needs to become CLOCK_MONOTONIC to
+	 * ensure POSIX compliance.
+	 */
+	if (clock_id == CLOCK_REALTIME && mode & HRTIMER_MODE_REL)
 		clock_id = CLOCK_MONOTONIC;
 
 	base = hrtimer_clockid_to_base(clock_id);
@@ -1229,12 +1232,8 @@ EXPORT_SYMBOL_GPL(hrtimer_init);
  */
 int hrtimer_get_res(const clockid_t which_clock, struct timespec *tp)
 {
-	struct hrtimer_cpu_base *cpu_base;
-	int base = hrtimer_clockid_to_base(which_clock);
-
-	cpu_base = &__raw_get_cpu_var(hrtimer_bases);
-	*tp = ktime_to_timespec(cpu_base->clock_base[base].resolution);
-
+	tp->tv_sec = 0;
+	tp->tv_nsec = hrtimer_resolution;
 	return 0;
 }
 EXPORT_SYMBOL_GPL(hrtimer_get_res);
@@ -1678,6 +1677,8 @@ static void __cpuinit init_hrtimers_cpu(int cpu)
 		timerqueue_init_head(&cpu_base->clock_base[i].active);
 	}
 
+	cpu_base->active_bases = 0;
+	cpu_base->cpu = cpu;
 	hrtimer_init_hres(cpu_base);
 }
 

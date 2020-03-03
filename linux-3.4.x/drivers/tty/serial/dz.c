@@ -868,7 +868,7 @@ static void dz_console_print(struct console *co,
 	uart_console_write(&dport->port, str, count, dz_console_putchar);
 }
 
-static int __init dz_console_setup(struct console *co, char *options)
+static int dz_console_setup(struct console *co, char *options)
 {
 	struct dz_port *dport = &dz_mux.dport[co->index];
 	struct uart_port *uport = &dport->port;

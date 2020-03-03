@@ -4013,7 +4013,7 @@ static struct sk_buff *napi_frags_skb(struct napi_struct *napi)
 	off = skb_gro_offset(skb);
 	hlen = off + sizeof(*eth);
 	eth = skb_gro_header_fast(skb, off);
-	if (skb_gro_header_hard(skb, hlen)) {
+	if (unlikely(skb_gro_header_hard(skb, hlen))) {
 		eth = skb_gro_header_slow(skb, hlen, off);
 		if (unlikely(!eth)) {
 			napi_reuse_skb(napi, skb);
@@ -5188,7 +5188,8 @@ int dev_set_mtu(struct net_device *dev, int new_mtu)
 	if (ops->ndo_change_mtu)
 		err = ops->ndo_change_mtu(dev, new_mtu);
 	else
-		dev->mtu = new_mtu;
+		/* Pairs with all the lockless reads of dev->mtu in the stack */
+		WRITE_ONCE(dev->mtu, new_mtu);
 
 	if (!err && dev->flags & IFF_UP)
 		call_netdevice_notifiers(NETDEV_CHANGEMTU, dev);
@@ -6054,6 +6055,8 @@ int register_netdevice(struct net_device *dev)
 	ret = notifier_to_errno(ret);
 	if (ret) {
 		rollback_registered(dev);
+		rcu_barrier();
+
 		dev->reg_state = NETREG_UNREGISTERED;
 	}
 	/*
@@ -6199,7 +6202,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
 
 		refcnt = netdev_refcnt_read(dev);
 
-		if (time_after(jiffies, warning_time + 10 * HZ)) {
+		if (refcnt && time_after(jiffies, warning_time + 10 * HZ)) {
 			pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
 				 dev->name, refcnt);
 			warning_time = jiffies;

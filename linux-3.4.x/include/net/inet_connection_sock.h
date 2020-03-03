@@ -61,7 +61,7 @@ struct inet_connection_sock_af_ops {
 #endif
 	void	    (*addr2sockaddr)(struct sock *sk, struct sockaddr *);
 	int	    (*bind_conflict)(const struct sock *sk,
-				     const struct inet_bind_bucket *tb);
+				     const struct inet_bind_bucket *tb, bool relax);
 };
 
 /** inet_connection_sock - INET connection oriented sock
@@ -249,7 +249,7 @@ extern struct request_sock *inet_csk_search_req(const struct sock *sk,
 						const __be32 raddr,
 						const __be32 laddr);
 extern int inet_csk_bind_conflict(const struct sock *sk,
-				  const struct inet_bind_bucket *tb);
+				  const struct inet_bind_bucket *tb, bool relax);
 extern int inet_csk_get_port(struct sock *sk, unsigned short snum);
 
 extern struct dst_entry* inet_csk_route_req(struct sock *sk,
@@ -288,11 +288,6 @@ static inline void inet_csk_reqsk_queue_added(struct sock *sk,
 static inline int inet_csk_reqsk_queue_len(const struct sock *sk)
 {
 	return reqsk_queue_len(&inet_csk(sk)->icsk_accept_queue);
-}
-
-static inline int inet_csk_reqsk_queue_young(const struct sock *sk)
-{
-	return reqsk_queue_len_young(&inet_csk(sk)->icsk_accept_queue);
 }
 
 static inline int inet_csk_reqsk_queue_is_full(const struct sock *sk)

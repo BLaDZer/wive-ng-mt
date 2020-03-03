@@ -372,6 +372,17 @@ struct sock {
 	void                    (*sk_destruct)(struct sock *sk);
 };
 
+/*
+ * SK_CAN_REUSE and SK_NO_REUSE on a socket mean that the socket is OK
+ * or not whether his port will be reused by someone else. SK_FORCE_REUSE
+ * on a socket means that the socket will reuse everybody else's port
+ * without looking at the other's sk_reuse value.
+ */
+
+#define SK_NO_REUSE	0
+#define SK_CAN_REUSE	1
+#define SK_FORCE_REUSE	2
+
 static inline int sk_peek_offset(struct sock *sk, int flags)
 {
 	if (unlikely(flags & MSG_PEEK)) {
@@ -1136,7 +1147,7 @@ static inline void sk_sockets_allocated_inc(struct sock *sk)
 	percpu_counter_inc(prot->sockets_allocated);
 }
 
-static inline int
+static inline u64
 sk_sockets_allocated_read_positive(struct sock *sk)
 {
 	struct proto *prot = sk->sk_prot;
@@ -1466,8 +1477,6 @@ extern int                      sock_no_accept(struct socket *,
 					       struct socket *, int);
 extern int                      sock_no_getname(struct socket *,
 						struct sockaddr *, int *, int);
-extern unsigned int             sock_no_poll(struct file *, struct socket *,
-					     struct poll_table_struct *);
 extern int                      sock_no_ioctl(struct socket *, unsigned int,
 					      unsigned long);
 extern int			sock_no_listen(struct socket *, int);

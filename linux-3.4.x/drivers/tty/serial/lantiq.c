@@ -611,8 +611,7 @@ lqasc_console_write(struct console *co, const char *s, u_int count)
 	spin_unlock_irqrestore(&ltq_asc_lock, flags);
 }
 
-static int __init
-lqasc_console_setup(struct console *co, char *options)
+static int lqasc_console_setup(struct console *co, char *options)
 {
 	struct ltq_uart_port *ltq_port;
 	struct uart_port *port;

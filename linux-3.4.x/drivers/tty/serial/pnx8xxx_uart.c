@@ -703,8 +703,7 @@ pnx8xxx_console_write(struct console *co, const char *s, unsigned int count)
 	serial_out(sport, PNX8XXX_IEN, old_ien);
 }
 
-static int __init
-pnx8xxx_console_setup(struct console *co, char *options)
+static int pnx8xxx_console_setup(struct console *co, char *options)
 {
 	struct pnx8xxx_port *sport;
 	int baud = 38400;

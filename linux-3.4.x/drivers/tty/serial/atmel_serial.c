@@ -1583,7 +1583,7 @@ static void atmel_console_write(struct console *co, const char *s, u_int count)
  * If the port was already initialised (eg, by a boot loader),
  * try to determine the current setup.
  */
-static void __init atmel_console_get_options(struct uart_port *port, int *baud,
+static void atmel_console_get_options(struct uart_port *port, int *baud,
 					     int *parity, int *bits)
 {
 	unsigned int mr, quot;
@@ -1617,7 +1617,7 @@ static void __init atmel_console_get_options(struct uart_port *port, int *baud,
 	*baud = port->uartclk / (16 * (quot - 1));
 }
 
-static int __init atmel_console_setup(struct console *co, char *options)
+static int atmel_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port = &atmel_ports[co->index].uart;
 	int baud = 115200;

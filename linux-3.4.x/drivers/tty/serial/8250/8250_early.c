@@ -48,7 +48,7 @@ struct early_serial8250_device {
 
 static struct early_serial8250_device early_device;
 
-static unsigned int __init serial_in(struct uart_port *port, int offset)
+static unsigned int serial_in(struct uart_port *port, int offset)
 {
 	switch (port->iotype) {
 	case UPIO_MEM:
@@ -62,7 +62,7 @@ static unsigned int __init serial_in(struct uart_port *port, int offset)
 	}
 }
 
-static void __init serial_out(struct uart_port *port, int offset, int value)
+static void serial_out(struct uart_port *port, int offset, int value)
 {
 	switch (port->iotype) {
 	case UPIO_MEM:
@@ -79,7 +79,7 @@ static void __init serial_out(struct uart_port *port, int offset, int value)
 
 #define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
 
-static void __init wait_for_xmitr(struct uart_port *port)
+static void wait_for_xmitr(struct uart_port *port)
 {
 	unsigned int status;
 
@@ -91,13 +91,13 @@ static void __init wait_for_xmitr(struct uart_port *port)
 	}
 }
 
-static void __init serial_putc(struct uart_port *port, int c)
+static void serial_putc(struct uart_port *port, int c)
 {
 	wait_for_xmitr(port);
 	serial_out(port, UART_TX, c);
 }
 
-static void __init early_serial8250_write(struct console *console,
+static void early_serial8250_write(struct console *console,
 					const char *s, unsigned int count)
 {
 	struct uart_port *port = &early_device.port;
@@ -114,7 +114,7 @@ static void __init early_serial8250_write(struct console *console,
 	serial_out(port, UART_IER, ier);
 }
 
-static unsigned int __init probe_baud(struct uart_port *port)
+static unsigned int probe_baud(struct uart_port *port)
 {
 	unsigned char lcr, dll, dlm;
 	unsigned int quot;
@@ -129,7 +129,7 @@ static unsigned int __init probe_baud(struct uart_port *port)
 	return (port->uartclk / 16) / quot;
 }
 
-static void __init init_port(struct early_serial8250_device *device)
+static void init_port(struct early_serial8250_device *device)
 {
 	struct uart_port *port = &device->port;
 	unsigned int divisor;
@@ -148,7 +148,7 @@ static void __init init_port(struct early_serial8250_device *device)
 	serial_out(port, UART_LCR, c & ~UART_LCR_DLAB);
 }
 
-static int __init parse_options(struct early_serial8250_device *device,
+static int parse_options(struct early_serial8250_device *device,
 								char *options)
 {
 	struct uart_port *port = &device->port;
@@ -223,7 +223,7 @@ static struct console early_serial8250_console __initdata = {
 	.index	= -1,
 };
 
-static int __init early_serial8250_setup(char *options)
+static int early_serial8250_setup(char *options)
 {
 	struct early_serial8250_device *device = &early_device;
 	int err;
@@ -239,7 +239,7 @@ static int __init early_serial8250_setup(char *options)
 	return 0;
 }
 
-int __init setup_early_serial8250_console(char *cmdline)
+int setup_early_serial8250_console(char *cmdline)
 {
 	char *options;
 	int err;

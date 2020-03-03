@@ -576,7 +576,8 @@ static void ks8695_console_write(struct console *co, const char *s, u_int count)
 	uart_console_write(port, s, count, ks8695_console_putchar);
 }
 
-static void __init ks8695_console_get_options(struct uart_port *port, int *baud, int *parity, int *bits)
+static void ks8695_console_get_options(struct uart_port *port, int *baud,
+				       int *parity, int *bits)
 {
 	unsigned int lcr;
 
@@ -612,7 +613,7 @@ static void __init ks8695_console_get_options(struct uart_port *port, int *baud,
 	*baud &= 0xFFFFFFF0;
 }
 
-static int __init ks8695_console_setup(struct console *co, char *options)
+static int ks8695_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = 115200;

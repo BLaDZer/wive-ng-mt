@@ -381,6 +381,7 @@ config SIGNATURE
 config OPTIMIZE_INLINING
 	bool "Allow gcc to uninline functions marked 'inline'"
 	depends on ARCH_SUPPORTS_OPTIMIZED_INLINING
+	default n
 	---help---
 	  This option determines if the kernel forces gcc to inline the functions
 	  developers have marked 'inline'. Doing so takes away freedom from gcc to

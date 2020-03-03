@@ -2729,7 +2729,7 @@ void serial8250_set_isa_configurator(
 }
 EXPORT_SYMBOL(serial8250_set_isa_configurator);
 
-static void __init serial8250_isa_init_ports(void)
+static void serial8250_isa_init_ports(void)
 {
 	struct uart_8250_port *up;
 	static int first = 1;
@@ -2887,7 +2887,7 @@ serial8250_console_write(struct console *co, const char *s, unsigned int count)
 	local_irq_restore(flags);
 }
 
-static int __init serial8250_console_setup(struct console *co, char *options)
+static int serial8250_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = 9600;
@@ -2928,7 +2928,7 @@ static struct console serial8250_console = {
 	.data		= &serial8250_reg,
 };
 
-static int __init serial8250_console_init(void)
+static int serial8250_console_init(void)
 {
 	if (nr_uarts > UART_NR)
 		nr_uarts = UART_NR;
@@ -2972,7 +2972,7 @@ static struct uart_driver serial8250_reg = {
  * Setup an 8250 port structure prior to console initialisation.  Use
  * after console initialisation will cause undefined behaviour.
  */
-int __init early_serial_setup(struct uart_port *port)
+int early_serial_setup(struct uart_port *port)
 {
 	struct uart_port *p;
 
@@ -3287,7 +3287,7 @@ void serial8250_unregister_port(int line)
 }
 EXPORT_SYMBOL(serial8250_unregister_port);
 
-static int __init serial8250_init(void)
+static int serial8250_init(void)
 {
 	int ret;
 

@@ -691,8 +691,7 @@ serial_pxa_console_write(struct console *co, const char *s, unsigned int count)
 	clk_disable_unprepare(up->clk);
 }
 
-static int __init
-serial_pxa_console_setup(struct console *co, char *options)
+static int serial_pxa_console_setup(struct console *co, char *options)
 {
 	struct uart_pxa_port *up;
 	int baud = 9600;

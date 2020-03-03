@@ -26,12 +26,17 @@
 
 #include <net/netfilter/nf_conntrack_tuple.h>
 
+struct nf_ct_udp {
+	unsigned long	stream_ts;
+};
+
 /* per conntrack: protocol private data */
 union nf_conntrack_proto {
 	/* insert conntrack proto private data here */
 	struct nf_ct_dccp dccp;
 	struct ip_ct_sctp sctp;
 	struct ip_ct_tcp tcp;
+	struct nf_ct_udp udp;
 	struct nf_ct_gre gre;
 };
 
@@ -107,15 +112,15 @@ struct nf_conn {
 
 	spinlock_t lock;
 
+	/* Timer function; drops refcnt when it goes off. */
+	struct timer_list timeout;
+
 	/* XXX should I move this to the tail ? - Y.K */
 	/* These are my tuples; original and reply */
 	struct nf_conntrack_tuple_hash tuplehash[IP_CT_DIR_MAX];
 
 	/* Have we seen traffic both ways yet? (bitset) */
 	unsigned long status;
-
-	/* Timer function; drops refcnt when it goes off. */
-	struct timer_list timeout;
 
 #ifdef CONFIG_NET_NS
 	struct net *ct_net;

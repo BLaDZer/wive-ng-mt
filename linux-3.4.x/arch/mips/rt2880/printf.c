@@ -86,7 +86,7 @@ char getPromChar(void)
 	return serial_in(UART_RX);
 }
 
-void __init prom_init_printf(int tty_no)
+void prom_init_printf(int tty_no)
 {
 #if (CONFIG_SERIAL_8250_NR_UARTS > 1)
 	if (tty_no == 1)
@@ -96,7 +96,7 @@ void __init prom_init_printf(int tty_no)
 		uart_base = RALINK_UART_LITE_BASE;
 }
 
-void __init prom_printf(char *fmt, ...)
+void prom_printf(char *fmt, ...)
 {
 	va_list args;
 	int l;

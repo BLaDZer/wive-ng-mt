@@ -2014,12 +2014,13 @@ int tcp_disconnect(struct sock *sk, int flags)
 		tp->write_seq = 1;
 	tp->snd_cwnd = 2;
 	icsk->icsk_probes_out = 0;
-	tp->packets_out = 0;
 	tp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
 	tp->snd_cwnd_cnt = 0;
 	tp->window_clamp = 0;
+	tp->prr_delivered = 0;
 	tcp_set_ca_state(sk, TCP_CA_Open);
 	tcp_clear_retrans(tp);
+	tp->total_retrans = 0;
 	inet_csk_delack_init(sk);
 	/* Initialize rcv_mss to TCP_MIN_MSS to avoid division by 0
 	 * issue in __tcp_select_window()
@@ -2575,7 +2576,7 @@ struct sk_buff **tcp_gro_receive(struct sk_buff **head, struct sk_buff *skb)
 	off = skb_gro_offset(skb);
 	hlen = off + sizeof(*th);
 	th = skb_gro_header_fast(skb, off);
-	if (skb_gro_header_hard(skb, hlen)) {
+	if (unlikely(skb_gro_header_hard(skb, hlen))) {
 		th = skb_gro_header_slow(skb, hlen, off);
 		if (unlikely(!th))
 			goto out;
@@ -2586,7 +2587,7 @@ struct sk_buff **tcp_gro_receive(struct sk_buff **head, struct sk_buff *skb)
 		goto out;
 
 	hlen = off + thlen;
-	if (skb_gro_header_hard(skb, hlen)) {
+	if (unlikely(skb_gro_header_hard(skb, hlen))) {
 		th = skb_gro_header_slow(skb, hlen, off);
 		if (unlikely(!th))
 			goto out;

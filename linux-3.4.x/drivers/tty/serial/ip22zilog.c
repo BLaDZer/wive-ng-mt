@@ -1025,7 +1025,7 @@ ip22zilog_console_write(struct console *con, const char *s, unsigned int count)
 	spin_unlock_irqrestore(&up->port.lock, flags);
 }
 
-static int __init ip22zilog_console_setup(struct console *con, char *options)
+static int ip22zilog_console_setup(struct console *con, char *options)
 {
 	struct uart_ip22zilog_port *up = &ip22zilog_port_table[con->index];
 	unsigned long flags;

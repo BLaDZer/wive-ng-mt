@@ -54,7 +54,7 @@ void inet_get_local_port_range(int *low, int *high)
 EXPORT_SYMBOL(inet_get_local_port_range);
 
 int inet_csk_bind_conflict(const struct sock *sk,
-			   const struct inet_bind_bucket *tb)
+			   const struct inet_bind_bucket *tb, bool relax)
 {
 	struct sock *sk2;
 	struct hlist_node *node;
@@ -80,6 +80,14 @@ int inet_csk_bind_conflict(const struct sock *sk,
 				    sk2_rcv_saddr == sk_rcv_saddr(sk))
 					break;
 			}
+			if (!relax && reuse && sk2->sk_reuse &&
+			    sk2->sk_state != TCP_LISTEN) {
+				const __be32 sk2_rcv_saddr = sk_rcv_saddr(sk2);
+
+				if (!sk2_rcv_saddr || !sk_rcv_saddr(sk) ||
+				    sk2_rcv_saddr == sk_rcv_saddr(sk))
+					break;
+			}
 		}
 	}
 	return node != NULL;
@@ -98,6 +106,7 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
 	int ret, attempts = 5;
 	struct net *net = sock_net(sk);
 	int smallest_size = -1, smallest_rover;
+	int attempt_half = (sk->sk_reuse == SK_CAN_REUSE) ? 1 : 0;
 
 	local_bh_disable();
 	if (!snum) {
@@ -105,6 +114,14 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
 
 again:
 		inet_get_local_port_range(&low, &high);
+		if (attempt_half) {
+			int half = low + ((high - low) >> 1);
+
+			if (attempt_half == 1)
+				high = half;
+			else
+				low = half;
+		}
 		remaining = (high - low) + 1;
 		smallest_rover = rover = net_random() % remaining + low;
 
@@ -119,16 +136,17 @@ again:
 				if (net_eq(ib_net(tb), net) && tb->port == rover) {
 					if (tb->fastreuse > 0 &&
 					    sk->sk_reuse &&
-					    sk->sk_state != TCP_LISTEN &&
+					    ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE)) &&
 					    (tb->num_owners < smallest_size || smallest_size == -1)) {
 						smallest_size = tb->num_owners;
 						smallest_rover = rover;
-						if (atomic_read(&hashinfo->bsockets) > (high - low) + 1) {
+						if (atomic_read(&hashinfo->bsockets) > (high - low) + 1 &&
+						    !inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb, false)) {
 							snum = smallest_rover;
 							goto tb_found;
 						}
 					}
-					if (!inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb)) {
+					if (!inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb, false)) {
 						snum = rover;
 						goto tb_found;
 					}
@@ -154,6 +172,11 @@ again:
 				snum = smallest_rover;
 				goto have_snum;
 			}
+			if (attempt_half == 1) {
+				/* OK we now try the upper half of the range */
+				attempt_half = 2;
+				goto again;
+			}
 			goto fail;
 		}
 		/* OK, here is the one we will use.  HEAD is
@@ -173,18 +196,22 @@ have_snum:
 	goto tb_not_found;
 tb_found:
 	if (!hlist_empty(&tb->owners)) {
+		if (sk->sk_reuse == SK_FORCE_REUSE)
+			goto success;
+
 		if (tb->fastreuse > 0 &&
 		    sk->sk_reuse && sk->sk_state != TCP_LISTEN &&
 		    smallest_size == -1) {
 			goto success;
 		} else {
 			ret = 1;
-			if (inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb)) {
+			if (inet_csk(sk)->icsk_af_ops->bind_conflict(sk, tb, true)) {
 				if (sk->sk_reuse && sk->sk_state != TCP_LISTEN &&
-				    smallest_size != -1 && --attempts >= 0) {
+				    !snum && smallest_size != -1 && --attempts >= 0) {
 					spin_unlock(&head->lock);
 					goto again;
 				}
+
 				goto fail_unlock;
 			}
 		}

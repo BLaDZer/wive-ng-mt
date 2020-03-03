@@ -397,7 +397,7 @@ static void bnx2i_percpu_thread_create(unsigned int cpu)
 					cpu_to_node(cpu),
 					"bnx2i_thread/%d", cpu);
 	/* bind thread to the cpu */
-	if (likely(!IS_ERR(thread))) {
+	if (!IS_ERR(thread)) {
 		kthread_bind(thread, cpu);
 		p->iothread = thread;
 		wake_up_process(thread);

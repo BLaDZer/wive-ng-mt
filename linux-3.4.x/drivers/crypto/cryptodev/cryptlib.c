@@ -142,7 +142,7 @@ int cryptodev_cipher_init(struct cipher_data *out, const char *alg_name,
 		struct ablkcipher_alg *alg;
 
 		out->async.s = crypto_alloc_ablkcipher(alg_name, 0, 0);
-		if (unlikely(IS_ERR(out->async.s))) {
+		if (IS_ERR(out->async.s)) {
 			ddebug(1, "Failed to load cipher %s", alg_name);
 				return -EINVAL;
 		}
@@ -167,7 +167,7 @@ int cryptodev_cipher_init(struct cipher_data *out, const char *alg_name,
 		ret = crypto_ablkcipher_setkey(out->async.s, keyp, keylen);
 	} else {
 		out->async.as = crypto_alloc_aead(alg_name, 0, 0);
-		if (unlikely(IS_ERR(out->async.as))) {
+		if (IS_ERR(out->async.as)) {
 			ddebug(1, "Failed to load cipher %s", alg_name);
 			return -EINVAL;
 		}
@@ -331,7 +331,7 @@ int cryptodev_hash_init(struct hash_data *hdata, const char *alg_name,
 	int ret;
 
 	hdata->async.s = crypto_alloc_ahash(alg_name, 0, 0);
-	if (unlikely(IS_ERR(hdata->async.s))) {
+	if (IS_ERR(hdata->async.s)) {
 		ddebug(1, "Failed to load transform for %s", alg_name);
 		return -EINVAL;
 	}

@@ -1768,6 +1768,7 @@ static struct notifier_block ndisc_netdev_notifier = {
 static void ndisc_warn_deprecated_sysctl(struct ctl_table *ctl,
 					 const char *func, const char *dev_name)
 {
+#if ND_DEBUG >= 1
 	static char warncomm[TASK_COMM_LEN];
 	static int warned;
 	if (strcmp(warncomm, current->comm) && warned < 5) {
@@ -1782,6 +1783,7 @@ static void ndisc_warn_deprecated_sysctl(struct ctl_table *ctl,
 			dev_name, ctl->procname);
 		warned++;
 	}
+#endif
 }
 
 int ndisc_ifinfo_sysctl_change(struct ctl_table *ctl, int write, void __user *buffer, size_t *lenp, loff_t *ppos)

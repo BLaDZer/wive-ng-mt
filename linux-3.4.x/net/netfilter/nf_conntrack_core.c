@@ -104,10 +104,11 @@ static __always_inline unsigned int is_local_svc(u_int8_t protonm)
 	    case IPPROTO_IPV6:
 #endif
 	    case IPPROTO_GRE:
-#ifdef CONFIG_XFRM
-	    case IPPROTO_ESP:
+	    /* IPSEC case */
 	    case IPPROTO_AH:
-#endif
+	    case IPPROTO_ESP:
+	    /* IPComp for IPv6 - RFC3173 must be skip to */
+	    case IPPROTO_COMP:
 		return 1;
 	    default:
 		return 0;
@@ -366,7 +367,7 @@ static void death_by_event(unsigned long ul_conntrack)
 	if (nf_conntrack_event(IPCT_DESTROY, ct) < 0) {
 		/* bad luck, let's retry again */
 		ecache->timeout.expires = jiffies +
-			(random32() % net->ct.sysctl_events_retry_timeout);
+			(prandom_u32() % net->ct.sysctl_events_retry_timeout);
 		add_timer(&ecache->timeout);
 		return;
 	}
@@ -393,7 +394,7 @@ void nf_ct_insert_dying_list(struct nf_conn *ct)
 	/* set a new timer to retry event delivery */
 	setup_timer(&ecache->timeout, death_by_event, (unsigned long)ct);
 	ecache->timeout.expires = jiffies +
-		(random32() % net->ct.sysctl_events_retry_timeout);
+		(prandom_u32() % net->ct.sysctl_events_retry_timeout);
 	add_timer(&ecache->timeout);
 }
 EXPORT_SYMBOL_GPL(nf_ct_insert_dying_list);
@@ -532,20 +533,22 @@ __nf_cone_conntrack_find_get(struct net *net,
 	struct nf_conn *ct;
 
 	rcu_read_lock();
-begin:
 	h = __nf_cone_conntrack_find(net, tuple, hash);
 	if (h) {
+		/* We have a candidate that matches the tuple we're interested
+		 * in, try to obtain a reference and re-check tuple
+		 */
 		ct = nf_ct_tuplehash_to_ctrack(h);
-		if (unlikely(nf_ct_is_dying(ct) ||
-			     !atomic_inc_not_zero(&ct->ct_general.use)))
-			h = NULL;
-		else {
-			if (unlikely(!nf_ct_cone_tuple_equal(tuple, &h->tuple))) {
-				nf_ct_put(ct);
-				goto begin;
-			}
+		if (likely(atomic_inc_not_zero(&ct->ct_general.use))) {
+			if (likely(nf_ct_cone_tuple_equal(tuple, &h->tuple)))
+				goto found;
+
+			/* TYPESAFE_BY_RCU recycled the candidate */
+			nf_ct_put(ct);
 		}
+		h = NULL;
 	}
+found:
 	rcu_read_unlock();
 
 	return h;
@@ -561,20 +564,22 @@ __nf_conntrack_find_get(struct net *net,
 	struct nf_conn *ct;
 
 	rcu_read_lock();
-begin:
 	h = ____nf_conntrack_find(net, tuple, hash);
 	if (h) {
+		/* We have a candidate that matches the tuple we're interested
+		 * in, try to obtain a reference and re-check tuple
+		 */
 		ct = nf_ct_tuplehash_to_ctrack(h);
-		if (unlikely(nf_ct_is_dying(ct) ||
-			     !atomic_inc_not_zero(&ct->ct_general.use)))
-			h = NULL;
-		else {
-			if (unlikely(!nf_ct_key_equal(h, tuple))) {
-				nf_ct_put(ct);
-				goto begin;
-			}
+		if (likely(atomic_inc_not_zero(&ct->ct_general.use))) {
+			if (likely(nf_ct_key_equal(h, tuple)))
+				goto found;
+
+			/* TYPESAFE_BY_RCU recycled the candidate */
+			nf_ct_put(ct);
 		}
+		h = NULL;
 	}
+found:
 	rcu_read_unlock();
 
 	return h;
@@ -1322,7 +1327,6 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	}
 #endif
 #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
-#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 	/* this code section may be used for skip some types traffic,
 	    only if hardware nat support enabled or software fastnat support enabled */
 #ifdef CONFIG_BCM_NAT
@@ -1330,6 +1334,12 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 #else
 	if (ra_sw_nat_hook_tx != NULL) {
 #endif
+	    /* skip several proto from ALL offloads */
+	    if (hooknum != NF_INET_LOCAL_OUT && pf == PF_INET && is_local_svc(protonum)) {
+		    skip_offload = SKIP_ALL;
+		    goto skip_alg_of;
+	    }
+
 #if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 	    /* skip xt_webstr HTTP headers */
 	    if (web_str_loaded && pf == PF_INET && protonum == IPPROTO_TCP && CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL) {
@@ -1356,14 +1366,8 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 		}
 	    */
 	}
-#endif /* XT_MATCH_WEBSTR */
 #endif /* defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT) */
 skip_alg_of:
-#if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
-	/* skip several proto from offloads */
-	if (hooknum != NF_INET_LOCAL_OUT && pf == PF_INET && is_local_svc(protonum))
-		    skip_offload = SKIP_ALL;
-#endif
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 	if (ra_sw_nat_hook_tx != NULL && skip_offload == SKIP_ALL) {		/* skip PPE */
 		    FOE_ALG_MARK(skb);
@@ -1818,7 +1822,6 @@ int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp)
 	nf_ct_free_hashtable(old_hash, old_size);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(nf_conntrack_set_hashsize);
 
 module_param_call(hashsize, nf_conntrack_set_hashsize, param_get_uint,
 		  &nf_conntrack_htable_size, 0600);

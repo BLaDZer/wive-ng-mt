@@ -592,7 +592,8 @@ static int prb_calc_retire_blk_tmo(struct packet_sock *po,
 		default:
 			return DEFAULT_PRB_RETIRE_TOV;
 		}
-	}
+	} else
+		return DEFAULT_PRB_RETIRE_TOV;
 
 	mbits = (blk_size_in_bytes * 8) / (1024 * 1024);
 
@@ -2158,8 +2159,8 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	int err, reserve = 0;
 	void *ph;
 	struct sockaddr_ll *saddr = (struct sockaddr_ll *)msg->msg_name;
+	unsigned char *addr = NULL;
 	int tp_len, size_max;
-	unsigned char *addr;
 	int len_sum = 0;
 	int status = 0;
 	int hlen, tlen;
@@ -2178,7 +2179,6 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	if (saddr == NULL) {
 		dev	= packet_cached_dev_get(po);
 		proto	= po->num;
-		addr	= NULL;
 	} else {
 		err = -EINVAL;
 		if (msg->msg_namelen < sizeof(struct sockaddr_ll))
@@ -2188,10 +2188,13 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 						sll_addr)))
 			goto out;
 		proto	= saddr->sll_protocol;
-		addr	= saddr->sll_halen ? saddr->sll_addr : NULL;
 		dev = dev_get_by_index(sock_net(&po->sk), saddr->sll_ifindex);
-		if (addr && dev && saddr->sll_halen < dev->addr_len)
-			goto out_put;
+		if (po->sk.sk_socket->type == SOCK_DGRAM) {
+			if (dev && msg->msg_namelen < dev->addr_len +
+				   offsetof(struct sockaddr_ll, sll_addr))
+				goto out_put;
+			addr = saddr->sll_addr;
+		}
 	}
 
 	err = -ENXIO;
@@ -2321,7 +2324,7 @@ static int packet_snd(struct socket *sock,
 	struct sk_buff *skb;
 	struct net_device *dev;
 	__be16 proto;
-	unsigned char *addr;
+	unsigned char *addr = NULL;
 	int err, reserve = 0;
 	struct virtio_net_hdr vnet_hdr = { 0 };
 	int offset = 0;
@@ -2339,7 +2342,6 @@ static int packet_snd(struct socket *sock,
 	if (saddr == NULL) {
 		dev	= packet_cached_dev_get(po);
 		proto	= po->num;
-		addr	= NULL;
 	} else {
 		err = -EINVAL;
 		if (msg->msg_namelen < sizeof(struct sockaddr_ll))
@@ -2347,10 +2349,13 @@ static int packet_snd(struct socket *sock,
 		if (msg->msg_namelen < (saddr->sll_halen + offsetof(struct sockaddr_ll, sll_addr)))
 			goto out;
 		proto	= saddr->sll_protocol;
-		addr	= saddr->sll_halen ? saddr->sll_addr : NULL;
 		dev = dev_get_by_index(sock_net(sk), saddr->sll_ifindex);
-		if (addr && dev && saddr->sll_halen < dev->addr_len)
-			goto out_unlock;
+		if (sock->type == SOCK_DGRAM) {
+			if (dev && msg->msg_namelen < dev->addr_len +
+				   offsetof(struct sockaddr_ll, sll_addr))
+				goto out_unlock;
+			addr = saddr->sll_addr;
+		}
 	}
 
 	err = -ENXIO;
@@ -3783,7 +3788,7 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 
 	/* Opening a Tx-ring is NOT supported in TPACKET_V3 */
 	if (!closing && tx_ring && (po->tp_version > TPACKET_V2)) {
-		WARN(1, "Tx-ring is not supported.\n");
+		net_warn_ratelimited("Tx-ring is not supported.\n");
 		goto out;
 	}
 
@@ -3854,7 +3859,7 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		 */
 			if (!tx_ring)
 				init_prb_bdqc(po, rb, pg_vec, req_u, tx_ring);
-				break;
+			break;
 		default:
 			break;
 		}

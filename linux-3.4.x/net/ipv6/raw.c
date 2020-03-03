@@ -285,7 +285,9 @@ static int rawv6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 			/* Binding to link-local address requires an interface */
 			if (!sk->sk_bound_dev_if)
 				goto out_unlock;
+		}
 
+		if (sk->sk_bound_dev_if) {
 			err = -ENODEV;
 			dev = dev_get_by_index_rcu(sock_net(sk),
 						   sk->sk_bound_dev_if);
@@ -769,6 +771,7 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 	int hlimit = -1;
 	int tclass = -1;
 	int dontfrag = -1;
+	int hdrincl;
 	u16 proto;
 	int err;
 
@@ -781,6 +784,13 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 	/* Mirror BSD error message compatibility */
 	if (msg->msg_flags & MSG_OOB)
 		return -EOPNOTSUPP;
+
+	/* hdrincl should be READ_ONCE(inet->hdrincl)
+	 * but READ_ONCE() doesn't work with bit fields.
+	 * Doing this indirectly yields the same result.
+	 */
+	hdrincl = inet->hdrincl;
+	hdrincl = READ_ONCE(hdrincl);
 
 	/*
 	 *	Get and verify the address.
@@ -867,9 +877,12 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 	opt = ipv6_fixup_options(&opt_space, opt);
 
 	fl6.flowi6_proto = proto;
-	err = rawv6_probe_proto_opt(&fl6, msg);
-	if (err)
-		goto out;
+
+	if (!hdrincl) {
+	    err = rawv6_probe_proto_opt(&fl6, msg);
+	    if (err)
+		    goto out;
+	}
 
 	if (!ipv6_addr_any(daddr))
 		fl6.daddr = *daddr;
@@ -904,7 +917,7 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 		goto do_confirm;
 
 back_from_confirm:
-	if (inet->hdrincl)
+	if (hdrincl)
 		err = rawv6_send_hdrinc(sk, msg->msg_iov, len, &fl6, &dst, msg->msg_flags);
 	else {
 		lock_sock(sk);

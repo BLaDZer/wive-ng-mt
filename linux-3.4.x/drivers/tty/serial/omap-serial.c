@@ -1103,8 +1103,7 @@ serial_omap_console_write(struct console *co, const char *s,
 	local_irq_restore(flags);
 }
 
-static int __init
-serial_omap_console_setup(struct console *co, char *options)
+static int serial_omap_console_setup(struct console *co, char *options)
 {
 	struct uart_omap_port *up;
 	int baud = 115200;

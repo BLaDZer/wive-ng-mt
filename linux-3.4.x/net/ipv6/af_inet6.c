@@ -180,7 +180,7 @@ lookup_protocol:
 
 	err = 0;
 	if (INET_PROTOSW_REUSE & answer_flags)
-		sk->sk_reuse = 1;
+		sk->sk_reuse = SK_CAN_REUSE;
 
 	inet = inet_sk(sk);
 	inet->is_icsk = (INET_PROTOSW_ICSK & answer_flags) != 0;
@@ -851,7 +851,7 @@ static struct sk_buff **ipv6_gro_receive(struct sk_buff **head,
 	off = skb_gro_offset(skb);
 	hlen = off + sizeof(*iph);
 	iph = skb_gro_header_fast(skb, off);
-	if (skb_gro_header_hard(skb, hlen)) {
+	if (unlikely(skb_gro_header_hard(skb, hlen))) {
 		iph = skb_gro_header_slow(skb, hlen, off);
 		if (unlikely(!iph))
 			goto out;

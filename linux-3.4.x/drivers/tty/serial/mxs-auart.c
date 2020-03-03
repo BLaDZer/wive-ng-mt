@@ -622,8 +622,7 @@ auart_console_get_options(struct uart_port *port, int *baud,
 	*baud = (port->uartclk << 2) / quot;
 }
 
-static int __init
-auart_console_setup(struct console *co, char *options)
+static int auart_console_setup(struct console *co, char *options)
 {
 	struct mxs_auart_port *s;
 	int baud = 9600;

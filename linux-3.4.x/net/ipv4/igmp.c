@@ -183,6 +183,17 @@ static void ip_ma_put(struct ip_mc_list *im)
 	}
 }
 
+static void ip_sf_list_clear_all(struct ip_sf_list *psf)
+{
+	struct ip_sf_list *next;
+
+	while (psf) {
+		next = psf->sf_next;
+		kfree(psf);
+		psf = next;
+	}
+}
+
 #define for_each_pmc_rcu(in_dev, pmc)				\
 	for (pmc = rcu_dereference(in_dev->mc_list);		\
 	     pmc != NULL;					\
@@ -627,6 +638,13 @@ static void igmpv3_clear_zeros(struct ip_sf_list **ppsf)
 	}
 }
 
+static void kfree_pmc(struct ip_mc_list *pmc)
+{
+	ip_sf_list_clear_all(pmc->sources);
+	ip_sf_list_clear_all(pmc->tomb);
+	kfree(pmc);
+}
+
 static void igmpv3_send_cr(struct in_device *in_dev)
 {
 	struct ip_mc_list *pmc, *pmc_prev, *pmc_next;
@@ -663,7 +681,7 @@ static void igmpv3_send_cr(struct in_device *in_dev)
 			else
 				in_dev->mc_tomb = pmc_next;
 			in_dev_put(pmc->interface);
-			kfree(pmc);
+			kfree_pmc(pmc);
 		} else
 			pmc_prev = pmc;
 	}
@@ -1151,6 +1169,7 @@ static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 	pmc = kzalloc(sizeof(*pmc), GFP_KERNEL);
 	if (!pmc)
 		return;
+	spin_lock_init(&pmc->lock);
 	spin_lock_bh(&im->lock);
 	pmc->interface = im->interface;
 	in_dev_hold(in_dev);
@@ -1203,15 +1222,15 @@ static void igmpv3_del_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 	if (pmc) {
 		im->interface = pmc->interface;
 		if (im->sfmode == MCAST_INCLUDE) {
-			im->tomb = pmc->tomb;
-			im->sources = pmc->sources;
+			swap(im->tomb, pmc->tomb);
+			swap(im->sources, pmc->sources);
 			for (psf = im->sources; psf; psf = psf->sf_next)
 				psf->sf_crcount = in_dev->mr_qrv ? in_dev->mr_qrv : IGMP_UNSOLICITED_REPORT_COUNT;
 		} else {
 			im->crcount = in_dev->mr_qrv ? in_dev->mr_qrv : IGMP_UNSOLICITED_REPORT_COUNT;
 		}
 		in_dev_put(pmc->interface);
-		kfree(pmc);
+		kfree_pmc(pmc);
 	}
 	spin_unlock_bh(&im->lock);
 }
@@ -1232,21 +1251,18 @@ static void igmpv3_clear_delrec(struct in_device *in_dev)
 		nextpmc = pmc->next;
 		ip_mc_clear_src(pmc);
 		in_dev_put(pmc->interface);
-		kfree(pmc);
+		kfree_pmc(pmc);
 	}
 	/* clear dead sources, too */
 	rcu_read_lock();
 	for_each_pmc_rcu(in_dev, pmc) {
-		struct ip_sf_list *psf, *psf_next;
+		struct ip_sf_list *psf;
 
 		spin_lock_bh(&pmc->lock);
 		psf = pmc->tomb;
 		pmc->tomb = NULL;
 		spin_unlock_bh(&pmc->lock);
-		for (; psf; psf=psf_next) {
-			psf_next = psf->sf_next;
-			kfree(psf);
-		}
+		ip_sf_list_clear_all(psf);
 	}
 	rcu_read_unlock();
 }
@@ -1904,21 +1920,20 @@ static int ip_mc_add_src(struct in_device *in_dev, __be32 *pmca, int sfmode,
 
 static void ip_mc_clear_src(struct ip_mc_list *pmc)
 {
-	struct ip_sf_list *psf, *nextpsf;
+	struct ip_sf_list *tomb, *sources;
 
-	for (psf=pmc->tomb; psf; psf=nextpsf) {
-		nextpsf = psf->sf_next;
-		kfree(psf);
-	}
+	spin_lock_bh(&pmc->lock);
+	tomb = pmc->tomb;
 	pmc->tomb = NULL;
-	for (psf=pmc->sources; psf; psf=nextpsf) {
-		nextpsf = psf->sf_next;
-		kfree(psf);
-	}
+	sources = pmc->sources;
 	pmc->sources = NULL;
 	pmc->sfmode = MCAST_EXCLUDE;
 	pmc->sfcount[MCAST_INCLUDE] = 0;
 	pmc->sfcount[MCAST_EXCLUDE] = 1;
+	spin_unlock_bh(&pmc->lock);
+
+	ip_sf_list_clear_all(tomb);
+	ip_sf_list_clear_all(sources);
 }
 
 static int __ip_mc_join_group(struct sock *sk, struct ip_mreqn *imr,

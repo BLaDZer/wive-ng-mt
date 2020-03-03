@@ -868,7 +868,7 @@ static void sbd_console_write(struct console *co, const char *s,
 	spin_unlock_irqrestore(&uport->lock, flags);
 }
 
-static int __init sbd_console_setup(struct console *co, char *options)
+static int sbd_console_setup(struct console *co, char *options)
 {
 	int chip = co->index / DUART_MAX_SIDE;
 	int side = co->index % DUART_MAX_SIDE;

@@ -1605,7 +1605,7 @@ pch_console_write(struct console *co, const char *s, unsigned int count)
 	local_irq_restore(flags);
 }
 
-static int __init pch_console_setup(struct console *co, char *options)
+static int pch_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = default_baud;

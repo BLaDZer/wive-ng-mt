@@ -41,7 +41,6 @@ void __nf_ct_ext_destroy(struct nf_conn *ct)
 		rcu_read_unlock();
 	}
 }
-EXPORT_SYMBOL(__nf_ct_ext_destroy);
 
 static void *
 nf_ct_ext_create(struct nf_ct_ext **ext, enum nf_ct_ext_id id, gfp_t gfp)

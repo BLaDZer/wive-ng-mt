@@ -2542,9 +2542,10 @@ static void ralink_gpio_notify_user(int usr)
 		return;
 	}
 
-	if ((int)ralink_gpio_info[ralink_gpio_irqnum].pid < 2)
+	if ((int)ralink_gpio_info[ralink_gpio_irqnum].pid < 2) {
 		printk(KERN_ERR NAME ": don't send any signal if pid is 0 or 1\n");
 		return;
+	}
 
 	p = find_task_by_vpid(ralink_gpio_info[ralink_gpio_irqnum].pid);
 	if (NULL == p) {

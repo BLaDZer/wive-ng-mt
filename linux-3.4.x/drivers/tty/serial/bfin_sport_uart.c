@@ -603,8 +603,7 @@ static struct sport_uart_port *bfin_sport_uart_ports[BFIN_SPORT_UART_MAX_PORTS];
 #ifdef CONFIG_SERIAL_BFIN_SPORT_CONSOLE
 #define CLASS_BFIN_SPORT_CONSOLE	"bfin-sport-console"
 
-static int __init
-sport_uart_console_setup(struct console *co, char *options)
+static int sport_uart_console_setup(struct console *co, char *options)
 {
 	struct sport_uart_port *up;
 	int baud = 57600;

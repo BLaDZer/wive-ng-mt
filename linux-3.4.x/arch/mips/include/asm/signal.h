@@ -11,9 +11,9 @@
 
 #include <linux/types.h>
 
-#define _NSIG		128
+#define _NSIG		127
 #define _NSIG_BPW	(sizeof(unsigned long) * 8)
-#define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
+#define _NSIG_WORDS	((_NSIG + _NSIG_BPW - 1) / _NSIG_BPW)
 
 typedef struct {
 	unsigned long sig[_NSIG_WORDS];

@@ -763,6 +763,10 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
 }
 EXPORT_SYMBOL_GPL(mtd_read);
 
+#if defined(CONFIG_RALINK_TIMER_WDG) || defined(CONFIG_RALINK_TIMER_WDG_MODULE)
+extern void on_refresh_wdg_timer(unsigned long unused);
+extern int wdg_load_value;
+#endif
 int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
 	      const u_char *buf)
 {
@@ -773,6 +777,13 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
 		return -EROFS;
 	if (!len)
 		return 0;
+
+#if defined(CONFIG_RALINK_TIMER_WDG) || defined(CONFIG_RALINK_TIMER_WDG_MODULE)
+	/* Refresh Ralink hardware watchdog timer, prevent reboot at very long time flash write */
+	if(wdg_load_value)
+	    on_refresh_wdg_timer(0);
+#endif
+
 	return mtd->_write(mtd, to, len, retlen, buf);
 }
 EXPORT_SYMBOL_GPL(mtd_write);

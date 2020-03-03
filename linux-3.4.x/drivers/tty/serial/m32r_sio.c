@@ -1061,7 +1061,7 @@ static void m32r_sio_console_write(struct console *co, const char *s,
 	sio_out(up, SIOTRCR, ier);
 }
 
-static int __init m32r_sio_console_setup(struct console *co, char *options)
+static int m32r_sio_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = 9600;

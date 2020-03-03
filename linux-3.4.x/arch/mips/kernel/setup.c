@@ -63,7 +63,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
  * mips_io_port_base is the begin of the address space to which x86 style
  * I/O ports are mapped.
  */
-const unsigned long mips_io_port_base = -1;
+unsigned long mips_io_port_base = -1;
 EXPORT_SYMBOL(mips_io_port_base);
 
 static struct resource code_resource = { .name = "Kernel code", };
@@ -87,6 +87,9 @@ void __init add_memory_region(phys_t start, phys_t size, long type)
 		pr_warning("Trying to add an invalid memory region, skipped\n");
 		return;
 	}
+
+	if (start < PHYS_OFFSET)
+		return;
 
 	/*
 	 * Try to merge with existing entry, if any.
@@ -646,7 +649,6 @@ static void __init arch_mem_init(char **cmdline_p)
 
 	bootmem_init();
 
-	device_tree_init();
 	sparse_init();
 	plat_swiotlb_setup();
 }
@@ -734,6 +736,7 @@ void __init setup_arch(char **cmdline_p)
 
 	cpu_cache_init();
 	paging_init();
+	device_tree_init();
 }
 
 unsigned long kernelsp[NR_CPUS];

@@ -1756,7 +1756,7 @@ static void mpsc_console_write(struct console *co, const char *s, uint count)
 	spin_unlock_irqrestore(&pi->tx_lock, iflags);
 }
 
-static int __init mpsc_console_setup(struct console *co, char *options)
+static int mpsc_console_setup(struct console *co, char *options)
 {
 	struct mpsc_port_info *pi;
 	int baud, bits, parity, flow;

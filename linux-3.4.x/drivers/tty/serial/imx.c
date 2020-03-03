@@ -1250,9 +1250,8 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
  * If the port was already initialised (eg, by a boot loader),
  * try to determine the current setup.
  */
-static void __init
-imx_console_get_options(struct imx_port *sport, int *baud,
-			   int *parity, int *bits)
+static void imx_console_get_options(struct imx_port *sport, int *baud,
+				    int *parity, int *bits)
 {
 
 	if (readl(sport->port.membase + UCR1) & UCR1_UARTEN) {
@@ -1309,8 +1308,7 @@ imx_console_get_options(struct imx_port *sport, int *baud,
 	}
 }
 
-static int __init
-imx_console_setup(struct console *co, char *options)
+static int imx_console_setup(struct console *co, char *options)
 {
 	struct imx_port *sport;
 	int baud = 9600;

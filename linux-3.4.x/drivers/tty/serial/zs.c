@@ -1190,7 +1190,7 @@ static void zs_console_write(struct console *co, const char *s,
  * - initialise the serial port
  * Return non-zero if we didn't find a serial port.
  */
-static int __init zs_console_setup(struct console *co, char *options)
+static int zs_console_setup(struct console *co, char *options)
 {
 	int chip = co->index / ZS_NUM_CHAN, side = co->index % ZS_NUM_CHAN;
 	struct zs_port *zport = &zs_sccs[chip].zport[side];

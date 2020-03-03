@@ -789,7 +789,7 @@ static void msm_console_write(struct console *co, const char *s,
 	spin_unlock(&port->lock);
 }
 
-static int __init msm_console_setup(struct console *co, char *options)
+static int msm_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	struct msm_port *msm_port;

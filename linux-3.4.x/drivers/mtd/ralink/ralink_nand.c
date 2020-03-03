@@ -1198,7 +1198,7 @@ int nfc_write_page(struct ra_nand_chip *ra, char *buf, int page, int flags)
 		status = nfc_ecc_verify(ra, buf, page, FL_WRITING);
 
 #ifdef RANDOM_GEN_BAD_BLOCK
-		if (((random32() & 0x1ff) == 0x0) && (page >= 0x100)) // randomly create bad block
+		if (((prandom_u32() & 0x1ff) == 0x0) && (page >= 0x100)) // randomly create bad block
 		{
 			printk("hmm... create a bad block at page %x\n", (bus_addr >> 16));
 			status = -1;

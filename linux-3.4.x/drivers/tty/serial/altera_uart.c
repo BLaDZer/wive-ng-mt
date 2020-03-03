@@ -448,7 +448,7 @@ static void altera_uart_console_write(struct console *co, const char *s,
 	}
 }
 
-static int __init altera_uart_console_setup(struct console *co, char *options)
+static int altera_uart_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = CONFIG_SERIAL_ALTERA_UART_BAUDRATE;

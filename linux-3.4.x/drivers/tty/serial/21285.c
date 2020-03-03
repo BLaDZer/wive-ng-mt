@@ -387,9 +387,8 @@ serial21285_console_write(struct console *co, const char *s,
 	uart_console_write(&serial21285_port, s, count, serial21285_console_putchar);
 }
 
-static void __init
-serial21285_get_options(struct uart_port *port, int *baud,
-			int *parity, int *bits)
+static void serial21285_get_options(struct uart_port *port, int *baud,
+				    int *parity, int *bits)
 {
 	if (*CSR_UARTCON == 1) {
 		unsigned int tmp;
@@ -423,7 +422,7 @@ serial21285_get_options(struct uart_port *port, int *baud,
 	}
 }
 
-static int __init serial21285_console_setup(struct console *co, char *options)
+static int serial21285_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port = &serial21285_port;
 	int baud = 9600;

@@ -485,6 +485,7 @@ int nf_nat_icmp_reply_translation(struct nf_conn *ct,
 	/* Change outer to look the reply to an incoming packet
 	 * (proto 0 means don't invert per-proto part). */
 	nf_ct_invert_tuplepr(&target, &ct->tuplehash[!dir].tuple);
+	target.dst.protonum = IPPROTO_ICMP;
 	if (!manip_pkt(0, skb, 0, &target, manip))
 		return 0;
 

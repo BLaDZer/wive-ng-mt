@@ -67,7 +67,9 @@ struct pt_regs;
  * compile-time error, we'll still have a link-time error, which is harder to
  * track down.
  */
-#ifndef __OPTIMIZE__
+//#ifndef __OPTIMIZE__
+// fix build with -O0
+#if 0
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 #else
 #define BUILD_BUG_ON(condition) \

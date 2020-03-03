@@ -455,9 +455,8 @@ apbuart_console_write(struct console *co, const char *s, unsigned int count)
 	UART_PUT_CTRL(port, old_cr);
 }
 
-static void __init
-apbuart_console_get_options(struct uart_port *port, int *baud,
-			    int *parity, int *bits)
+static void apbuart_console_get_options(struct uart_port *port, int *baud,
+					int *parity, int *bits)
 {
 	if (UART_GET_CTRL(port) & (UART_CTRL_RE | UART_CTRL_TE)) {
 
@@ -478,7 +477,7 @@ apbuart_console_get_options(struct uart_port *port, int *baud,
 	}
 }
 
-static int __init apbuart_console_setup(struct console *co, char *options)
+static int apbuart_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = 38400;

@@ -389,6 +389,7 @@ static inline void local_r4k___flush_cache_all(void * args)
 	return;
 #endif
 	r4k_blast_dcache();
+	mb(); /* cache instructions may be reordered */
 	r4k_blast_icache();
 
 	switch (current_cpu_type()) {
@@ -475,8 +476,10 @@ static inline void local_r4k_flush_cache_range(void * args)
 	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc))
 		r4k_blast_dcache();
 	/* If executable, blast stale lines from icache */
-	if (exec)
+	if (exec) {
+		mb(); /* cache instructions may be reordered */
 		r4k_blast_icache();
+	}
 }
 
 static void r4k_flush_cache_range(struct vm_area_struct *vma,
@@ -579,8 +582,13 @@ static inline void local_r4k_flush_cache_page(void *args)
 
 	if (cpu_has_dc_aliases || (exec && !cpu_has_ic_fills_f_dc)) {
 		r4k_blast_dcache_page(addr);
-		if (exec && !cpu_icache_snoops_remote_store)
+		if (exec)
+			mb(); /* cache instructions may be reordered */
+
+		if (exec && !cpu_icache_snoops_remote_store) {
 			r4k_blast_scache_page(addr);
+			mb(); /* cache instructions may be reordered */
+		}
 	}
 	if (exec) {
 		if (vaddr && cpu_has_vtag_icache && mm == current->active_mm) {
@@ -644,6 +652,7 @@ static inline void __local_r4k_flush_icache_range(unsigned long start,
 			R4600_HIT_CACHEOP_WAR_IMPL;
 			protected_blast_dcache_range(start, end);
 		}
+		mb(); /* cache instructions may be reordered */
 	}
 
 	if (type == R4K_INDEX ||
@@ -651,6 +660,12 @@ static inline void __local_r4k_flush_icache_range(unsigned long start,
 		r4k_blast_icache();
 	else
 		protected_blast_icache_range(start, end);
+
+	/* Ensure icache operation has completed */
+	mb();
+
+	/* Hazard to force new i-fetch */
+	instruction_hazard();
 }
 
 static inline void local_r4k_flush_icache_range(unsigned long start,
@@ -699,7 +714,6 @@ static void r4k_flush_icache_range(unsigned long start, unsigned long end)
 	}
 	r4k_on_each_cpu(args.type, local_r4k_flush_icache_range_ipi, &args);
 	preempt_enable();
-	instruction_hazard();
 }
 
 #ifdef CONFIG_DMA_NONCOHERENT
@@ -839,6 +853,8 @@ static void local_r4k_flush_cache_sigtramp(void *args)
 			      : protected_writeback_scache_line(
 							addr & ~(sc_lsize - 1));
 	}
+	if ((dc_lsize || scache_size) && ic_lsize)
+		mb(); /* cache instructions may be reordered */
 	if (ic_lsize)
 		vaddr ? flush_icache_line(addr & ~(ic_lsize - 1))
 		      : protected_flush_icache_line(addr & ~(ic_lsize - 1));

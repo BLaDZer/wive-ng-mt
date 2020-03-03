@@ -163,6 +163,8 @@ static unsigned int fq_codel_drop(struct Qdisc *sch)
 	sch->q.qlen--;
 	sch->qstats.drops++;
 	sch->qstats.backlog -= len;
+	/* Tell codel to increase its signal strength also */
+	flow->cvars.count++;
 	flow->dropped++;
 	return idx;
 }
@@ -422,7 +424,7 @@ static int fq_codel_init(struct Qdisc *sch, struct nlattr *opt)
 #else
 	q->quantum = 300;
 #endif
-	q->perturbation = random32();
+	q->perturbation = prandom_u32();
 	INIT_LIST_HEAD(&q->new_flows);
 	INIT_LIST_HEAD(&q->old_flows);
 	codel_params_init(&q->cparams);

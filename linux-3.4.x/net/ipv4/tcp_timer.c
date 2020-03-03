@@ -307,7 +307,7 @@ static void tcp_probe_timer(struct sock *sk)
 			return;
 	}
 
-	if (icsk->icsk_probes_out > max_probes) {
+	if (icsk->icsk_probes_out >= max_probes) {
 		tcp_write_err(sk);
 	} else {
 		/* Only send another probe if we didn't close things up. */
@@ -323,11 +323,14 @@ void tcp_retransmit_timer(struct sock *sk)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct inet_connection_sock *icsk = inet_csk(sk);
+	struct sk_buff *skb;
 
 	if (!tp->packets_out)
-		goto out;
+		return;
 
-	WARN_ON(tcp_write_queue_empty(sk));
+	skb = tcp_write_queue_head(sk);
+	if (WARN_ON_ONCE(!skb))
+		return;
 
 	if (!tp->snd_wnd && !sock_flag(sk, SOCK_DEAD) &&
 	    !((1 << sk->sk_state) & (TCPF_SYN_SENT | TCPF_SYN_RECV))) {
@@ -357,7 +360,7 @@ void tcp_retransmit_timer(struct sock *sk)
 			goto out;
 		}
 		tcp_enter_loss(sk, 0);
-		tcp_retransmit_skb(sk, tcp_write_queue_head(sk));
+		tcp_retransmit_skb(sk, skb);
 		__sk_dst_reset(sk);
 		goto out_reset_timer;
 	}

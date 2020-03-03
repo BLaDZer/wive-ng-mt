@@ -943,7 +943,7 @@ serial_txx9_console_write(struct console *co, const char *s, unsigned int count)
 	sio_out(up, TXX9_SIDICR, ier);
 }
 
-static int __init serial_txx9_console_setup(struct console *co, char *options)
+static int serial_txx9_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	struct uart_txx9_port *up;

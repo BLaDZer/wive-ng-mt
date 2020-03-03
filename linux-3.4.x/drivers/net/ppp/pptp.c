@@ -76,28 +76,6 @@ static struct pppox_sock *lookup_chan(u16 call_id, __be32 s_addr)
 	return sock;
 }
 
-static int lookup_chan_dst(u16 call_id, __be32 d_addr)
-{
-	struct pppox_sock *sock;
-	struct pptp_opt *opt;
-	int i;
-
-	rcu_read_lock();
-	i = 1;
-	for_each_set_bit_from(i, callid_bitmap, MAX_CALLID) {
-		sock = rcu_dereference(callid_sock[i]);
-		if (!sock)
-			continue;
-		opt = &sock->proto.pptp;
-		if (opt->dst_addr.call_id == call_id &&
-			  opt->dst_addr.sin_addr.s_addr == d_addr)
-			break;
-	}
-	rcu_read_unlock();
-
-	return i < MAX_CALLID;
-}
-
 static int add_chan(struct pppox_sock *sock,
 		    struct pptp_addr *sa)
 {
@@ -134,6 +112,32 @@ static void del_chan(struct pppox_sock *sock)
 	clear_bit(sock->proto.pptp.src_addr.call_id, callid_bitmap);
 	RCU_INIT_POINTER(callid_sock[sock->proto.pptp.src_addr.call_id], NULL);
 	spin_unlock(&chan_lock);
+}
+
+static void replace_chan_dst(u16 call_id, __be32 d_addr)
+{
+	struct pppox_sock *sock;
+	struct pptp_opt *opt;
+	int i;
+
+	rcu_read_lock();
+	i = 1;
+	for_each_set_bit_from(i, callid_bitmap, MAX_CALLID) {
+		sock = rcu_dereference(callid_sock[i]);
+		if (!sock)
+			continue;
+		opt = &sock->proto.pptp;
+		if (opt->dst_addr.call_id == call_id &&
+			  opt->dst_addr.sin_addr.s_addr == d_addr) {
+			/* del old chan, avoid infinitive reconnect after lost, for compat with acell-ppp server
+			    only one session from one ip with one CID allow
+			*/
+			rcu_read_unlock();
+			del_chan(sock);
+			return;
+		}
+	}
+	rcu_read_unlock();
 }
 
 static int pptp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
@@ -327,11 +331,6 @@ allow_packet:
 			skb_pull(skb, 2);
 		}
 
-		if ((*skb->data) & 1) {
-			/* protocol is compressed */
-			skb_push(skb, 1)[0] = 0;
-		}
-
 		skb->ip_summed = CHECKSUM_NONE;
 		skb_set_network_header(skb, skb->head-skb->data);
 		ppp_input(&po->chan, skb);
@@ -428,8 +427,8 @@ static int pptp_connect(struct socket *sock, struct sockaddr *uservaddr,
 	if (sp->sa_protocol != PX_PROTO_PPTP)
 		return -EINVAL;
 
-	if (lookup_chan_dst(sp->sa_addr.pptp.call_id, sp->sa_addr.pptp.sin_addr.s_addr))
-		return -EALREADY;
+	/* Cleanup last lost pair if new connection set with old CID and source adress */
+	replace_chan_dst(sp->sa_addr.pptp.call_id, sp->sa_addr.pptp.sin_addr.s_addr);
 
 	lock_sock(sk);
 	/* Check for already bound sockets */
@@ -507,7 +506,6 @@ static int pptp_release(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
 	struct pppox_sock *po;
-	struct pptp_opt *opt;
 	int error = 0;
 
 	if (!sk)
@@ -521,7 +519,6 @@ static int pptp_release(struct socket *sock)
 	}
 
 	po = pppox_sk(sk);
-	opt = &po->proto.pptp;
 	del_chan(po);
 	synchronize_rcu();
 
@@ -544,6 +541,7 @@ static void pptp_sock_destruct(struct sock *sk)
 		pppox_unbind_sock(sk);
 	}
 	skb_queue_purge(&sk->sk_receive_queue);
+	dst_release(rcu_dereference_protected(sk->sk_dst_cache, 1));
 }
 
 static int pptp_create(struct net *net, struct socket *sock)
@@ -631,7 +629,6 @@ static const struct proto_ops pptp_ops = {
 	.socketpair = sock_no_socketpair,
 	.accept     = sock_no_accept,
 	.getname    = pptp_getname,
-	.poll       = sock_no_poll,
 	.listen     = sock_no_listen,
 	.shutdown   = sock_no_shutdown,
 	.setsockopt = sock_no_setsockopt,

@@ -1988,7 +1988,7 @@ static void pmz_console_write(struct console *con, const char *s, unsigned int c
 /*
  * Setup the serial console
  */
-static int __init pmz_console_setup(struct console *co, char *options)
+static int pmz_console_setup(struct console *co, char *options)
 {
 	struct uart_pmac_port *uap;
 	struct uart_port *port;

@@ -51,6 +51,13 @@ resume_userspace:
 					# interrupt setting need_resched
 					# between sampling and return
 	LONG_L	a2, TI_FLAGS($28)	# current->work
+	li	t0, _TIF_LOAD_WATCH
+	and	t0, a2
+	beqz	t0, 1f
+	move	a0, $28
+	jal	mips_install_watch_registers
+	LONG_L	a2, TI_FLAGS($28)	# current->work
+1:
 	andi	t0, a2, _TIF_WORK_MASK	# (ignoring syscall_trace)
 	bnez	t0, work_pending
 	j	restore_all
@@ -60,15 +67,14 @@ resume_kernel:
 	local_irq_disable
 	lw	t0, TI_PRE_COUNT($28)
 	bnez	t0, restore_all
-need_resched:
 	LONG_L	t0, TI_FLAGS($28)
 	andi	t1, t0, _TIF_NEED_RESCHED
 	beqz	t1, restore_all
 	LONG_L	t0, PT_STATUS(sp)		# Interrupts off?
 	andi	t0, 1
 	beqz	t0, restore_all
-	jal	preempt_schedule_irq
-	b	need_resched
+	PTR_LA	ra, restore_all
+	j	preempt_schedule_irq
 #endif
 
 FEXPORT(ret_from_fork)
@@ -78,7 +84,15 @@ FEXPORT(syscall_exit)
 	local_irq_disable		# make sure need_resched and
 					# signals dont change between
 					# sampling and return
+
 	LONG_L	a2, TI_FLAGS($28)	# current->work
+	li	t0, _TIF_LOAD_WATCH
+	and	t0, a2
+	beqz	t0, 1f
+	move	a0, $28
+	jal	mips_install_watch_registers
+	LONG_L	a2, TI_FLAGS($28)	# current->work
+1:
 	li	t0, _TIF_ALLWORK_MASK
 	and	t0, a2, t0
 	bnez	t0, syscall_exit_work

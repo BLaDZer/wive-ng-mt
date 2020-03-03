@@ -355,7 +355,7 @@ static void altera_jtaguart_console_write(struct console *co, const char *s,
 	}
 }
 
-static int __init altera_jtaguart_console_setup(struct console *co,
+static int altera_jtaguart_console_setup(struct console *co,
 						char *options)
 {
 	struct uart_port *port;

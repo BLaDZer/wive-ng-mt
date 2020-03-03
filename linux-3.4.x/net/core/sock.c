@@ -546,7 +546,14 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
 			sock_valbool_flag(sk, SOCK_DBG, valbool);
 		break;
 	case SO_REUSEADDR:
-		sk->sk_reuse = valbool;
+		val = (valbool ? SK_CAN_REUSE : SK_NO_REUSE);
+		if ((sk->sk_family == PF_INET || sk->sk_family == PF_INET6) &&
+		    inet_sk(sk)->inet_num &&
+		    (sk->sk_reuse != val)) {
+			ret = (sk->sk_state == TCP_ESTABLISHED) ? -EISCONN : -EUCLEAN;
+			break;
+		}
+		sk->sk_reuse = val;
 		break;
 	case SO_TYPE:
 	case SO_PROTOCOL:
@@ -1781,7 +1788,7 @@ int __sk_mem_schedule(struct sock *sk, int size, int kind)
 	}
 
 	if (sk_has_memory_pressure(sk)) {
-		int alloc;
+		u64 alloc;
 
 		if (!sk_under_memory_pressure(sk))
 			return 1;
@@ -1872,12 +1879,6 @@ int sock_no_getname(struct socket *sock, struct sockaddr *saddr,
 	return -EOPNOTSUPP;
 }
 EXPORT_SYMBOL(sock_no_getname);
-
-unsigned int sock_no_poll(struct file *file, struct socket *sock, poll_table *pt)
-{
-	return 0;
-}
-EXPORT_SYMBOL(sock_no_poll);
 
 int sock_no_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 {
@@ -2543,7 +2544,7 @@ static long sock_prot_memory_allocated(struct proto *proto)
 	return proto->memory_allocated != NULL ? proto_memory_allocated(proto): -1L;
 }
 
-static char *sock_prot_memory_pressure(struct proto *proto)
+static const char *sock_prot_memory_pressure(struct proto *proto)
 {
 	return proto->memory_pressure != NULL ?
 	proto_memory_pressure(proto) ? "yes" : "no" : "NI";

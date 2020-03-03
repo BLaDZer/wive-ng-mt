@@ -547,9 +547,8 @@ netx_console_write(struct console *co, const char *s, unsigned int count)
 	writel(cr_save, port->membase + UART_CR);
 }
 
-static void __init
-netx_console_get_options(struct uart_port *port, int *baud,
-			int *parity, int *bits, int *flow)
+static void netx_console_get_options(struct uart_port *port, int *baud,
+				     int *parity, int *bits, int *flow)
 {
 	unsigned char line_cr;
 
@@ -589,8 +588,7 @@ netx_console_get_options(struct uart_port *port, int *baud,
 		*flow = 'r';
 }
 
-static int __init
-netx_console_setup(struct console *co, char *options)
+static int netx_console_setup(struct console *co, char *options)
 {
 	struct netx_port *sport;
 	int baud = 9600;

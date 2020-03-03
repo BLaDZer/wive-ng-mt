@@ -175,7 +175,7 @@ void log_buf_kexec_setup(void)
 static unsigned long __initdata new_log_buf_len;
 
 /* save requested log_buf_len since it's too early to process it */
-static int __init log_buf_len_setup(char *str)
+static int log_buf_len_setup(char *str)
 {
 	unsigned size = memparse(str, &str);
 
@@ -188,7 +188,7 @@ static int __init log_buf_len_setup(char *str)
 }
 early_param("log_buf_len", log_buf_len_setup);
 
-void __init setup_log_buf(int early)
+void setup_log_buf(int early)
 {
 	unsigned long flags;
 	unsigned start, dest_idx, offset;
@@ -245,7 +245,7 @@ void __init setup_log_buf(int early)
 static int boot_delay; /* msecs delay after each printk during bootup */
 static unsigned long long loops_per_msec;	/* based on boot_delay */
 
-static int __init boot_delay_setup(char *str)
+static int boot_delay_setup(char *str)
 {
 	unsigned long lpj;
 
@@ -526,7 +526,7 @@ static void __call_console_drivers(unsigned start, unsigned end)
 
 static bool __read_mostly ignore_loglevel;
 
-static int __init ignore_loglevel_setup(char *str)
+static int ignore_loglevel_setup(char *str)
 {
 	ignore_loglevel = 1;
 	printk(KERN_INFO "debug: ignoring loglevel setting.\n");
@@ -1029,7 +1029,7 @@ static int __add_preferred_console(char *name, int idx, char *options,
 /*
  * Set up a list of consoles.  Called from init/main.c
  */
-static int __init console_setup(char *str)
+static int console_setup(char *str)
 {
 	char buf[sizeof(console_cmdline[0].name) + 4]; /* 4 for index */
 	char *s, *options, *brl_options = NULL;
@@ -1120,7 +1120,7 @@ int update_console_cmdline(char *name, int idx, char *name_new, int idx_new, cha
 bool console_suspend_enabled = 1;
 EXPORT_SYMBOL(console_suspend_enabled);
 
-static int __init console_suspend_disable(char *str)
+static int console_suspend_disable(char *str)
 {
 	console_suspend_enabled = 0;
 	return 1;
@@ -1415,7 +1415,7 @@ EXPORT_SYMBOL(console_start);
 
 static int __read_mostly keep_bootcon;
 
-static int __init keep_bootcon_setup(char *str)
+static int keep_bootcon_setup(char *str)
 {
 	keep_bootcon = 1;
 	printk(KERN_INFO "debug: skip boot console de-registration.\n");
@@ -1636,7 +1636,7 @@ int unregister_console(struct console *console)
 }
 EXPORT_SYMBOL(unregister_console);
 
-static int __init printk_late_init(void)
+static int printk_late_init(void)
 {
 	struct console *con;
 

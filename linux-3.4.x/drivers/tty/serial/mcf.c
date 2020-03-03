@@ -502,7 +502,7 @@ static void mcf_console_write(struct console *co, const char *s, unsigned int co
 
 /****************************************************************************/
 
-static int __init mcf_console_setup(struct console *co, char *options)
+static int mcf_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
 	int baud = CONFIG_SERIAL_MCF_BAUDRATE;

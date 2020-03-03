@@ -28,7 +28,7 @@
 #include <net/inet6_connection_sock.h>
 
 int inet6_csk_bind_conflict(const struct sock *sk,
-			    const struct inet_bind_bucket *tb)
+			    const struct inet_bind_bucket *tb, bool relax)
 {
 	const struct sock *sk2;
 	const struct hlist_node *node;
@@ -44,7 +44,7 @@ int inet6_csk_bind_conflict(const struct sock *sk,
 		     !sk2->sk_bound_dev_if ||
 		     sk->sk_bound_dev_if == sk2->sk_bound_dev_if) &&
 		    (!sk->sk_reuse || !sk2->sk_reuse ||
-		     sk2->sk_state == TCP_LISTEN) &&
+		    ((1 << sk2->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))) &&
 		     ipv6_rcv_saddr_equal(sk, sk2))
 			break;
 	}

@@ -2,23 +2,36 @@
 #define __RA_COMPAT_H__
 
 ///////////////////////////////////////////////////////////////
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+#ifndef NETIF_F_HW_VLAN_CTAG_TX
 #define NETIF_F_HW_VLAN_CTAG_TX			NETIF_F_HW_VLAN_TX
+#endif
+
+#ifndef NETIF_F_HW_VLAN_CTAG_RX
 #define NETIF_F_HW_VLAN_CTAG_RX			NETIF_F_HW_VLAN_RX
+#endif
+
+#if defined (CONFIG_RAETH_HW_VLAN_RX)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 #define vlan_insert_tag_hwaccel(x,y,z)		__vlan_hwaccel_put_tag(x,z)
 #else
 #define vlan_insert_tag_hwaccel(x,y,z)		__vlan_hwaccel_put_tag(x,y,z)
 #endif
+#endif
 
+#if defined (CONFIG_RAETH_HW_VLAN_TX)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
 #define skb_vlan_tag_present(x)			vlan_tx_tag_present(x)
 #define skb_vlan_tag_get(x)			vlan_tx_tag_get(x)
 #endif
+#endif
 
+#if 0
+#if defined (CONFIG_RAETH_READ_MAC_FROM_MTD)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,14,0)
 #define prandom_seed(x)				net_srandom(x)
 #define prandom_u32()				net_random()
+#endif
+#endif
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,2,0)

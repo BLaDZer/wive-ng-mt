@@ -1335,7 +1335,7 @@ u32 ip_idents_reserve(u32 hash, int segs)
 	u32 new, delta = 0;
 
 	if (old != now && cmpxchg(p_tstamp, old, now) == old) {
-		u64 x = random32();
+		u64 x = prandom_u32();
 
 		x *= (now - old);
 		delta = (u32)(x >> 32);
@@ -1599,14 +1599,13 @@ void ip_rt_send_redirect(struct sk_buff *skb)
 	if (peer->rate_tokens == 0 ||
 	    time_after(jiffies,
 		       (peer->rate_last +
-			(ip_rt_redirect_load << peer->rate_tokens)))) {
+			(ip_rt_redirect_load << peer->n_redirects)))) {
 		icmp_send(skb, ICMP_REDIRECT, ICMP_REDIR_HOST, rt->rt_gateway);
 		peer->rate_last = jiffies;
-		++peer->rate_tokens;
 		++peer->n_redirects;
 #ifdef CONFIG_IP_ROUTE_VERBOSE
 		if (log_martians &&
-		    peer->rate_tokens == ip_rt_redirect_number)
+		    peer->n_redirects == ip_rt_redirect_number)
 			net_warn_ratelimited("host %pI4/if%d ignores redirects for %pI4 to %pI4\n",
 					     &ip_hdr(skb)->saddr, rt->rt_iif,
 					     &rt->rt_dst, &rt->rt_gateway);
@@ -2619,7 +2618,7 @@ static struct rtable *ip_route_output_slow(struct net *net, struct flowi4 *fl4)
 	__be32 orig_daddr;
 	__be32 orig_saddr;
 	int orig_oif;
-	int err = -ENETUNREACH;
+	int err;
 
 	res.fi		= NULL;
 #ifdef CONFIG_IP_MULTIPLE_TABLES
@@ -2637,11 +2636,14 @@ static struct rtable *ip_route_output_slow(struct net *net, struct flowi4 *fl4)
 
 	rcu_read_lock();
 	if (fl4->saddr) {
-		rth = ERR_PTR(-EINVAL);
 		if (ipv4_is_multicast(fl4->saddr) ||
 		    ipv4_is_lbcast(fl4->saddr) ||
-		    ipv4_is_zeronet(fl4->saddr))
+		    ipv4_is_zeronet(fl4->saddr)) {
+			rth = ERR_PTR(-EINVAL);
 			goto out;
+		}
+
+		rth = ERR_PTR(-ENETUNREACH);
 
 		/* I removed check for oif == dev_out->oif here.
 		   It was wrong for two reasons:

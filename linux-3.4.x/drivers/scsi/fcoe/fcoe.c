@@ -1196,7 +1196,7 @@ static void fcoe_percpu_thread_create(unsigned int cpu)
 					(void *)p, cpu_to_node(cpu),
 					"fcoethread/%d", cpu);
 
-	if (likely(!IS_ERR(thread))) {
+	if (!IS_ERR(thread)) {
 		kthread_bind(thread, cpu);
 		wake_up_process(thread);
 

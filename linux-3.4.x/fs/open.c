@@ -1079,7 +1079,7 @@ SYSCALL_DEFINE1(close, unsigned int, fd)
 	__put_unused_fd(files, fd);
 
 #ifdef CONFIG_FLUSH_CACHE_AFTER_WRITE
-        if (filp->f_mode == (FMODE_WRITE | FMODE_LSEEK | FMODE_PREAD))
+        if ((system_state == SYSTEM_RUNNING) && (filp->f_mode == (FMODE_WRITE | FMODE_LSEEK | FMODE_PREAD)))
             sys_sync();
 #endif
 

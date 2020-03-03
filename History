@@ -7,6 +7,8 @@
 <a href="http://wive-ng.sf.net">wive-ng.sf.net - development opensource routers firmware</a><br>
 <a href="http://wi-cat.ru">wi-cat.ru - wireless comprehensive advanced technology</a><br>
 <br>
+<b>This software tree is EOL. For info about of new hardware and software mail to info@wi-cat.ru.</b>
+<br>
 <b>Release tree changes:</b><br>
 <b>0.0.x-0.30.x</b><br>
 1) full new codebase.<br>
@@ -4665,5 +4667,9 @@
 26) kernel: net: ip6mr: do not call __IP6_INC_STATS() from preemptible context.<br>
 27) kernel: net: offloads: try fix ipsec vs software offloads war.<br>
 28) kernel: backport some critical fixes from HQ (03.11.2019).<br>
+<br>
+<br>
+<b>9.0.x</b><br>
+1) kernel: sync hardware independed code by Wive-NG-HQ (patchset 228).<br>
 <br>
 <br>

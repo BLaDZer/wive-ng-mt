@@ -725,9 +725,8 @@ sa1100_console_write(struct console *co, const char *s, unsigned int count)
  * If the port was already initialised (eg, by a boot loader),
  * try to determine the current setup.
  */
-static void __init
-sa1100_console_get_options(struct sa1100_port *sport, int *baud,
-			   int *parity, int *bits)
+static void sa1100_console_get_options(struct sa1100_port *sport, int *baud,
+				       int *parity, int *bits)
 {
 	unsigned int utcr3;
 
@@ -757,8 +756,7 @@ sa1100_console_get_options(struct sa1100_port *sport, int *baud,
 	}
 }
 
-static int __init
-sa1100_console_setup(struct console *co, char *options)
+static int sa1100_console_setup(struct console *co, char *options)
 {
 	struct sa1100_port *sport;
 	int baud = 9600;

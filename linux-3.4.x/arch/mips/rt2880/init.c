@@ -742,7 +742,7 @@ static void prom_init_sysclk(void)
 ** this function is called.
 */
 
-void __init prom_init_serial_port(void)
+void prom_init_serial_port(void)
 {
 	unsigned int uartclk;
 	unsigned int clock_divisor;
@@ -820,7 +820,7 @@ void __init prom_init_serial_port(void)
 #endif
 }
 
-int __init prom_get_ttysnum(void)
+int prom_get_ttysnum(void)
 {
 	char *argptr;
 	int ttys_num = 0;  /* default UART Lite */
@@ -868,4 +868,3 @@ void __init prom_init(void)
 
 	prom_printf("\nLINUX started...\n");
 }
-

@@ -55,7 +55,7 @@
 
 #include "rt_timer.h"
 
-int wdg_load_value;
+int wdg_load_value = 0;
 EXPORT_SYMBOL_GPL(wdg_load_value);
 static struct timer_list wdg_timer;
 
