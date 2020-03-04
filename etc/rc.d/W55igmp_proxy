@@ -31,6 +31,11 @@ start() {
     	    sysctl -wq net.ipv4.conf.$lan_if.arp_filter=0
 	fi
 
+	# switch rp_filter to Loose mode
+	# need if multicast source not from studied subnet
+	# strong need for some Pure PPPOE networks with multicast iptv
+	sysctl -wq net.ipv4.conf.$wan_if.rp_filter=2
+
 	# if need kill igmpproxy
 	igmp_is_start=`pidof igmpproxy`
 	if [ "$igmp_is_start" != "" ]; then

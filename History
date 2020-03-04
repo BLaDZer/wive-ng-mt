@@ -4671,5 +4671,6 @@
 <br>
 <b>9.0.x</b><br>
 1) kernel: sync hardware independed code by Wive-NG-HQ (patchset 228).<br>
+2) init.d: allow rp_filter lose mode at wan for recive multicast from not studied subnets<br>
 <br>
 <br>
