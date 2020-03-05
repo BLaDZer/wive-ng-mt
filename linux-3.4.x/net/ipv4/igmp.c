@@ -224,7 +224,7 @@ static void igmp_stop_timer(struct ip_mc_list *im)
 /* It must be called with locked im->lock */
 static void igmp_start_timer(struct ip_mc_list *im, int max_delay)
 {
-	int tv = net_random() % max_delay;
+	int tv = prandom_u32() % max_delay;
 
 	im->tm_running = 1;
 	if (!mod_timer(&im->timer, jiffies+tv+2))
@@ -233,7 +233,7 @@ static void igmp_start_timer(struct ip_mc_list *im, int max_delay)
 
 static void igmp_gq_start_timer(struct in_device *in_dev)
 {
-	int tv = net_random() % in_dev->mr_maxdelay;
+	int tv = prandom_u32() % in_dev->mr_maxdelay;
 	unsigned long exp = jiffies + tv + 2;
 
 	if (in_dev->mr_gq_running &&
@@ -247,7 +247,7 @@ static void igmp_gq_start_timer(struct in_device *in_dev)
 
 static void igmp_ifc_start_timer(struct in_device *in_dev, int delay)
 {
-	int tv = net_random() % delay;
+	int tv = prandom_u32() % delay;
 
 	if (!mod_timer(&in_dev->mr_ifc_timer, jiffies+tv+2))
 		in_dev_hold(in_dev);
@@ -519,6 +519,15 @@ static struct sk_buff *add_grec(struct sk_buff *skb, struct ip_mc_list *pmc,
 			continue;
 		}
 
+		/* Based on RFC3376 5.1. Should not send source-list change
+		 * records when there is a filter mode change.
+		 */
+		if (((gdeleted && pmc->sfmode == MCAST_EXCLUDE) ||
+		     (!gdeleted && pmc->crcount)) &&
+		    (type == IGMPV3_ALLOW_NEW_SOURCES ||
+		     type == IGMPV3_BLOCK_OLD_SOURCES) && psf->sf_crcount)
+			goto decrease_sf_crcount;
+
 		/* clear marks on query responses */
 		if (isquery)
 			psf->sf_gsresp = 0;
@@ -546,6 +555,7 @@ static struct sk_buff *add_grec(struct sk_buff *skb, struct ip_mc_list *pmc,
 		scount++; stotal++;
 		if ((type == IGMPV3_ALLOW_NEW_SOURCES ||
 		     type == IGMPV3_BLOCK_OLD_SOURCES) && psf->sf_crcount) {
+decrease_sf_crcount:
 			psf->sf_crcount--;
 			if ((sdeleted || gdeleted) && psf->sf_crcount == 0) {
 				if (psf_prev)
@@ -752,7 +762,7 @@ static int igmp_send_report(struct in_device *in_dev, struct ip_mc_list *pmc,
 	hlen = LL_RESERVED_SPACE(dev);
 	tlen = dev->needed_tailroom;
 	skb = alloc_skb(IGMP_SIZE + hlen + tlen, GFP_ATOMIC);
-	if (skb == NULL) {
+	if (!skb) {
 		ip_rt_put(rt);
 		return -1;
 	}
@@ -816,8 +826,7 @@ static void igmp_ifc_event(struct in_device *in_dev)
 {
 	if (IGMP_V1_SEEN(in_dev) || IGMP_V2_SEEN(in_dev))
 		return;
-	in_dev->mr_ifc_count = in_dev->mr_qrv ? in_dev->mr_qrv :
-		IGMP_UNSOLICITED_REPORT_COUNT;
+	in_dev->mr_ifc_count = in_dev->mr_qrv ? in_dev->mr_qrv : IGMP_UNSOLICITED_REPORT_COUNT;
 	igmp_ifc_start_timer(in_dev, 1);
 }
 
@@ -861,7 +870,7 @@ static int igmp_xmarksources(struct ip_mc_list *pmc, int nsrcs, __be32 *srcs)
 			if (psf->sf_count[MCAST_INCLUDE] ||
 			    pmc->sfcount[MCAST_EXCLUDE] !=
 			    psf->sf_count[MCAST_EXCLUDE])
-				continue;
+				break;
 			if (srcs[i] == psf->sf_inaddr) {
 				scount++;
 				break;
@@ -1061,7 +1070,7 @@ int igmp_rcv(struct sk_buff *skb)
 	int len = skb->len;
 	bool dropped = true;
 
-	if (in_dev == NULL)
+	if (!in_dev)
 		goto drop;
 
 	if (!pskb_may_pull(skb, sizeof(struct igmphdr)))
@@ -1174,8 +1183,7 @@ static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 	pmc->interface = im->interface;
 	in_dev_hold(in_dev);
 	pmc->multiaddr = im->multiaddr;
-	pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-		IGMP_UNSOLICITED_REPORT_COUNT;
+	pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv : IGMP_UNSOLICITED_REPORT_COUNT;
 	pmc->sfmode = im->sfmode;
 	if (pmc->sfmode == MCAST_INCLUDE) {
 		struct ip_sf_list *psf;
@@ -1661,8 +1669,7 @@ static int ip_mc_del1_src(struct ip_mc_list *pmc, int sfmode,
 #ifdef CONFIG_IP_MULTICAST
 		if (psf->sf_oldin &&
 		    !IGMP_V1_SEEN(in_dev) && !IGMP_V2_SEEN(in_dev)) {
-			psf->sf_crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-				IGMP_UNSOLICITED_REPORT_COUNT;
+			psf->sf_crcount = in_dev->mr_qrv ? in_dev->mr_qrv : IGMP_UNSOLICITED_REPORT_COUNT;
 			psf->sf_next = pmc->tomb;
 			pmc->tomb = psf;
 			rv = 1;
@@ -1725,8 +1732,7 @@ static int ip_mc_del_src(struct in_device *in_dev, __be32 *pmca, int sfmode,
 		/* filter mode change */
 		pmc->sfmode = MCAST_INCLUDE;
 #ifdef CONFIG_IP_MULTICAST
-		pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-			IGMP_UNSOLICITED_REPORT_COUNT;
+		pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv : IGMP_UNSOLICITED_REPORT_COUNT;
 		in_dev->mr_ifc_count = pmc->crcount;
 		for (psf=pmc->sources; psf; psf = psf->sf_next)
 			psf->sf_crcount = 0;
@@ -1972,7 +1978,7 @@ static int __ip_mc_join_group(struct sock *sk, struct ip_mreqn *imr,
 	if (count >= sysctl_igmp_max_memberships)
 		goto done;
 	iml = sock_kmalloc(sk, sizeof(*iml), GFP_KERNEL);
-	if (iml == NULL)
+	if (!iml)
 		goto done;
 
 	memcpy(&iml->multi, imr, sizeof(*imr));
@@ -2022,7 +2028,7 @@ static int ip_mc_leave_src(struct sock *sk, struct ip_mc_socklist *iml,
 	struct ip_sf_socklist *psf = rtnl_dereference(iml->sflist);
 	int err;
 
-	if (psf == NULL) {
+	if (!psf) {
 		/* any-source empty exclude case */
 		return ip_mc_del_src(in_dev, &iml->multi.imr_multiaddr.s_addr,
 			iml->sfmode, 0, NULL, 0);
@@ -2228,7 +2234,7 @@ int ip_mc_source(int add, int omode, struct sock *sk, struct
 done:
 	rtnl_unlock();
 	if (leavegroup)
-		return ip_mc_leave_group(sk, &imr);
+		err = ip_mc_leave_group(sk, &imr);
 	return err;
 }
 
@@ -2487,7 +2493,7 @@ void ip_mc_drop_socket(struct sock *sk)
 	struct ip_mc_socklist *iml;
 	struct net *net = sock_net(sk);
 
-	if (inet->mc_list == NULL)
+	if (!inet->mc_list)
 		return;
 
 	rtnl_lock();
@@ -2497,7 +2503,7 @@ void ip_mc_drop_socket(struct sock *sk)
 		inet->mc_list = iml->next_rcu;
 		in_dev = inetdev_by_index(net, iml->multi.imr_ifindex);
 		(void) ip_mc_leave_src(sk, iml, in_dev);
-		if (in_dev != NULL)
+		if (in_dev)
 			ip_mc_dec_group(in_dev, iml->multi.imr_multiaddr.s_addr);
 		/* decrease mem now to avoid the memleak warning */
 		atomic_sub(sizeof(*iml), &sk->sk_omem_alloc);
@@ -2701,13 +2707,13 @@ static inline struct ip_sf_list *igmp_mcf_get_first(struct seq_file *seq)
 	for_each_netdev_rcu(net, state->dev) {
 		struct in_device *idev;
 		idev = __in_dev_get_rcu(state->dev);
-		if (unlikely(idev == NULL))
+		if (unlikely(!idev))
 			continue;
 		im = rcu_dereference(idev->mc_list);
-		if (likely(im != NULL)) {
+		if (likely(im)) {
 			spin_lock_bh(&im->lock);
 			psf = im->sources;
-			if (likely(psf != NULL)) {
+			if (likely(psf)) {
 				state->im = im;
 				state->idev = idev;
 				break;
@@ -2777,7 +2783,7 @@ static void igmp_mcf_seq_stop(struct seq_file *seq, void *v)
 	__releases(rcu)
 {
 	struct igmp_mcf_iter_state *state = igmp_mcf_seq_private(seq);
-	if (likely(state->im != NULL)) {
+	if (likely(state->im)) {
 		spin_unlock_bh(&state->im->lock);
 		state->im = NULL;
 	}

@@ -149,6 +149,7 @@ IEEE80211H=1
 igmpEnabled=1
 igmpSnoopMode=
 igmpFastLeave=0
+igmpVersion=0
 igmpM2UConvMode=wlan
 M2UEnabled=0
 ForwardSesLimit=0

@@ -2007,7 +2007,8 @@ static int ip_route_input_mc(struct sk_buff *skb, __be32 daddr, __be32 saddr,
 		goto e_inval;
 
 	if (ipv4_is_zeronet(saddr)) {
-		if (!ipv4_is_local_multicast(daddr))
+		if (!ipv4_is_local_multicast(daddr) &&
+		    ip_hdr(skb)->protocol != IPPROTO_IGMP)
 			goto e_inval;
 		spec_dst = inet_select_addr(dev, 0, RT_SCOPE_LINK);
 	} else {

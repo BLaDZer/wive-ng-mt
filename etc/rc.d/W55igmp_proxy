@@ -36,6 +36,15 @@ start() {
 	# strong need for some Pure PPPOE networks with multicast iptv
 	sysctl -wq net.ipv4.conf.$wan_if.rp_filter=2
 
+	# force igmp version if need
+	if [ "$igmpVersion" != "" ]; then
+	    sysctl -wq net.ipv4.conf.$wan_if.force_igmp_version=$igmpVersion
+	fi
+
+	$LOG "Replace route to multicast subnet via $wan_if."
+	ip -4 route replace "$mcast_net" dev "$wan_if"
+	sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
+
 	# if need kill igmpproxy
 	igmp_is_start=`pidof igmpproxy`
 	if [ "$igmp_is_start" != "" ]; then
@@ -72,7 +81,7 @@ phyint $vpn_if disabled
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpFastLeave VlanLan VlanWifiLan VlanWifiLanINIC VlanWifiWan VlanWifiWanINIC`
+    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpFastLeave igmpVersion VlanLan VlanWifiLan VlanWifiLanINIC VlanWifiWan VlanWifiWanINIC`
     ####################################
     # remap wan if to vlan bridge
     ####################################
@@ -82,9 +91,6 @@ get_param() {
     if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ] && [ "$sip_port_mcast" = "1" ]; then
 	wan_if="$vlansipif"
     fi
-    $LOG "Replace route to multicast subnet via $wan_if."
-    ip -4 route replace "$mcast_net" dev "$wan_if"
-    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
 
     ####################################
     # wan port number set
