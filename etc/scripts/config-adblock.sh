@@ -21,7 +21,7 @@ get_param()
     templist="$list.tmp"
 
     # RUSSIAN BLOCK LIST
-    blocklists="https://schakal.ru/hosts/alive_hosts_mail_fb.txt"
+    blocklists="https://schakal.ru/hosts/alive_hosts_ru_com.txt"
     # blocklists="http://cdn.raletag.gq/rueasyhosts.txt"
     # GLOBAL BLOCK LISTS
     blocklists="$blocklists http://winhelp2002.mvps.org/hosts.txt"
