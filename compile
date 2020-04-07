@@ -2,7 +2,7 @@
 
 DOS2UNIX=NO
 FULLREBUILD=NO
-VERSIONPKG="9.0.2.RU.`date +%d%m%Y`"
+VERSIONPKG="9.0.3.RU.`date +%d%m%Y`"
 
 #---Set_env_ROOTDIR_to_current_dir---#
 ROOTDIR=`pwd`
